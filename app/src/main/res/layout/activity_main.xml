@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffff"
+    tools:context=".MainActivity">
+
+    <include
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/custom_titlebar"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        >
+
+        <Button
+            android:id="@+id/new_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:letterSpacing="0.2"
+            android:padding="16dp"
+            android:text="New Record"
+            android:textColor="#FFFFFF"
+            android:onClick="newRecord"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/sync_record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="50dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:letterSpacing="0.2"
+            android:padding="16dp"
+            android:text="Sync Record"
+            android:onClick="sync"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello World!"
+            android:id="@+id/textView"
+            android:visibility="gone"
+        />
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E7E7E7"
+        android:padding="15dp"
+        android:layout_alignParentBottom="true">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Version 1.0"
+            android:layout_marginLeft="10dp"
+            android:textSize="14dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="center_vertical"
+            android:letterSpacing="0.1"
+            android:layout_alignParentLeft="true"
+
+        />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_marginRight="10dp"
+            android:textSize="14dp"
+            android:textColor="@color/colorPrimary"
+            android:layout_gravity="center_vertical"
+            android:letterSpacing="0.1"
+            android:layout_alignParentRight="true"
+            android:onClick="logOut"
+            />
+
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>
