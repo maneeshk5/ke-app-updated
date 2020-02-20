@@ -85,15 +85,20 @@ public class AssetsForm extends Activity {
         dbHandler = DatabaseHandler.getDbHandlerInstance(getApplicationContext());
 
         Intent intent = getIntent();
-        ques = dbHandler.getAssetQues(intent.getStringExtra("barcodeStr"));
+        try {
+            ques = dbHandler.getAssetQues(intent.getStringExtra("barcodeStr"));
 
-        if (!(ques.size() > 0)) {
-            Toast.makeText(this, "Invalid Barcode", Toast.LENGTH_SHORT).show();
-            finish();
+            if (!(ques.size() > 0)) {
+                Toast.makeText(this, "Invalid Barcode", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+
+            userDetail = dbHandler.getUser();
         }
-
-
-        userDetail = dbHandler.getUser();
+        catch (Exception e) {
+            Log.e("AssetForm: 100", e.getMessage());
+        }
 
 //        setTitle("KKS Code: " + intent.getStringExtra("barcodeStr"));
 
@@ -255,32 +260,42 @@ public class AssetsForm extends Activity {
 
         List <Answer> ansList = new ArrayList<>();
 
-        for(int i=0; i < ques.size(); i++) {
-            Answer a = new Answer();
-
-            a.setReading(readings.get(i));
-            a.setImage_fileName(fileNameImg.containsKey(i) ? fileNameImg.get(i) : "");
-            a.setQues_id(ques.get(i).getId());
-            a.setUser_id(Integer.parseInt(userDetail.get("id")));
-
-            ansList.add(a);
-        }
 
         try {
-            dbHandler.addAnswer(ansList);
+            for (int i = 0; i < ques.size(); i++) {
+                Answer a = new Answer();
+                if (readings.get(i) == null) {
+                    throw new Exception("Enter Reading First");
+                }
+                a.setReading(readings.get(i));
+//                a.setReading("51.2");
 
-            ansList.clear();
-            ansList = dbHandler.getAllAnswerNotSent(false);
+                a.setImage_fileName(fileNameImg.containsKey(i) ? fileNameImg.get(i) : "");
+                a.setQues_id(ques.get(i).getId());
+                a.setUser_id(Integer.parseInt(userDetail.get("id")));
+
+                ansList.add(a);
+            }
+
+            try {
+                dbHandler.addAnswer(ansList);
+
+                ansList.clear();
+                ansList = dbHandler.getAllAnswerNotSent(false);
 
 //            for(Answer aw : ansList) {
 //                System.out.println(aw.toString());
 //            }
 
-            Toast.makeText(self,"Save Successfully",Toast.LENGTH_SHORT).show();
-            finish();
+                Toast.makeText(self, "Save Successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            } catch (Exception e) {
+                Log.e("Error in saving answers", e.toString());
+            }
         }
         catch (Exception e) {
-            Log.e("Error in saving answers", e.toString());
+            Log.e("Reading field empty ", e.getMessage());
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

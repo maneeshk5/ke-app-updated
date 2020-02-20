@@ -39,7 +39,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_QUES_TABLE = "CREATE TABLE " + Constant.ASSETS_QUES_TABLE + "("
                 + Constant.COLUMN_QUES_ID + " INTEGER PRIMARY KEY," + Constant.COLUMN_ASSET_CODE + " TEXT,"
-                + Constant.COLUMN_QUES_TEXT + " TEXT," + Constant.COLUMN_QUES_UNIT + " TEXT," + Constant.COLUMN_QUES_PLANT + " TEXT"  + ")";
+                + Constant.COLUMN_BARCODE_ID+ " TEXT," + Constant.COLUMN_QUES_TEXT + " TEXT," + Constant.COLUMN_QUES_UNIT + " TEXT,"
+                + Constant.COLUMN_QUES_UPPER_LIMIT+ " TEXT," + Constant.COLUMN_QUES_LOWER_LIMIT+ " TEXT,"+ Constant.COLUMN_QUES_PLANT + " TEXT,"
+                + Constant.COLUMN_QUES_SYSTEM_ID+ " INTEGER,"  + Constant.COLUMN_QUES_SYSTM_NAME+ " TEXT"  + ")";
         db.execSQL(CREATE_QUES_TABLE);
 
         String CREATE_ANS_TABLE = "CREATE TABLE " + Constant.ANSWER_TABLE + "("
@@ -125,7 +127,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<AssetsQues> getAssetQues(String assetCode){
         List<AssetsQues> quesList = new ArrayList<AssetsQues>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + Constant.ASSETS_QUES_TABLE + " WHERE " + Constant.COLUMN_ASSET_CODE + " = ?";
+        String selectQuery = "SELECT  * FROM " + Constant.ASSETS_QUES_TABLE + " WHERE " + Constant.COLUMN_BARCODE_ID + " = ?";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, new String[] {assetCode});
@@ -136,10 +138,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 AssetsQues ques = new AssetsQues();
                 ques.setId(Integer.parseInt(cursor.getString(0)));
                 ques.setCode(cursor.getString(1));
-                ques.setQuestion_text(cursor.getString(2));
-                ques.setUnit(cursor.getString(3));
-                ques.setPlant(cursor.getString(4));
-
+                ques.setBarcodeId(cursor.getString(2));
+                ques.setQuestion_text(cursor.getString(3));
+                ques.setUnit(cursor.getString(4));
+                ques.setUpperLimit(cursor.getString(5));
+                ques.setLowerLimit(cursor.getString(6));
+                ques.setPlant(cursor.getString(7));
+                ques.setSystemId(Integer.parseInt(cursor.getString(8)));
+                ques.setSystemName(cursor.getString(9));
                 quesList.add(ques);
             } while (cursor.moveToNext());
         }
@@ -255,9 +261,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put(Constant.COLUMN_QUES_ID, asset_q.getId());
             values.put(Constant.COLUMN_ASSET_CODE, asset_q.getCode());
+            values.put(Constant.COLUMN_BARCODE_ID, asset_q.getBarcodeId());
             values.put(Constant.COLUMN_QUES_TEXT, asset_q.getQuestion_text());
             values.put(Constant.COLUMN_QUES_UNIT, asset_q.getUnit());
+            values.put(Constant.COLUMN_QUES_UPPER_LIMIT, asset_q.getUpperLimit());
+            values.put(Constant.COLUMN_QUES_LOWER_LIMIT, asset_q.getLowerLimit());
             values.put(Constant.COLUMN_QUES_PLANT, asset_q.getPlant());
+            values.put(Constant.COLUMN_QUES_SYSTEM_ID, asset_q.getSystemId());
+            values.put(Constant.COLUMN_QUES_SYSTM_NAME, asset_q.getSystemName());
 
             db.replace(Constant.ASSETS_QUES_TABLE, null, values);
         }

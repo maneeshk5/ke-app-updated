@@ -33,7 +33,7 @@ public class AssetsFormAdapter extends RecyclerView.Adapter<AssetsFormAdapter.My
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView question, unit, plant, paging;
+        public TextView question, unit, uLimit, lLimit, plant, paging, system;
         public EditText reading_et;
         ImageView img_view;
         Button capture_btn;
@@ -41,9 +41,12 @@ public class AssetsFormAdapter extends RecyclerView.Adapter<AssetsFormAdapter.My
         public MyViewHolder(View view) {
             super(view);
             af = (AssetsForm)context;
-            question = (TextView) view.findViewById(R.id.ques);
+            question = (TextView) view.findViewById(R.id.instrument);
             unit = (TextView) view.findViewById(R.id.unit);
+            uLimit = (TextView) view.findViewById(R.id.uLimit);
+            lLimit = (TextView) view.findViewById(R.id.lLimit);
             plant = (TextView) view.findViewById(R.id.plant);
+            system = (TextView) view.findViewById(R.id.system);
             paging = (TextView) view.findViewById(R.id.paging);
             reading_et = (EditText) view.findViewById(R.id.reading_et);
 //            img_view = (ImageView) view.findViewById(R.id.img_view);
@@ -74,7 +77,22 @@ public class AssetsFormAdapter extends RecyclerView.Adapter<AssetsFormAdapter.My
         AssetsQues ques = questionList.get(i);
         holder.question.setText(ques.getQuestion_text());
         holder.unit.setText(ques.getUnit());
+        if (ques.getUpperLimit().equals("0.0")) {
+            holder.uLimit.setText("N/A");
+        }
+        else {
+            holder.uLimit.setText(ques.getUpperLimit());
+        }
+
+        if (ques.getUpperLimit().equals("0.0")) {
+            holder.lLimit.setText("N/A");
+        }
+        else {
+            holder.lLimit.setText(ques.getLowerLimit());
+        }
+
         holder.plant.setText(ques.getPlant());
+        holder.system.setText(ques.getSystemName());
         int curCount = i+1;
         holder.paging.setText("Page "+ curCount +"/"+getItemCount());
         holder.reading_et.addTextChangedListener(new TextWatcher() {

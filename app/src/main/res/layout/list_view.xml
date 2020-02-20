@@ -38,17 +38,34 @@
         >
 
             <TextView
-                android:id="@+id/ques"
+                android:id="@+id/system"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/andada"
+                android:letterSpacing="0.1"
+                android:maxLines="1"
+                android:padding="10dp"
+                android:text=""
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14dp" />
+
+
+
+
+            <TextView
+                android:id="@+id/instrument"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/andada"
                 android:letterSpacing="0.1"
                 android:maxLines="1"
                 android:padding="10dp"
-                android:text="GT-1 Generator Voltage"
+                android:text=""
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorPrimary"
                 android:textSize="14dp" />
@@ -90,7 +107,7 @@
                     android:paddingTop="10dp"
                     android:paddingRight="5dp"
                     android:paddingBottom="10dp"
-                    android:text="psia"
+                    android:text=""
                     android:textColor="@color/colorPrimary"
                     android:textSize="13dp" />
 
@@ -135,7 +152,7 @@
                     android:paddingTop="10dp"
                     android:paddingRight="5dp"
                     android:paddingBottom="10dp"
-                    android:text="GT-1"
+                    android:text=""
                     android:textColor="@color/colorPrimary"
                     android:textSize="13dp" />
 
@@ -180,7 +197,7 @@
                     android:paddingTop="10dp"
                     android:paddingRight="5dp"
                     android:paddingBottom="10dp"
-                    android:text="TEST-123"
+                    android:text=""
                     android:textColor="@color/colorPrimary"
                     android:textSize="13dp" />
 
@@ -188,6 +205,98 @@
 
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="0.45"
+                    android:background="@drawable/border"
+                    android:fontFamily="@font/andada"
+                    android:letterSpacing="0.1"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp"
+                    android:text="Upper Limit"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="13dp" />
+
+
+                <TextView
+                    android:id="@+id/uLimit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.55"
+                    android:background="@drawable/border"
+                    android:fontFamily="@font/andada"
+                    android:letterSpacing="0.1"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp"
+                    android:text=""
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="13dp" />
+
+
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="0.45"
+                    android:background="@drawable/border"
+                    android:fontFamily="@font/andada"
+                    android:letterSpacing="0.1"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp"
+                    android:text="Lower Limit"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="13dp" />
+
+
+                <TextView
+                    android:id="@+id/lLimit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="0.55"
+                    android:background="@drawable/border"
+                    android:fontFamily="@font/andada"
+                    android:letterSpacing="0.1"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp"
+                    android:text=""
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="13dp" />
+
+
+
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

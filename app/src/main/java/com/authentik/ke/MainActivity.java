@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ import com.authentik.model.Answer;
 import com.authentik.model.AssetsQues;
 import com.authentik.network.APIService;
 import com.authentik.network.ApiUtils;
+import com.authentik.service.Service;
 import com.authentik.utils.Constant;
 import com.authentik.utils.DatabaseHandler;
 import com.authentik.utils.DialogBox;
@@ -35,6 +39,7 @@ import com.google.gson.Gson;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,19 +139,41 @@ These extras are available:
     private APIService mAPIService;
     private HashMap<String,String> userDetail;
     private DatabaseHandler dbHandler;
+    Button sync_button, new_record_button;
+    Context context_main;
+    MyReceiver myReceiver;
+    ProgressBar progressBar;
+    public static final String FILTER_ACTION_KEY = "send_data_service";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.textView);
+        sync_button = (Button) findViewById(R.id.sync_record);
+        new_record_button = (Button) findViewById(R.id.new_record);
+        progressBar = (ProgressBar) findViewById(R.id.progress);
+
+        context_main = this;
 
         mAPIService = ApiUtils.getAPIService();
         dbHandler = DatabaseHandler.getDbHandlerInstance(getApplicationContext());
 
-        userDetail = dbHandler.getUser();
+        try {
+            userDetail = dbHandler.getUser();
+        }
+        catch (Exception e) {
+            Log.e("Main Activity: 165", e.getMessage());
+        }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                getQuestionsList();
+//            }
+//        }).start();
 
         getQuestionsList();
+
     }
     @Override
     protected void onResume() {
@@ -160,6 +187,8 @@ These extras are available:
         unregisterReceiver(barcodeDataReceiver);
         releaseScanner();
     }
+
+
     private void claimScanner() {
         Bundle properties = new Bundle();
         properties.putBoolean("DPR_DATA_INTENT", true);
@@ -199,9 +228,9 @@ These extras are available:
         AlertDialog dialog = DialogBox.dismissButtonDialog(this,"Alert", "Please Scan the Barcode");
         dialog.show();
 
-        Intent i = new Intent(this,AssetsForm.class);
-//        Intent i = new Intent(this, Test.class);
-//        i.putExtra("barcodeStr", "TEST-123");
+//        Intent i = new Intent(this,AssetsForm.class);
+////        Intent i = new Intent(this, Test.class);
+//        i.putExtra("barcodeStr", "000001");
 //        startActivity(i);
     }
 
@@ -231,10 +260,16 @@ These extras are available:
 
                         try {
                             Gson gs = new Gson();
-                            List<AssetsQues> assets_ques = oMapper.readValue(gs.toJson(res.getData()), new TypeReference<List<AssetsQues>>(){});
+                            final List<AssetsQues> assets_ques = oMapper.readValue(gs.toJson(res.getData()), new TypeReference<List<AssetsQues>>(){});
 
                             try {
-                                dbHandler.addAssetsQues(assets_ques);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        dbHandler.addAssetsQues(assets_ques);
+                                    }
+                                }).start();
+
                             }
                             catch (Exception e) {
                                 Log.e("Error in saving Ques", e.toString());
@@ -256,134 +291,204 @@ These extras are available:
             @Override
             public void onFailure(Call<APIResponse> call, Throwable t) {
                 Log.e("API CALLS", "Unable to submit post to API. " + t);
-                AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Error", "Login API : " + t);
-                dialog.show();
+                String msg = t.getMessage();
+                if (msg.contains("Unable to resolve host")) {
+                    Log.e("Get Questions", "No Internet");
+                    Toast.makeText(context,"No Internet", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Error", "Login API : " + t);
+                    dialog.show();
+                }
             }
         });
     }
 
     public void sync(View view) {
 
-        dbHandler.updateAnswerStatus(0,1);
+        sync_button.setEnabled(false);
+        new_record_button.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
 
-        List<Answer> ansList = dbHandler.getAllAnswerNotSent(true);
+        Intent intent = new Intent(MainActivity.this, Service.class);
+        intent.putExtra("token", userDetail.get("token"));
+        startService(intent);
 
-        if(ansList.size() > 0) {
-            sendAnswerToServer(ansList);
-        }
-        else{
-            Toast.makeText(this,"Already Synced",Toast.LENGTH_SHORT).show();
-        }
+//        if (!sync_button.isEnabled()) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    dbHandler.updateAnswerStatus(0, 1);
+//                    List<Answer> ansList = dbHandler.getAllAnswerNotSent(true);
+//
+//                    if (ansList.size() > 0) {
+//                        sendAnswerToServer(ansList);
+//                    } else {
+//                        Toast.makeText(context, "Already Synced", Toast.LENGTH_SHORT).show();
+//                        sync_button.setEnabled(true);
+//                    }
+//                }
+//            });
+//        }
     }
 
-    void sendAnswerToServer(List<Answer> ansList){
-
-        List<MultipartBody.Part> parts = new ArrayList<>();
-//        List<HashMap<String, RequestBody>> body = new ArrayList<>();
-//        List<HashMap<String, String>> body = new ArrayList<>();
-
-        List<String> body = new ArrayList<>();
-
-        Gson gs = new Gson();
-
-        boolean isImageFile = false;
-
-        for(Answer a : ansList) {
-
-            if(!a.getImage_fileName().equals("")) {
-                isImageFile = true;
-                File file = new File(Constant.IMAGE_FILE_PATH + "/" + a.getImage_fileName());
-
-                // Create a request body with file and image media type
-                RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-
-                // Create MultipartBody.Part using file request-body,file name and part name
-                parts.add(MultipartBody.Part.createFormData("file", file.getName(), fileReqBody));
-            }
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put("appQuesId", String.valueOf(a.getId()));
-            map.put("reading", a.getReading());
-            map.put("fileName", a.getImage_fileName());
-            map.put("quesId", String.valueOf(a.getQues_id()));
-            map.put("userId", String.valueOf(a.getUser_id()));
-            map.put("recordedTime", a.getRecorded_time());
-
-            body.add(gs.toJson(map));
-
-        }
-
-        if (!isImageFile) {
-            Drawable d = getDrawable(R.drawable.image_placeholder);
-            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            byte[] bitmapdata = stream.toByteArray();
-
-            // Create a request body with file and image media type
-            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), bitmapdata);
-
-            // Create MultipartBody.Part using file request-body,file name and part name
-            parts.add(MultipartBody.Part.createFormData("file", "noImg.png", fileReqBody));
-        }
-
-
-        final Context context = this;
-        Map <String, String> headers = new HashMap<>();
-        headers.put("x-auth-token",userDetail.get("token"));
-
-        mAPIService.sendAnswers(headers, parts, body).enqueue(new Callback<APIResponse>() {
-            @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-
-                if(response.isSuccessful()) {
-                    Log.i("API CALLS", "post submitted to API." + response.body().toString());
-                    Log.i("API CALLS", "post submitted to API." + response.code());
-                    APIResponse res = response.body();
-
-                    ObjectMapper oMapper = new ObjectMapper();
-                    Map<String, Object> map = oMapper.convertValue(res.getData(), Map.class);
-
-                    if(response.code() == 200) {
-                        updateSentAnswersStatus(map);
-                    }
-                    else {
-                        AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Status : " + response.code(),
-                                res.getMessage() );
-                        dialog.show();
-                    }
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
-                Log.e("API CALLS", "Unable to submit post to API. " + t);
-                AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Error", "Login API : " + t);
+    private class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+            String type = intent.getStringExtra("type");
+            if(type.equals("error")) {
+                AlertDialog dialog = DialogBox.dismissButtonDialog(context_main, "Error", "Login API : " + message);
                 dialog.show();
             }
-        });
-
-
+            else {
+                  Toast.makeText(context_main,message,Toast.LENGTH_SHORT).show();
+            }
+            sync_button.setEnabled(true);
+            new_record_button.setEnabled(true);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
-    void updateSentAnswersStatus(Map<String, Object> map) {
-        List<String> savedIds = (List<String>) map.get("savedIds");
-        List<String> failedIds = (List<String>) map.get("failedIds");
+    private void setReceiver() {
+        System.out.println("Set Receiver CAlls");
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(FILTER_ACTION_KEY);
 
-        for(int i=0; i < savedIds.size(); i++){
-            int id = Integer.parseInt(savedIds.get(i));
-            dbHandler.updateAnswerStatus(2,1, id);
-            dbHandler.deleteSentAnswerRecord(id);
-        }
-
-        for(int i=0; i < failedIds.size(); i++){
-            int id = Integer.parseInt(failedIds.get(i));
-            dbHandler.updateAnswerStatus(0,1,id);
-        }
-
-        Toast.makeText(this,"Sync Completed",Toast.LENGTH_SHORT).show();
+        LocalBroadcastManager.getInstance(this).registerReceiver(myReceiver, intentFilter);
     }
+
+    @Override
+    protected void onStart() {
+        System.out.println("On Start Calls");
+        setReceiver();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+//        if(myReceiver != null) {
+//            unregisterReceiver(myReceiver);
+//            System.out.println("UnRegister Receiver");
+//        }
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+        System.out.println("UnRegister Receiver");
+        System.out.println("On Stop calls");
+        super.onStop();
+    }
+
+//    void sendAnswerToServer(List<Answer> ansList){
+//
+//        List<MultipartBody.Part> parts = new ArrayList<>();
+////        List<HashMap<String, RequestBody>> body = new ArrayList<>();
+////        List<HashMap<String, String>> body = new ArrayList<>();
+//
+//        List<String> body = new ArrayList<>();
+//
+//        Gson gs = new Gson();
+//
+//        boolean isImageFile = false;
+//
+//        for(Answer a : ansList) {
+//
+//            if(!a.getImage_fileName().equals("")) {
+//                isImageFile = true;
+//                File file = new File(Constant.IMAGE_FILE_PATH + "/" + a.getImage_fileName());
+//
+//                // Create a request body with file and image media type
+//                RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+//
+//                // Create MultipartBody.Part using file request-body,file name and part name
+//                parts.add(MultipartBody.Part.createFormData("file", file.getName(), fileReqBody));
+//            }
+//
+//            HashMap<String, String> map = new HashMap<>();
+//            map.put("appQuesId", String.valueOf(a.getId()));
+//            map.put("reading", a.getReading());
+//            map.put("fileName", a.getImage_fileName());
+//            map.put("quesId", String.valueOf(a.getQues_id()));
+//            map.put("userId", String.valueOf(a.getUser_id()));
+//            map.put("recordedTime", a.getRecorded_time());
+//
+//            body.add(gs.toJson(map));
+//
+//        }
+//
+//        if (!isImageFile) {
+//            Drawable d = getDrawable(R.drawable.image_placeholder);
+//            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+//            byte[] bitmapdata = stream.toByteArray();
+//
+//            // Create a request body with file and image media type
+//            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), bitmapdata);
+//
+//            // Create MultipartBody.Part using file request-body,file name and part name
+//            parts.add(MultipartBody.Part.createFormData("file", "noImg.png", fileReqBody));
+//        }
+//
+//
+//        final Context context = this;
+//        Map <String, String> headers = new HashMap<>();
+//        headers.put("x-auth-token",userDetail.get("token"));
+//
+//        mAPIService.sendAnswers(headers, parts, body).enqueue(new Callback<APIResponse>() {
+//            @Override
+//            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+//
+//                if(response.isSuccessful()) {
+//                    Log.i("API CALLS", "post submitted to API." + response.body().toString());
+//                    Log.i("API CALLS", "post submitted to API." + response.code());
+//                    APIResponse res = response.body();
+//
+//                    ObjectMapper oMapper = new ObjectMapper();
+//                    Map<String, Object> map = oMapper.convertValue(res.getData(), Map.class);
+//
+//                    if(response.code() == 200) {
+//                        updateSentAnswersStatus(map);
+//                        sync_button.setEnabled(true);
+//                    }
+//                    else {
+//                        AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Status : " + response.code(),
+//                                res.getMessage() );
+//                        dialog.show();
+//                        sync_button.setEnabled(true);
+//                    }
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<APIResponse> call, Throwable t) {
+//                Log.e("API CALLS", "Unable to submit post to API. " + t);
+//                AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Error", "Login API : " + t);
+//                dialog.show();
+//                sync_button.setEnabled(true);
+//            }
+//        });
+//
+//
+//    }
+
+//    void updateSentAnswersStatus(Map<String, Object> map) {
+//        List<String> savedIds = (List<String>) map.get("savedIds");
+//        List<String> failedIds = (List<String>) map.get("failedIds");
+//
+//        for(int i=0; i < savedIds.size(); i++){
+//            int id = Integer.parseInt(savedIds.get(i));
+//            dbHandler.updateAnswerStatus(2,1, id);
+//            dbHandler.deleteSentAnswerRecord(id);
+//        }
+//
+//        for(int i=0; i < failedIds.size(); i++){
+//            int id = Integer.parseInt(failedIds.get(i));
+//            dbHandler.updateAnswerStatus(0,1,id);
+//        }
+//
+//        Toast.makeText(this,"Sync Completed",Toast.LENGTH_SHORT).show();
+//    }
 
     public void logOut(View view) {
         try{
