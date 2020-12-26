@@ -7,21 +7,48 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!--android:usesCleartextTraffic="true"-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ke_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".reading_picture"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Tag_information"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".barcode_scan"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Instrument_List"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".Test"></activity>
+        <activity android:name=".System_List"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".Plant_List"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".Shift_Selection"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".Test"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Login"
-              android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -29,17 +56,19 @@
             android:name=".AssetsForm"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".SplashScreen">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
-        <service android:name="com.authentik.service.Service"/>
+
+        <service android:name="com.authentik.service.Service" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.authentik.ke.fileprovider"
@@ -47,7 +76,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

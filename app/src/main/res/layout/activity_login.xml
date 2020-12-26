@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     android:background="@drawable/grdnt">
 
+
     <include
         android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/custom_titlebar"/>
+        layout="@layout/custom_titlebar_login"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -53,7 +54,7 @@
                     android:src="@drawable/usrusr"
                     android:layout_gravity="center"/>
                 <EditText
-                    android:id="@+id/usr_name"
+                    android:id="@+id/userName_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Username"
@@ -69,7 +70,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#4a5a71"></LinearLayout>
+                android:background="#4a5a71">
+
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,7 +84,7 @@
                     android:src="@drawable/pswrd"
                     android:layout_gravity="center"/>
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/password_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Password"
@@ -110,7 +113,7 @@
         android:paddingRight="60dp">
 
         <Button
-            android:id="@+id/lin"
+            android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

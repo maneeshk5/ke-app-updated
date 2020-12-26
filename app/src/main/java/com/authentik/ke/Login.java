@@ -1,102 +1,260 @@
 package com.authentik.ke;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
-import android.support.v7.app.AlertDialog;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.authentik.model.APIResponse;
-import com.authentik.network.APIService;
-import com.authentik.network.ApiUtils;
-import com.authentik.utils.DatabaseHandler;
-import com.authentik.utils.DialogBox;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.authentik.model.Plant;
+import com.authentik.model.System;
+import com.authentik.model.User;
+//import com.authentik.utils.DatabaseHandler;
+import com.authentik.utils.DatabaseHelper;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.List;
 
 public class Login extends AppCompatActivity {
 
-    private APIService mAPIService;
-    DatabaseHandler dbHandler;
+//    private APIService mAPIService;
+//    DatabaseHandler dbHandler;
+    EditText editUserName;
+    EditText editPassword;
+    Button btnLogin;
+    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
+    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
+    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
+    DatabaseHelper db;
+
+    List<User> userList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        dbHandler = DatabaseHandler.getDbHandlerInstance(getApplicationContext());
-        mAPIService = ApiUtils.getAPIService();
-    }
+        //create local database
+        db = new DatabaseHelper(getApplicationContext());
 
-    public void sendAPIRequest(HashMap<String, Object> data) {
-        final Context context = this;
+        // sync server db to local db if internet is available
+        if (isInternetAvailable()) {
+            DatabaseSync();
+        }
+        else {
+            Toast.makeText(getApplicationContext(),"Sever Sync not available due to no internet",Toast.LENGTH_SHORT).show();
+        }
 
-        mAPIService.login(data).enqueue(new Callback<APIResponse>() {
+        editUserName = findViewById(R.id.userName_et);
+        editPassword = findViewById(R.id.password_et);
+        btnLogin = findViewById(R.id.login_btn);
+
+        //login user
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-
-                if(response.isSuccessful()) {
-                    Log.i("API CALLS", "post submitted to API." + response.body().toString());
-                    Log.i("API CALLS", "post submitted to API." + response.code());
-                    APIResponse res = response.body();
-
-                    if(response.code() == 200) {
-                        ObjectMapper oMapper = new ObjectMapper();
-                        Map<String, Object> map = oMapper.convertValue(res.getData(), Map.class);
-
-                        try {
-                            dbHandler.addUser((int) Math.round(Double.parseDouble(map.get("id").toString())), map.get("name").toString(), map.get("token").toString());
-
-                            startActivity(new Intent(context, MainActivity.class));
-                            finish();
-                        }
-                        catch (Exception e) {
-                            Log.e("adding User info db:" , " " + e);
-                            Toast.makeText(context,"Error in Saving User info in Local DB",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                    else {
-                        AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Status : " + response.code(),
-                                res.getMessage() );
-                        dialog.show();
-                    }
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<APIResponse> call, Throwable t) {
-                Log.e("API CALLS", "Unable to submit post to API. " + t);
-                AlertDialog dialog = DialogBox.dismissButtonDialog(context, "Error", "Login API : " + t);
-                dialog.show();
+            public void onClick(View view) {
+                    userLogin();
             }
         });
     }
 
-    public void Login(View view) {
+    public boolean isInternetAvailable() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
 
-        HashMap<String, Object> data = new HashMap();
+    private void DatabaseSync() {
 
-        EditText userName =  (EditText) findViewById(R.id.usr_name);
-        EditText password =  (EditText) findViewById(R.id.password);
 
-        data.put("userName", userName.getText().toString());
-        data.put("password", password.getText().toString());
+        class UserSync extends AsyncTask<Void, Void, String> {
 
-        sendAPIRequest(data);
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONArray arr = new JSONArray(s);
+
+                    if (arr.length() == 0) {
+                        Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (int i = 0; i < arr.length(); i++) {
+                            User user = new User();
+                            JSONObject obj = arr.getJSONObject(i);
+                            user.setId(obj.getInt("user_id"));
+                            user.setName(obj.getString("userName"));
+                            user.setPassword(obj.getString("password"));
+                            user.setIsActive(obj.getInt("isActive"));
+                            user.setIsDeleted(obj.getInt("isDeleted"));
+
+                            if (!db.checkUser(user.getName()) || user.getIsDeleted() == 0 || user.getIsActive() == 1)  {
+                                db.addUser(user);
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                //creating request handler object
+                RequestHandler requestHandler = new RequestHandler();
+
+                //returing the response
+                return requestHandler.sendReadRequest(usersURL);
+            }
+        }
+
+        UserSync ul = new UserSync();
+        ul.execute();
+//        Toast.makeText(getApplicationContext(), "Database Synced", Toast.LENGTH_SHORT).show();
+
+        class PlantSync extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONArray arr = new JSONArray(s);
+
+                    if (arr.length() == 0) {
+                        Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (int i = 0; i < arr.length(); i++) {
+                            User user = new User();
+                            Plant plant = new Plant();
+                            JSONObject obj = arr.getJSONObject(i);
+                            plant.setPlant_id(obj.getInt("plant_id"));
+                            plant.setPlant_name(obj.getString("plant_name"));
+                            plant.setIsActive(obj.getInt("isActive"));
+                            plant.setReadingTimeId(obj.getInt("readingTimeId"));
+
+                            if (!db.checkPlant(plant.getPlant_id())) {
+                                db.addPlant(plant);
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                //creating request handler object
+                RequestHandler requestHandler = new RequestHandler();
+
+                //returing the response
+                return requestHandler.sendReadRequest(plantsURL);
+            }
+        }
+
+        PlantSync pl = new PlantSync();
+        pl.execute();
+//        Toast.makeText(getApplicationContext(), "Database Synced", Toast.LENGTH_SHORT).show();
+
+        class SystemSync extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONArray arr = new JSONArray(s);
+
+                    if (arr.length() == 0) {
+                        Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        for (int i = 0; i < arr.length(); i++) {
+                            System system = new System();
+                            JSONObject obj = arr.getJSONObject(i);
+                            system.setId(obj.getInt("system_id"));
+                            system.setName(obj.getString("system_name"));
+                            system.setIsActive(obj.getInt("isActive"));
+                            system.setLogSheet(obj.getString("logSheet"));
+                            system.setPlantId(obj.getInt("systemPlantId"));
+
+                            if (!db.checkSystem(system.getId())) {
+                                db.addSystem(system);
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                //creating request handler object
+                RequestHandler requestHandler = new RequestHandler();
+
+                //returing the response
+                return requestHandler.sendReadRequest(systemsURL);
+            }
+        }
+
+        SystemSync sl = new SystemSync();
+        sl.execute();
+//        Toast.makeText(getApplicationContext(), "Database Synced", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void userLogin() {
+
+        final String username = editUserName.getText().toString();
+        final String password = editPassword.getText().toString();
+        SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+
+        if(db.checkUser(username,password)) {
+            editor.putString("Username",username);
+            editor.apply();
+            finish();
+            startActivity(new Intent(getApplicationContext(),Shift_Selection.class));
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

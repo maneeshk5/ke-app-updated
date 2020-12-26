@@ -4,6 +4,191 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffff"
     tools:context=".Instrument_List">
+
+<!--    <Button-->
+<!--        android:id="@+id/open_barcode_scan"-->
+<!--        android:layout_width="85dp"-->
+<!--        android:layout_height="41dp"-->
+<!--        android:layout_marginTop="36dp"-->
+<!--        android:text="Next"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/scrollView2"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.775"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/textView4"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textView3"-->
+<!--        app:layout_constraintVertical_bias="0.824" />-->
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Instrument List"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.279" />
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User: Ali"
+        android:textAlignment="center"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.146" />
+
+    <include
+        android:id="@+id/title_layout"
+        layout="@layout/custom_titlebar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/date_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="14-12-2020"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.312"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.146" />
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:layout_width="32dp"
+        android:layout_height="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.146"
+        app:srcCompat="@drawable/back_button" />
+
+    <ScrollView
+        android:layout_width="283dp"
+        android:layout_height="256dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.378"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.602">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:background="@color/colorPrimary"
+                android:padding="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="S.NO" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Instrument Name" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Status" />
+            </TableRow>
+
+            <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="1" />-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="Suresh Dasari" />-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="Hyderabad" />-->
+            <!--          </TableRow>-->
+            <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="2" />-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="Rohini Alavala" />-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="Guntur" />-->
+            <!--          </TableRow>-->
+            <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="3" />-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="Trishika Dasari" />-->
+            <!--              <TextView-->
+            <!--                  android:layout_width="wrap_content"-->
+            <!--                  android:layout_height="wrap_content"-->
+            <!--                  android:layout_weight="1"-->
+            <!--                  android:text="Guntur" />-->
+            <!--          </TableRow>-->
+
+        </TableLayout>
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/app_path_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="App path"
+        android:textColor="@color/textColor"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.072"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.9" />
+
 
 </android.support.constraint.ConstraintLayout>
