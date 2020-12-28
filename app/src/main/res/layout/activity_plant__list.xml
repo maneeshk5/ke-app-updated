@@ -25,7 +25,7 @@
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User: Ali"
+        android:text="User: "
         android:textAlignment="center"
         android:textColor="@color/textColor"
         android:textSize="15sp"
@@ -48,7 +48,7 @@
         android:id="@+id/date_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="14-12-2020"
+        android:text="Date and Time"
         android:textColor="@color/textColor"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -94,13 +94,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="S.NO" />
+                    android:text="S.#" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Instrument Name" />
+                    android:text="Plant Name" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -49,7 +49,7 @@
 <!--            android:entries="@array/settings"-->
 <!--            />-->
 
-                <TextView
+        <TextView
             android:id="@+id/logout_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
