@@ -80,7 +80,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_READING_TIME = "time";
     private static final String COLUMN_READING_DATETIME = "date_time";
     private static final String COLUMN_READING_VALUE= "reading_value";
-    private static final String COLUMN_READING_USERNAME = "username";
+    private static final String COLUMN_READING_SHIFT_ID = "shift_id";
 
 
 
@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String CREATE_READING_TABLE = "CREATE TABLE " + TABLE_READING + "("
             + COLUMN_READING_ID + " TEXT PRIMARY KEY ," + COLUMN_READING_INSTRUMENT_ID + " INTEGER,"
             + COLUMN_READING_IMAGE_PATH + " TEXT," + COLUMN_READING_TIME + " TEXT,"
-            + COLUMN_READING_USERNAME + " TEXT, " + COLUMN_READING_VALUE + " TEXT, "
+            + COLUMN_READING_SHIFT_ID + " INTEGER, " + COLUMN_READING_VALUE + " TEXT, "
             + COLUMN_READING_DATETIME + " TEXT " + ")";
 
 
@@ -256,6 +256,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+
     public void addReading(Reading reading) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -265,7 +266,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_READING_INSTRUMENT_ID, reading.getInstrument_id());
         values.put(COLUMN_READING_IMAGE_PATH, reading.getImage_path());
         values.put(COLUMN_READING_TIME, reading.getTime());
-        values.put(COLUMN_READING_USERNAME, reading.getUsername());
+        values.put(COLUMN_READING_SHIFT_ID, reading.getShift_id());
         values.put(COLUMN_READING_VALUE, reading.getReading_value());
         values.put(COLUMN_READING_DATETIME, reading.getDate_time());
 
@@ -275,7 +276,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void delLocalDb(SQLiteDatabase db) {
+    public void resetLocalDb(SQLiteDatabase db) {
         db.execSQL(TRUNCATE_READING_TABLE);
         db.execSQL(TRUNCATE_SHIFT_TABLE);
     }
@@ -341,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_PLANT_IS_ACTIVE};
         // sorting orders
         String sortOrder =
-                COLUMN_PLANT_NAME + " ASC";
+                COLUMN_PLANT_ID + " ASC";
         List<Plant> plantList = new ArrayList<Plant>();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -381,7 +382,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return plantList;
     }
 
-    public List<System> getAllSystems() {
+    public List<System> getPlantSystem(Plant plant) {
         // array of columns to fetch
         String[] columns = {
                 COLUMN_SYSTEM_ID,
@@ -391,7 +392,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_SYSTEM_PLANT_ID};
         // sorting orders
         String sortOrder =
-                COLUMN_SYSTEM_NAME + " ASC";
+                COLUMN_SYSTEM_ID + " ASC";
+
+        String selection = COLUMN_SYSTEM_PLANT_ID + " = ?";
+
+        String[] selectionArgs = {Integer.toString(plant.getPlant_id())};
 
         List<System> systemList = new ArrayList<System>();
 
@@ -405,8 +410,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          */
         Cursor cursor = db.query(TABLE_SYSTEMS, //Table to query
                 columns,    //columns to return
-                null,        //columns for the WHERE clause
-                null,        //The values for the WHERE clause
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
                 null,       //group the rows
                 null,       //filter by row groups
                 sortOrder); //The sort order
@@ -433,7 +438,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return systemList;
     }
 
-    public List<Instrument> getAllinstruments() {
+    public List<Instrument> getSystemInstruments(System system) {
         // array of columns to fetch
         String[] columns = {
                 COLUMN_INSTRUMENT_ID,
@@ -448,7 +453,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         };
         // sorting orders
         String sortOrder =
-                COLUMN_INSTRUMENT_NAME + " ASC";
+                COLUMN_INSTRUMENT_ID + " ASC";
+
+        String selection = COLUMN_INSTRUMENT_SYSTEM_ID + " = ?";
+
+        String[] selectionArgs = {Integer.toString(system.getId())};
 
         List<Instrument> instrumentList = new ArrayList<Instrument>();
 
@@ -462,8 +471,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
          */
         Cursor cursor = db.query(TABLE_INSTRUMENTS, //Table to query
                 columns,    //columns to return
-                null,        //columns for the WHERE clause
-                null,        //The values for the WHERE clause
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
                 null,       //group the rows
                 null,       //filter by row groups
                 sortOrder); //The sort order
@@ -494,12 +503,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return instrumentList;
     }
 
+    public List<Instrument> getPlantInstruments(Plant plant) {
+        List<System> systemList = getPlantSystem(plant);
 
-    /**
-     * This method to update user record
-     *
-     * @param user
-     */
+        List<Instrument> instrumentList = new ArrayList<>();
+
+        for (int i=0; i<systemList.size(); i++) {
+//         instrumentList(getSystemInstruments(systemList.get(i)));
+        }
+        return instrumentList;
+    }
+
+
+        /**
+         * This method to update user record
+         *
+         * @param user
+         */
     public void updateUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -654,6 +674,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return false;
     }
+
+    public boolean checkShift(String shift_name, String shift_date) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_PLANT_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_SHIFT_NAME + " = ?" + " AND " + COLUMN_SHIFT_DATE + " = ?";
+        // selection argument
+        String[] selectionArgs = {shift_name, shift_date};
+        // query user table with condition
+
+        Cursor cursor = db.query(TABLE_SHIFT, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                      //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+        if (cursorCount > 0) {
+            return true;
+        }
+        return false;
+    }
+
 
 
     public boolean checkUser(String email, String password) {

@@ -1,11 +1,13 @@
-package com.authentik.ke;
+    package com.authentik.ke;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -46,6 +48,15 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         db = new DatabaseHelper(getApplicationContext());
+
+        final ProgressDialog dialog= ProgressDialog.show(this,"Syncing Database", "Please wait....",true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                dialog.dismiss();
+            }
+        }, 10000);
+
 
         editUserName = findViewById(R.id.userName_et);
         editPassword = findViewById(R.id.password_et);

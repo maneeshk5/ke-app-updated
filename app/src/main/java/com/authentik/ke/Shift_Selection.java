@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,13 +49,19 @@ public class Shift_Selection extends AppCompatActivity {
         setContentView(R.layout.activity_shift__selection);
 
         db = new DatabaseHelper(getApplicationContext());
-//        final ProgressDialog dialog= ProgressDialog.show(this,"Doing something", "Please wait....",true);
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(8000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 //        dialog.dismiss();
+        final ProgressDialog dialog= ProgressDialog.show(this,"Loading", "Please wait....",true);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                dialog.dismiss();
+            }
+        }, 10000);
 
         currDate = findViewById(R.id.curr_date_text);
         currTime = findViewById(R.id.curr_time_text);
@@ -135,7 +142,9 @@ public class Shift_Selection extends AppCompatActivity {
 
 //                    Log.v("Shift ")
 
-                    db.addShift(shift);
+                    if (!db.checkShift(shift.getName(),shift.getDate())) {
+                        db.addShift(shift);
+                    }
 
                     Intent intent = new Intent(Shift_Selection.this, Plant_List.class);
                     startActivity(intent);

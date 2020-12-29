@@ -21,20 +21,6 @@
         app:layout_constraintTop_toTopOf="@+id/title_layout"
         app:layout_constraintVertical_bias="0.279" />
 
-    <TextView
-        android:id="@+id/username_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User: "
-        android:textAlignment="center"
-        android:textColor="@color/textColor"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.146" />
 
     <include
         android:id="@+id/title_layout"
@@ -58,10 +44,26 @@
         app:layout_constraintTop_toTopOf="@+id/title_layout"
         app:layout_constraintVertical_bias="0.146" />
 
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="64dp"
+        android:layout_height="22dp"
+        android:text="User: "
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.921"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.147" />
+
     <ImageView
         android:id="@+id/back_button"
         android:layout_width="32dp"
         android:layout_height="22dp"
+        android:onClick="goBack"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.055"
@@ -72,42 +74,42 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="292dp"
-        android:layout_height="308dp"
+        android:layout_width="282dp"
+        android:layout_height="304dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.792">
+        app:layout_constraintVertical_bias="0.747">
 
         <TableLayout
             android:id="@+id/plant_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableRow
-                android:background="@color/colorPrimary"
-                android:padding="5dp">
+<!--            <TableRow-->
+<!--                android:background="@color/colorPrimary"-->
+<!--                android:padding="5dp">-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="S.#" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="0.5"-->
+<!--                    android:text="S.#" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Plant Name" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Plant Name" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Status" />
-            </TableRow>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:text="Status" />-->
+<!--            </TableRow>-->
 
             <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
             <!--              <TextView-->
@@ -165,7 +167,7 @@
 
     </ScrollView>
 
-<!--    <Button-->
+    <!--    <Button-->
 <!--        android:id="@+id/open_system_list"-->
 <!--        android:layout_width="85dp"-->
 <!--        android:layout_height="41dp"-->

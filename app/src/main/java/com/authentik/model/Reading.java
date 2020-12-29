@@ -5,7 +5,7 @@ public class Reading {
     private String id;
     private int instrument_id;
     private String time;
-    private String username;
+    private String shift_id;
     private String reading_value;
     private String date_time;
     private String image_path;
@@ -34,13 +34,6 @@ public class Reading {
         this.time = time;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getReading_value() {
         return reading_value;
@@ -64,5 +57,13 @@ public class Reading {
 
     public void setImage_path(String image_path) {
         this.image_path = image_path;
+    }
+
+    public String getShift_id() {
+        return shift_id;
+    }
+
+    public void setShift_id(String shift_id) {
+        this.shift_id = shift_id;
     }
 }

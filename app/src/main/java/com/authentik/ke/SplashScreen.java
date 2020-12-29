@@ -2,6 +2,7 @@ package com.authentik.ke;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
+import com.authentik.model.Shift;
 import com.authentik.model.System;
 import com.authentik.model.User;
 import com.authentik.utils.DatabaseHelper;
@@ -31,7 +33,6 @@ public class SplashScreen extends Activity {
     String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
     String instrumentsURL = "http://jaguar.atksrv.net:8090/ke_api/readInstruments.php";
     DatabaseHelper db;
-    boolean syncProcess;
     ProgressDialog progressDialog;
 
     @Override
@@ -39,10 +40,7 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setTitle("Syncing Database");
-//        progressDialog.setMessage("Loading...");
-//        progressDialog.show();
+//        final ProgressDialog dialog= ProgressDialog.show(SplashScreen.this,"Syncing Database", "Please wait....",true);
 
         //create local database
         db = new DatabaseHelper(getApplicationContext());
@@ -53,28 +51,32 @@ public class SplashScreen extends Activity {
                 @Override
                 public void run() {
                     DatabaseSync();
-                    syncProcess = true;
-//                    progressDialog.dismiss();
-//                    Toast.makeText(getApplicationContext(), "Database Synced", Toast.LENGTH_SHORT).show();
+//                    dialog.dismiss();
                 }
             });
             thread.start();
+            //        try {
+//            Thread.sleep(8000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        dialog.dismiss();
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    dialog.dismiss();
+//                }
+//            }, 10000);
             try {
-//                Thread.sleep(15000);
                 thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            try {
-//                thread.join();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-
-            Toast.makeText(getApplicationContext(), "Database Synced", Toast.LENGTH_SHORT).show();
+//            MyTask task = new MyTask(SplashScreen.this);
+//            task.execute();
+            Toast.makeText(getApplicationContext(), "Internet Available", Toast.LENGTH_SHORT).show();
 
         } else {
-            syncProcess = true;
             Toast.makeText(getApplicationContext(), "Sever Sync not available due to no internet", Toast.LENGTH_SHORT).show();
         }
 
@@ -82,7 +84,6 @@ public class SplashScreen extends Activity {
 
             if (sharedpreferences.contains("isLoggedIn")) {
                 boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-
                 if (value) {
                     startActivity(new Intent(SplashScreen.this, Shift_Selection.class));
                 } else {
@@ -100,6 +101,35 @@ public class SplashScreen extends Activity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Void> {
+
+        private Context context;
+
+        public MyTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog= ProgressDialog.show(context,"Doing something", "Please wait....",true);
+
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            DatabaseSync();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+        }
     }
 
     private void DatabaseSync() {
