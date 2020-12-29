@@ -382,7 +382,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return plantList;
     }
 
-    public List<System> getPlantSystem(Plant plant) {
+    public List<System> getPlantSystem(int plantId) {
         // array of columns to fetch
         String[] columns = {
                 COLUMN_SYSTEM_ID,
@@ -396,7 +396,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String selection = COLUMN_SYSTEM_PLANT_ID + " = ?";
 
-        String[] selectionArgs = {Integer.toString(plant.getPlant_id())};
+        String[] selectionArgs = {Integer.toString(plantId)};
 
         List<System> systemList = new ArrayList<System>();
 
@@ -438,7 +438,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return systemList;
     }
 
-    public List<Instrument> getSystemInstruments(System system) {
+    public List<Instrument> getSystemInstruments(int system_id) {
         // array of columns to fetch
         String[] columns = {
                 COLUMN_INSTRUMENT_ID,
@@ -457,7 +457,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String selection = COLUMN_INSTRUMENT_SYSTEM_ID + " = ?";
 
-        String[] selectionArgs = {Integer.toString(system.getId())};
+        String[] selectionArgs = {Integer.toString(system_id)};
 
         List<Instrument> instrumentList = new ArrayList<Instrument>();
 
@@ -503,16 +503,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return instrumentList;
     }
 
-    public List<Instrument> getPlantInstruments(Plant plant) {
-        List<System> systemList = getPlantSystem(plant);
+//    public List<Instrument> getPlantInstruments(Plant plant) {
+//        List<System> systemList = getPlantSystem(plant);
 
-        List<Instrument> instrumentList = new ArrayList<>();
+//        List<Instrument> instrumentList = new ArrayList<>();
 
-        for (int i=0; i<systemList.size(); i++) {
+//        for (int i=0; i<systemList.size(); i++) {
 //         instrumentList(getSystemInstruments(systemList.get(i)));
-        }
-        return instrumentList;
-    }
+//        }
+//        return instrumentList;
+//    }
 
 
         /**

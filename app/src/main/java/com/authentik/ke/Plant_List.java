@@ -41,7 +41,6 @@ public class Plant_List extends AppCompatActivity {
         dateAndTime = findViewById(R.id.date_time_tv);
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-
         String value = sharedPreferences.getString("Username","no name");
         currUser.setText(value);
 //        currUser.setTextColor(Color.BLACK);
@@ -53,7 +52,7 @@ public class Plant_List extends AppCompatActivity {
 
         db = new DatabaseHelper(getApplicationContext());
 
-        List<Plant> plants = db.getAllPlants();
+        final List<Plant> plants = db.getAllPlants();
 
 
         int itemCount = plants.size();
@@ -104,6 +103,21 @@ public class Plant_List extends AppCompatActivity {
             status.setPadding(60,0,10,5);
 
             TableRow tr = new TableRow(this);
+            tr.setClickable(true);
+
+            final int finalI = i;
+            tr.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    tr.setId(plants.get(i).getPlant_id());
+                    Log.i("Plant id:",Integer.toString(plants.get(finalI).getPlant_id()));
+                    Intent intent = new Intent(getApplicationContext(),System_List.class);
+                    intent.putExtra("plant_id", plants.get(finalI).getPlant_id());
+                    intent.putExtra("plant_name", plants.get(finalI).getPlant_name());
+//                    intent.putExtra("plant", plants.get(finalI));
+                    startActivity(intent);
+                }
+            });
 
             tr.addView(serial_num);
             tr.addView(plant_name);
@@ -113,7 +127,10 @@ public class Plant_List extends AppCompatActivity {
 //            tr.setTag(plants.get(i).getPlant_id());
             tl.addView(tr);
         }
+    }
 
+    public void viewClick(View view) {
+        Intent intent = new Intent();
     }
 
     public void goBack(View view) {
