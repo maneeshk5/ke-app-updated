@@ -675,16 +675,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean checkShift(String shift_name, String shift_date) {
+    public boolean checkShift(String shift_name, String shift_date, String shift_reading_type) {
         // array of columns to fetch
         String[] columns = {
                 COLUMN_PLANT_ID
         };
         SQLiteDatabase db = this.getReadableDatabase();
         // selection criteria
-        String selection = COLUMN_SHIFT_NAME + " = ?" + " AND " + COLUMN_SHIFT_DATE + " = ?";
+        String selection = COLUMN_SHIFT_NAME + " = ?" + " AND " + COLUMN_SHIFT_DATE + " = ?" + " AND "
+                + COLUMN_SHIFT_READING_TYPE + " = ?";
         // selection argument
-        String[] selectionArgs = {shift_name, shift_date};
+        String[] selectionArgs = {shift_name, shift_date, shift_reading_type};
         // query user table with condition
 
         Cursor cursor = db.query(TABLE_SHIFT, //Table to query

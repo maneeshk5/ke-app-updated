@@ -1,9 +1,11 @@
 package com.authentik.ke;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
@@ -41,7 +44,7 @@ public class System_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
-        currUser.setText(value);
+        currUser.setText("User: " + value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -59,22 +62,24 @@ public class System_List extends AppCompatActivity {
         int itemCount = systems.size();
 
         TableLayout tl = findViewById(R.id.system_table);
+        TableLayout t2 = findViewById(R.id.system_header_table);
 
-        TextView row_header_1 = new TextView(this);
-        TextView row_header_2 = new TextView(this);
-        TextView row_header_3 = new TextView(this);
+        TextView row_header_1  = new TextView(this);
+        TextView row_header_2  = new TextView(this);
+        TextView row_header_3  = new TextView(this);
 
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
-        row_header_1.setPadding(10, 5, 20, 5);
+        row_header_1.setPadding(10,5,20,5);
 
         row_header_2.setText("System Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(10, 0, 0, 5);
+        row_header_2.setPadding(10,0,0,5);
+        row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(50, 0, 10, 5);
+        row_header_3.setPadding(45,0,10,5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -82,7 +87,7 @@ public class System_List extends AppCompatActivity {
         header.addView(row_header_2);
         header.addView(row_header_3);
 
-        tl.addView(header);
+        t2.addView(header);
 
 
         for (int i = 0; i < itemCount; i++) {
@@ -104,17 +109,37 @@ public class System_List extends AppCompatActivity {
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
+            tr.setBackgroundResource(R.drawable.row_borders);
             tr.setClickable(true);
 
             final int finalI = i;
             tr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
-                    Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
-                    intent.putExtra("system_id", systems.get(finalI).getId());
-                    intent.putExtra("system_name",systems.get(finalI).getName());
-                    startActivity(intent);
+
+                    AlertDialog.Builder system_active_dialogue_builder = new AlertDialog.Builder(System_List.this);
+                    system_active_dialogue_builder.setMessage("Is the System Running?");
+                    system_active_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
+                            Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
+                            intent.putExtra("system_id", systems.get(finalI).getId());
+                            intent.putExtra("system_name",systems.get(finalI).getName());
+                            startActivity(intent);
+                        }
+                    });
+
+                    system_active_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(),"System not running",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    AlertDialog system_active_dialogue = system_active_dialogue_builder.create();
+                    system_active_dialogue.show();
+
                 }
             });
 

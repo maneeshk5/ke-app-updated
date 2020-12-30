@@ -7,24 +7,11 @@
     android:background="#ffff"
     tools:context=".Plant_List">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Plant List"
-        android:textColor="@color/textColor"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.066"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.279" />
 
 
     <include
         android:id="@+id/title_layout"
-        layout="@layout/custom_titlebar"
+        layout="@layout/custom_titlebar_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,17 +34,20 @@
 
     <TextView
         android:id="@+id/username_tv"
-        android:layout_width="64dp"
-        android:layout_height="22dp"
-        android:text="User: "
+        android:layout_width="87dp"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="60dp"
+        android:text="User:"
         android:textColor="@color/textColor"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/plant_header_table"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.921"
+        app:layout_constraintHorizontal_bias="0.918"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.147" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.194" />
 
     <ImageView
         android:id="@+id/back_button"
@@ -71,6 +61,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.146"
         app:srcCompat="@drawable/back_button" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Plant List"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.074"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.24" />
+
+    <TableLayout
+        android:id="@+id/plant_header_table"
+        android:layout_width="282dp"
+        android:layout_height="28dp"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+    </TableLayout>
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -87,81 +103,6 @@
             android:id="@+id/plant_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-<!--            <TableRow-->
-<!--                android:background="@color/colorPrimary"-->
-<!--                android:padding="5dp">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="0.5"-->
-<!--                    android:text="S.#" />-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:text="Plant Name" />-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:text="Status" />-->
-<!--            </TableRow>-->
-
-            <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="1" />-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="Suresh Dasari" />-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="Hyderabad" />-->
-            <!--          </TableRow>-->
-            <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="2" />-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="Rohini Alavala" />-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="Guntur" />-->
-            <!--          </TableRow>-->
-            <!--          <TableRow android:background="#DAE8FC" android:padding="5dp">-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="3" />-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="Trishika Dasari" />-->
-            <!--              <TextView-->
-            <!--                  android:layout_width="wrap_content"-->
-            <!--                  android:layout_height="wrap_content"-->
-            <!--                  android:layout_weight="1"-->
-            <!--                  android:text="Guntur" />-->
-            <!--          </TableRow>-->
 
         </TableLayout>
 

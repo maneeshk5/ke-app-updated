@@ -103,35 +103,6 @@ public class SplashScreen extends Activity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    private class MyTask extends AsyncTask<Void, Void, Void> {
-
-        private Context context;
-
-        public MyTask(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog= ProgressDialog.show(context,"Doing something", "Please wait....",true);
-
-        }
-
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            DatabaseSync();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressDialog.dismiss();
-        }
-    }
-
     private void DatabaseSync() {
 
 
@@ -271,7 +242,7 @@ public class SplashScreen extends Activity {
                             instrument.setUpperLimit(obj.getDouble("upperLimit"));
                             instrument.setUnit(obj.getString("unit"));
                             instrument.setIsActive(obj.getInt("isActive"));
-
+                            instrument.setSystemId(obj.getInt("systemId"));
 
 
                             if (!db.checkInstrument(instrument.getId())) {

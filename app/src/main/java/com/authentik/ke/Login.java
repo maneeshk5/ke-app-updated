@@ -40,7 +40,13 @@ public class Login extends AppCompatActivity {
     String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
     DatabaseHelper db;
 
-    List<User> userList;
+    public boolean isInternetAvailable() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +55,16 @@ public class Login extends AppCompatActivity {
 
         db = new DatabaseHelper(getApplicationContext());
 
-        final ProgressDialog dialog= ProgressDialog.show(this,"Syncing Database", "Please wait....",true);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                dialog.dismiss();
-            }
-        }, 10000);
+        if (isInternetAvailable()) {
 
+            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    dialog.dismiss();
+                }
+            }, 10000);
+        }
 
         editUserName = findViewById(R.id.userName_et);
         editPassword = findViewById(R.id.password_et);

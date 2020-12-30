@@ -42,7 +42,7 @@ public class Plant_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username","no name");
-        currUser.setText(value);
+        currUser.setText("User: " + value);
 //        currUser.setTextColor(Color.BLACK);
 
         Date dNow = new Date();
@@ -54,10 +54,10 @@ public class Plant_List extends AppCompatActivity {
 
         final List<Plant> plants = db.getAllPlants();
 
-
         int itemCount = plants.size();
 
         TableLayout tl = findViewById(R.id.plant_table);
+        TableLayout t2 = findViewById(R.id.plant_header_table);
 
         TextView row_header_1  = new TextView(this);
         TextView row_header_2  = new TextView(this);
@@ -70,10 +70,11 @@ public class Plant_List extends AppCompatActivity {
         row_header_2.setText("Plant Name");
         row_header_2.setTextColor(Color.BLACK);
         row_header_2.setPadding(10,0,0,5);
+        row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(50,0,10,5);
+        row_header_3.setPadding(45,0,10,5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -81,8 +82,7 @@ public class Plant_List extends AppCompatActivity {
         header.addView(row_header_2);
         header.addView(row_header_3);
 
-        tl.addView(header);
-
+        t2.addView(header);
 
         for (int i=0; i<itemCount; i++) {
             TextView serial_num  = new TextView(this);
@@ -95,7 +95,7 @@ public class Plant_List extends AppCompatActivity {
 
             plant_name.setText(plants.get(i).getPlant_name());
             plant_name.setTextColor(Color.BLACK);
-            plant_name.setPadding(10,0,0,5);
+            plant_name.setPadding(15,0,0,5);
             plant_name.setWidth(200);
 
             status.setText("0/0");
@@ -103,6 +103,7 @@ public class Plant_List extends AppCompatActivity {
             status.setPadding(60,0,10,5);
 
             TableRow tr = new TableRow(this);
+            tr.setBackgroundResource(R.drawable.row_borders);
             tr.setClickable(true);
 
             final int finalI = i;

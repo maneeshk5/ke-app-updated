@@ -2,7 +2,6 @@
     <string name="app_name">K-Electric</string>
     <string-array name="settings">
         <item>Options</item>
-        <item>Sync from server</item>
         <item>Server Settings</item>
         <item>Logout</item>
     </string-array>

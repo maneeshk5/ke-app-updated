@@ -41,7 +41,7 @@ public class Instrument_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
-        currUser.setText(value);
+        currUser.setText("User: " + value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -61,22 +61,24 @@ public class Instrument_List extends AppCompatActivity {
         int itemCount = instruments.size();
 
         TableLayout tl = findViewById(R.id.instrument_table);
+        TableLayout t2 = findViewById(R.id.instrument_header_table);
 
-        TextView row_header_1 = new TextView(this);
-        TextView row_header_2 = new TextView(this);
-        TextView row_header_3 = new TextView(this);
+        TextView row_header_1  = new TextView(this);
+        TextView row_header_2  = new TextView(this);
+        TextView row_header_3  = new TextView(this);
 
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
-        row_header_1.setPadding(10, 5, 20, 5);
+        row_header_1.setPadding(10,5,20,5);
 
         row_header_2.setText("Instrument Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(10, 0, 0, 5);
+        row_header_2.setPadding(10,0,0,5);
+        row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(50, 0, 10, 5);
+        row_header_3.setPadding(70,0,10,5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -84,7 +86,7 @@ public class Instrument_List extends AppCompatActivity {
         header.addView(row_header_2);
         header.addView(row_header_3);
 
-        tl.addView(header);
+        t2.addView(header);
 
 
         for (int i = 0; i < itemCount; i++) {
@@ -101,11 +103,12 @@ public class Instrument_List extends AppCompatActivity {
             inst_name.setPadding(10, 0, 0, 5);
             inst_name.setWidth(200);
 
-            status.setText("Done");
+            status.setText("Not Done");
             status.setTextColor(Color.BLACK);
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
+            tr.setBackgroundResource(R.drawable.row_borders);
             tr.setClickable(true);
 
             final int finalI = i;
