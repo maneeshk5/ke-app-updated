@@ -10,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,6 +35,8 @@ public class System_List extends AppCompatActivity {
     TextView dateAndTime;
     SharedPreferences sharedPreferences;
     TextView app_path;
+    String [] system_status_options = {"Stand by", "PFW/Shutdown"};
+    boolean updateSystemStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +49,14 @@ public class System_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
+        String shift_id = sharedPreferences.getString("shift_id","-");
         currUser.setText("User: " + value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
+
 
         db = new DatabaseHelper(getApplicationContext());
 
@@ -104,13 +111,23 @@ public class System_List extends AppCompatActivity {
             system_name.setPadding(10, 0, 0, 5);
             system_name.setWidth(200);
 
-            status.setText("0/0");
+            List<Instrument> instrumentList = db.getSystemInstruments(systems.get(i).getId());
+            int noOfinstrumentsInSystem = instrumentList.size();
+            int systemStatus = 0;
+            for (int j=0; j<noOfinstrumentsInSystem; j++) {
+                int instStatus = db.getInstrumentStatus(instrumentList.get(j).getId(),shift_id);
+                systemStatus += instStatus;
+            }
+            status.setText(systemStatus + "/" + noOfinstrumentsInSystem);
+//            Log.i("No. of instruments: ", String.valueOf(noOfinstrumentsInSystem));
             status.setTextColor(Color.BLACK);
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
             tr.setBackgroundResource(R.drawable.row_borders);
             tr.setClickable(true);
+
+            updateSystemStatus = false;
 
             final int finalI = i;
             tr.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +139,7 @@ public class System_List extends AppCompatActivity {
                     system_active_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                             Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
                             Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
                             intent.putExtra("system_id", systems.get(finalI).getId());
@@ -133,7 +151,38 @@ public class System_List extends AppCompatActivity {
                     system_active_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(),"System not running",Toast.LENGTH_SHORT).show();
+//                            dialog.dismiss();
+                            updateSystemStatus = true;
+//                            Toast.makeText(getApplicationContext(),"System not running",Toast.LENGTH_SHORT).show();
+                            final ArrayAdapter<String> adapter =
+                                    new ArrayAdapter<>(System_List.this, android.R.layout.simple_spinner_item,system_status_options);
+                            final Spinner sp = new Spinner(System_List.this);
+                            sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f));
+                            sp.setAdapter(adapter);
+
+                            final AlertDialog.Builder system_status_dialogue_builder = new AlertDialog.Builder(System_List.this);
+                            system_status_dialogue_builder.setView(null).setMessage(null);
+                            system_status_dialogue_builder.setMessage("Please Update System Status");
+                            system_status_dialogue_builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    systems.get(finalI).setStatus(sp.getSelectedItem().toString());
+                                    db.updateSystemStatus(systems.get(finalI));
+                                    Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
+                                    Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
+                                    intent.putExtra("system_id", systems.get(finalI).getId());
+                                    intent.putExtra("system_name",systems.get(finalI).getName());
+                                    startActivity(intent);
+                                }
+                            });
+                            system_status_dialogue_builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            system_status_dialogue_builder.setView(sp);
+                            system_status_dialogue_builder.create().show();
                         }
                     });
 

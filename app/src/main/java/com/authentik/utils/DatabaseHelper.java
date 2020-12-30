@@ -52,6 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SYSTEM_IS_ACTIVE = "isActive";
     private static final String COLUMN_SYSTEM_LOGSHEET = "logSheet";
     private static final String COLUMN_SYSTEM_PLANT_ID = "plant_id";
+    private static final String COLUMN_SYSTEM_STATUS = "system_status";
 
     //Instrument Table Column Names
     private static final String COLUMN_INSTRUMENT_ID = "id";
@@ -96,7 +97,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private String CREATE_SYSTEM_TABLE = "CREATE TABLE " + TABLE_SYSTEMS + "("
             + COLUMN_SYSTEM_ID + " INTEGER PRIMARY KEY," + COLUMN_SYSTEM_NAME + " TEXT,"
-            + COLUMN_SYSTEM_IS_ACTIVE + " INTEGER," + COLUMN_SYSTEM_LOGSHEET + " TEXT," + COLUMN_SYSTEM_PLANT_ID + " INTEGER"+")";
+            + COLUMN_SYSTEM_IS_ACTIVE + " INTEGER," + COLUMN_SYSTEM_LOGSHEET + " TEXT," + COLUMN_SYSTEM_PLANT_ID + " INTEGER, "
+            + COLUMN_SYSTEM_STATUS + " TEXT "  + ")";
 
     private String CREATE_INSTRUMENT_TABLE = "CREATE TABLE " + TABLE_INSTRUMENTS + "("
             + COLUMN_INSTRUMENT_ID + " INTEGER PRIMARY KEY," + COLUMN_INSTRUMENT_NAME + " TEXT,"
@@ -105,7 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " REAL, " + COLUMN_INSTRUMENT_BARCODE_ID + " INTEGER " + ")";
 
     private String CREATE_SHIFT_TABLE = "CREATE TABLE " + TABLE_SHIFT + "("
-            + COLUMN_SHIFT_ID + " TEXT PRIMARY KEY," + COLUMN_SHIFT_NAME + " TEXT,"
+            + COLUMN_SHIFT_ID + " TEXT PRIMARY KEY ," + COLUMN_SHIFT_NAME + " TEXT,"
             + COLUMN_SHIFT_READING_TYPE + " TEXT," + COLUMN_SHIFT_USER_NAME + " TEXT,"
             + COLUMN_SHIFT_START_TIME + " TEXT, " + COLUMN_SHIFT_END_TIME + " TEXT, " +
             COLUMN_SHIFT_DATE + " TEXT" +")";
@@ -113,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String CREATE_READING_TABLE = "CREATE TABLE " + TABLE_READING + "("
             + COLUMN_READING_ID + " TEXT PRIMARY KEY ," + COLUMN_READING_INSTRUMENT_ID + " INTEGER,"
             + COLUMN_READING_IMAGE_PATH + " TEXT," + COLUMN_READING_TIME + " TEXT,"
-            + COLUMN_READING_SHIFT_ID + " INTEGER, " + COLUMN_READING_VALUE + " TEXT, "
+            + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " TEXT, "
             + COLUMN_READING_DATETIME + " TEXT " + ")";
 
 
@@ -438,6 +440,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return systemList;
     }
 
+
     public List<Instrument> getSystemInstruments(int system_id) {
         // array of columns to fetch
         String[] columns = {
@@ -503,19 +506,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return instrumentList;
     }
 
-//    public List<Instrument> getPlantInstruments(Plant plant) {
-//        List<System> systemList = getPlantSystem(plant);
+    public List<Instrument> getPlantInstruments(int plant_id) {
+        List<System> systemList = getPlantSystem(plant_id);
 
-//        List<Instrument> instrumentList = new ArrayList<>();
+        List<Instrument> PlantInstrumentList = new ArrayList<>();
 
-//        for (int i=0; i<systemList.size(); i++) {
-//         instrumentList(getSystemInstruments(systemList.get(i)));
-//        }
-//        return instrumentList;
-//    }
+        for (int i=0; i<systemList.size(); i++) {
+            List<Instrument> SystemInstrumentList = getSystemInstruments(systemList.get(i).getId());
+            PlantInstrumentList.addAll(SystemInstrumentList);
+        }
+        return PlantInstrumentList;
+    }
 
-
+    public int getInstrumentStatus(int instrument_id, String shift_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_READING_INSTRUMENT_ID + " = ?" + " AND " + COLUMN_READING_SHIFT_ID + " = ?";
+        // selection argument
+        String[] selectionArgs = {Integer.toString(instrument_id),shift_id};
+        // query user table with condition
         /**
+         EL* Here query function is used to fetch records from user table this function works like we use sql query.
+         *          * SQL query equivalent to this query function is
+         *          * SECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com';
+         */
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                      //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+//        if (cursorCount > 0) {
+//            return true;
+//        }
+//        return false;
+//    }
+        return cursorCount;
+    }
+
+
+    /**
          * This method to update user record
          *
          * @param user
@@ -533,11 +571,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void updateSystem(System system) {
+    public void updateSystemStatus(System system) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(COLUMN_SYSTEM_IS_ACTIVE, system.getIsActive());
+        values.put(COLUMN_SYSTEM_STATUS, system.getStatus());
 
         // updating row
         db.update(TABLE_SYSTEMS, values, COLUMN_SYSTEM_ID + " = ?",

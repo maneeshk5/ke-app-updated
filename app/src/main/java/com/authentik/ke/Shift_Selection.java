@@ -161,7 +161,6 @@ public class Shift_Selection extends AppCompatActivity {
                     Date dNow = new Date();
                     SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
                     String datetime = ft.format(dNow);
-//                    System.out.println(datetime);
 
                     shift.setId(datetime);
                     shift.setName(shift_type);

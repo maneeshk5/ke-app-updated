@@ -73,12 +73,12 @@ public class Instrument_List extends AppCompatActivity {
 
         row_header_2.setText("Instrument Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(10,0,0,5);
+        row_header_2.setPadding(10, 0, 0, 5);
         row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(70,0,10,5);
+        row_header_3.setPadding(60, 0, 10, 5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -100,10 +100,18 @@ public class Instrument_List extends AppCompatActivity {
 
             inst_name.setText(instruments.get(i).getName());
             inst_name.setTextColor(Color.BLACK);
-            inst_name.setPadding(10, 0, 0, 5);
+            inst_name.setPadding(20, 0, 0, 5);
             inst_name.setWidth(200);
 
-            status.setText("Not Done");
+//            status.setText("Not Done");
+            String shift_id = sharedPreferences.getString("shift_id","-");
+            int instrumentReadingsTaken = db.getInstrumentStatus(instruments.get(i).getId(),shift_id);
+            if (instrumentReadingsTaken == 0) {
+                status.setText("Not Done");
+            }
+            else {
+                status.setText("Done");
+            }
             status.setTextColor(Color.BLACK);
             status.setPadding(60, 0, 10, 5);
 

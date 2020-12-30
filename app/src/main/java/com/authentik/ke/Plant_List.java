@@ -14,6 +14,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
 import com.authentik.utils.DatabaseHelper;
 
@@ -42,6 +43,8 @@ public class Plant_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username","no name");
+        String shift_id = sharedPreferences.getString("shift_id","-");
+
         currUser.setText("User: " + value);
 //        currUser.setTextColor(Color.BLACK);
 
@@ -98,7 +101,15 @@ public class Plant_List extends AppCompatActivity {
             plant_name.setPadding(15,0,0,5);
             plant_name.setWidth(200);
 
-            status.setText("0/0");
+            List<Instrument> instrumentList = db.getPlantInstruments(plants.get(i).getPlant_id());
+            int noOfInstrumentsInPlant = instrumentList.size();
+            int plantStatus = 0;
+
+            for (int j=0; j<noOfInstrumentsInPlant; j++) {
+                int instStatus = db.getInstrumentStatus(instrumentList.get(j).getId(),shift_id);
+                plantStatus += instStatus;
+            }
+            status.setText(plantStatus + "/" + noOfInstrumentsInPlant);
             status.setTextColor(Color.BLACK);
             status.setPadding(60,0,10,5);
 
