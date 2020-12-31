@@ -69,16 +69,17 @@ public class Instrument_List extends AppCompatActivity {
 
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
-        row_header_1.setPadding(10,5,15,5);
+//        row_header_1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        row_header_1.setPadding(10,5,20,5);
 
         row_header_2.setText("Instrument Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(5, 0, 0, 5);
+        row_header_2.setPadding(10, 0, 0, 5);
         row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(53, 0, 10, 5);
+        row_header_3.setPadding(60, 0, 10, 5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -86,7 +87,7 @@ public class Instrument_List extends AppCompatActivity {
         header.addView(row_header_2);
         header.addView(row_header_3);
 
-        t2.addView(header);
+        tl.addView(header);
 
 
         for (int i = 0; i < itemCount; i++) {
@@ -100,7 +101,7 @@ public class Instrument_List extends AppCompatActivity {
 
             inst_name.setText(instruments.get(i).getName());
             inst_name.setTextColor(Color.BLACK);
-            inst_name.setPadding(15, 0, 0, 5);
+            inst_name.setPadding(10, 0, 0, 5);
             inst_name.setWidth(200);
 
 //            status.setText("Not Done");

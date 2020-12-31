@@ -73,12 +73,12 @@ public class Plant_List extends AppCompatActivity {
 
         row_header_2.setText("Plant Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(5, 0, 0, 5);
+        row_header_2.setPadding(10, 0, 0, 5);
         row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(53, 0, 10, 5);
+        row_header_3.setPadding(60, 0, 10, 5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -86,7 +86,7 @@ public class Plant_List extends AppCompatActivity {
         header.addView(row_header_2);
         header.addView(row_header_3);
 
-        t2.addView(header);
+        tl.addView(header);
 
         for (int i = 0; i < itemCount; i++) {
             TextView serial_num = new TextView(this);
@@ -99,7 +99,7 @@ public class Plant_List extends AppCompatActivity {
 
             plant_name.setText(plants.get(i).getPlant_name());
             plant_name.setTextColor(Color.BLACK);
-            plant_name.setPadding(15, 0, 0, 5);
+            plant_name.setPadding(10, 0, 0, 5);
             plant_name.setWidth(200);
 
 //            List<Instrument> instrumentList = db.getPlantInstruments(plants.get(i).getPlant_id());

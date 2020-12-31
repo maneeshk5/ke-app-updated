@@ -85,12 +85,12 @@ public class System_List extends AppCompatActivity {
 
         row_header_2.setText("System Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(5, 0, 0, 5);
+        row_header_2.setPadding(10, 0, 0, 5);
         row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(53, 0, 10, 5);
+        row_header_3.setPadding(60, 0, 10, 5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -98,7 +98,7 @@ public class System_List extends AppCompatActivity {
         header.addView(row_header_2);
         header.addView(row_header_3);
 
-        t2.addView(header);
+        tl.addView(header);
 
 
         for (int i = 0; i < itemCount; i++) {
