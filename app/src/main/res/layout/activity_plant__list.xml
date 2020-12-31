@@ -8,7 +8,6 @@
     tools:context=".Plant_List">
 
 
-
     <include
         android:id="@+id/title_layout"
         layout="@layout/custom_titlebar_login"

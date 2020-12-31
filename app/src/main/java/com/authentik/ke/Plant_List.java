@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
+import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
 import org.w3c.dom.Text;
@@ -42,8 +43,8 @@ public class Plant_List extends AppCompatActivity {
         dateAndTime = findViewById(R.id.date_time_tv);
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-        String value = sharedPreferences.getString("Username","no name");
-        String shift_id = sharedPreferences.getString("shift_id","-");
+        String value = sharedPreferences.getString("Username", "no name");
+        String shift_id = sharedPreferences.getString("shift_id", "-");
 
         currUser.setText("User: " + value);
 //        currUser.setTextColor(Color.BLACK);
@@ -62,22 +63,22 @@ public class Plant_List extends AppCompatActivity {
         TableLayout tl = findViewById(R.id.plant_table);
         TableLayout t2 = findViewById(R.id.plant_header_table);
 
-        TextView row_header_1  = new TextView(this);
-        TextView row_header_2  = new TextView(this);
-        TextView row_header_3  = new TextView(this);
+        TextView row_header_1 = new TextView(this);
+        TextView row_header_2 = new TextView(this);
+        TextView row_header_3 = new TextView(this);
 
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
-        row_header_1.setPadding(10,5,20,5);
+        row_header_1.setPadding(10, 5, 20, 5);
 
         row_header_2.setText("Plant Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(10,0,0,5);
+        row_header_2.setPadding(5, 0, 0, 5);
         row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(45,0,10,5);
+        row_header_3.setPadding(53, 0, 10, 5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -87,59 +88,72 @@ public class Plant_List extends AppCompatActivity {
 
         t2.addView(header);
 
-        for (int i=0; i<itemCount; i++) {
-            TextView serial_num  = new TextView(this);
+        for (int i = 0; i < itemCount; i++) {
+            TextView serial_num = new TextView(this);
             TextView plant_name = new TextView(this);
             TextView status = new TextView(this);
 
-            serial_num.setText(Integer.toString(i+1));
+            serial_num.setText(Integer.toString(i + 1));
             serial_num.setTextColor(Color.BLACK);
-            serial_num.setPadding(10,5,20,5);
+            serial_num.setPadding(10, 5, 20, 5);
 
             plant_name.setText(plants.get(i).getPlant_name());
             plant_name.setTextColor(Color.BLACK);
-            plant_name.setPadding(15,0,0,5);
+            plant_name.setPadding(15, 0, 0, 5);
             plant_name.setWidth(200);
 
-            List<Instrument> instrumentList = db.getPlantInstruments(plants.get(i).getPlant_id());
-            int noOfInstrumentsInPlant = instrumentList.size();
+//            List<Instrument> instrumentList = db.getPlantInstruments(plants.get(i).getPlant_id());
+//            int noOfInstrumentsInPlant = instrumentList.size();
+//            int plantStatus = 0;
+
+            List<System> systemList = db.getPlantSystem(plants.get(i).getPlant_id());
+            int noOfSystemsInPlant = systemList.size();
             int plantStatus = 0;
 
-            for (int j=0; j<noOfInstrumentsInPlant; j++) {
-                int instStatus = db.getInstrumentStatus(instrumentList.get(j).getId(),shift_id);
-                plantStatus += instStatus;
+            for (int j = 0; j < noOfSystemsInPlant; j++) {
+                int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
+                plantStatus += systemStatus;
             }
-            status.setText(plantStatus + "/" + noOfInstrumentsInPlant);
-            status.setTextColor(Color.BLACK);
-            status.setPadding(60,0,10,5);
+                status.setText(plantStatus + "/" + noOfSystemsInPlant);
+                status.setTextColor(Color.BLACK);
+                status.setPadding(60, 0, 10, 5);
 
-            TableRow tr = new TableRow(this);
-            tr.setBackgroundResource(R.drawable.row_borders);
+                TableRow tr = new TableRow(this);
+
+                if (plantStatus == 0) {
+                    tr.setBackgroundResource(R.drawable.row_borders);
+                }
+                else if (plantStatus == noOfSystemsInPlant){
+                    tr.setBackgroundResource(R.drawable.row_border_green);
+                }
+                else {
+                    tr.setBackgroundResource(R.drawable.row_border_yellow);
+                }
             tr.setClickable(true);
 
-            final int finalI = i;
-            tr.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                final int finalI = i;
+                tr.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 //                    tr.setId(plants.get(i).getPlant_id());
-                    Log.i("Plant id:",Integer.toString(plants.get(finalI).getPlant_id()));
-                    Intent intent = new Intent(getApplicationContext(),System_List.class);
-                    intent.putExtra("plant_id", plants.get(finalI).getPlant_id());
-                    intent.putExtra("plant_name", plants.get(finalI).getPlant_name());
+                        Log.i("Plant id:", Integer.toString(plants.get(finalI).getPlant_id()));
+                        Intent intent = new Intent(getApplicationContext(), System_List.class);
+                        intent.putExtra("plant_id", plants.get(finalI).getPlant_id());
+                        intent.putExtra("plant_name", plants.get(finalI).getPlant_name());
 //                    intent.putExtra("plant", plants.get(finalI));
-                    startActivity(intent);
-                }
-            });
+                        startActivity(intent);
+                    }
+                });
 
-            tr.addView(serial_num);
-            tr.addView(plant_name);
-            tr.addView(status);
+                tr.addView(serial_num);
+                tr.addView(plant_name);
+                tr.addView(status);
 
-            tr.setId(plants.get(i).getPlant_id());
+                tr.setId(plants.get(i).getPlant_id());
 //            tr.setTag(plants.get(i).getPlant_id());
-            tl.addView(tr);
+                tl.addView(tr);
+            }
         }
-    }
 
     public void viewClick(View view) {
         Intent intent = new Intent();

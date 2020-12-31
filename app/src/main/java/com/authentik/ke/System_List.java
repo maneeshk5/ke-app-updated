@@ -8,11 +8,15 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
+import android.text.SpannableString;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -35,7 +39,7 @@ public class System_List extends AppCompatActivity {
     TextView dateAndTime;
     SharedPreferences sharedPreferences;
     TextView app_path;
-    String [] system_status_options = {"Stand by", "PFW/Shutdown"};
+    String [] system_status_options = {"Select Status","Stand by", "PFW/Shutdown"};
     boolean updateSystemStatus;
 
     @Override
@@ -81,12 +85,12 @@ public class System_List extends AppCompatActivity {
 
         row_header_2.setText("System Name");
         row_header_2.setTextColor(Color.BLACK);
-        row_header_2.setPadding(10,0,0,5);
+        row_header_2.setPadding(5, 0, 0, 5);
         row_header_2.setWidth(200);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
-        row_header_3.setPadding(45,0,10,5);
+        row_header_3.setPadding(53, 0, 10, 5);
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -124,7 +128,17 @@ public class System_List extends AppCompatActivity {
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
-            tr.setBackgroundResource(R.drawable.row_borders);
+
+            if (systemStatus == 0) {
+                tr.setBackgroundResource(R.drawable.row_borders);
+            }
+            else if (systemStatus == noOfinstrumentsInSystem){
+                tr.setBackgroundResource(R.drawable.row_border_green);
+            }
+            else {
+                tr.setBackgroundResource(R.drawable.row_border_yellow);
+            }
+
             tr.setClickable(true);
 
             updateSystemStatus = false;
@@ -135,44 +149,56 @@ public class System_List extends AppCompatActivity {
                 public void onClick(View v) {
 
                     AlertDialog.Builder system_active_dialogue_builder = new AlertDialog.Builder(System_List.this);
+                    system_active_dialogue_builder.setTitle("Alert");
                     system_active_dialogue_builder.setMessage("Is the System Running?");
                     system_active_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
+                            Log.i(" System id:", Integer.toString(systems.get(finalI).getId()));
                             Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
                             intent.putExtra("system_id", systems.get(finalI).getId());
                             intent.putExtra("system_name",systems.get(finalI).getName());
                             startActivity(intent);
                         }
                     });
-
                     system_active_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 //                            dialog.dismiss();
-                            updateSystemStatus = true;
 //                            Toast.makeText(getApplicationContext(),"System not running",Toast.LENGTH_SHORT).show();
                             final ArrayAdapter<String> adapter =
-                                    new ArrayAdapter<>(System_List.this, android.R.layout.simple_spinner_item,system_status_options);
+                                    new ArrayAdapter<>(System_List.this, android.R.layout.simple_spinner_dropdown_item,system_status_options);
                             final Spinner sp = new Spinner(System_List.this);
-                            sp.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,1f));
+                            sp.setLayoutParams(new LinearLayout.LayoutParams(20, 20,1f));
+//                            sp.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT,));
+//                            sp.setGravity(Gravity.CENTER);
+//                            sp.setPrompt("Select status");
+//                            sp.setBackgroundResource(R.drawable.border);
+                            sp.setPadding(30,10,10,10);
+//                            sp.setPaddingRelative(30,10,10,10);
+//                            sp.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                             sp.setAdapter(adapter);
 
                             final AlertDialog.Builder system_status_dialogue_builder = new AlertDialog.Builder(System_List.this);
                             system_status_dialogue_builder.setView(null).setMessage(null);
-                            system_status_dialogue_builder.setMessage("Please Update System Status");
+                            system_status_dialogue_builder.setTitle("Update System Status");
+//                            system_status_dialogue_builder.setMessage("Update System Status");
                             system_status_dialogue_builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    systems.get(finalI).setStatus(sp.getSelectedItem().toString());
-                                    db.updateSystemStatus(systems.get(finalI));
-                                    Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
-                                    Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
-                                    intent.putExtra("system_id", systems.get(finalI).getId());
-                                    intent.putExtra("system_name",systems.get(finalI).getName());
-                                    startActivity(intent);
+                                    if (sp.getSelectedItem().equals("Select Status")) {
+                                        Toast.makeText(System_List.this,"Select a valid status",Toast.LENGTH_SHORT).show();
+
+                                    } else {
+                                        systems.get(finalI).setStatus(sp.getSelectedItem().toString());
+                                        db.updateSystemStatus(systems.get(finalI));
+                                        Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
+                                        Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
+                                        intent.putExtra("system_id", systems.get(finalI).getId());
+                                        intent.putExtra("system_name", systems.get(finalI).getName());
+                                        startActivity(intent);
+                                    }
                                 }
                             });
                             system_status_dialogue_builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

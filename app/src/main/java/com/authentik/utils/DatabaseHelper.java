@@ -552,6 +552,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursorCount;
     }
 
+    public int getSystemStatus(int system_id, String shift_id) {
+        int systemDone = 0;
+        List<Instrument> instrumentList = getSystemInstruments(system_id);
+        int instStatus = 0;
+        for (int i=0; i<instrumentList.size(); i++) {
+            instStatus += getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
+        }
+        if (instStatus == instrumentList.size()) {
+            systemDone = 1;
+        }
+        else {
+            systemDone = 0;
+        }
+        return systemDone;
+    }
+
 
     /**
          * This method to update user record

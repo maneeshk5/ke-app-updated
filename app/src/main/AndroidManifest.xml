@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/ke_icon"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".reading_picture"
             android:screenOrientation="portrait"/>
         <activity android:name=".Tag_information"
