@@ -61,7 +61,6 @@ public class System_List extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-
         db = new DatabaseHelper(getApplicationContext());
 
         int plant_id = getIntent().getIntExtra("plant_id",0);

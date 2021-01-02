@@ -487,9 +487,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Instrument instrument = new Instrument();
                 instrument.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_ID))));
                 instrument.setName(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_NAME)));
-                instrument.setKksCode(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_ID)));
+                instrument.setKksCode(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_KKSCODE)));
                 instrument.setBarcodeId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_BARCODE_ID))));
-                instrument.setUnit(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_ID)));
+                instrument.setUnit(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_UNIT)));
                 instrument.setLowerLimit(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_LOWER_LIMIT))));
                 instrument.setUpperLimit(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_UPPER_LIMIT))));
                 instrument.setSystemId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_SYSTEM_ID))));
@@ -553,11 +553,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int getSystemStatus(int system_id, String shift_id) {
-        int systemDone = 0;
+        int systemDone;
         List<Instrument> instrumentList = getSystemInstruments(system_id);
         int instStatus = 0;
         for (int i=0; i<instrumentList.size(); i++) {
-            instStatus += getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
+            instStatus = instStatus + getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
         }
         if (instStatus == instrumentList.size()) {
             systemDone = 1;
@@ -645,6 +645,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public boolean checkReading(String shift_id,int instrument_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_SHIFT_ID + " = ?" + " AND " + COLUMN_INSTRUMENT_ID + " = ?";
+        // selection argument
+        String[] selectionArgs = {shift_id,Integer.toString(instrument_id)};
+        // query user table with condition
+        /**
+         EL* Here query function is used to fetch records from user table this function works like we use sql query.
+         *          * SQL query equivalent to this query function is
+         *          * SECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com';
+         */
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                      //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+        if (cursorCount > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
     public boolean checkInstrument(int instrumentId) {
         // array of columns to fetch
         String[] columns = {
@@ -729,10 +762,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean checkShift(String shift_name, String shift_date, String shift_reading_type) {
+    public String checkShift(String shift_name, String shift_date, String shift_reading_type) {
         // array of columns to fetch
         String[] columns = {
-                COLUMN_PLANT_ID
+                COLUMN_SHIFT_ID
         };
         SQLiteDatabase db = this.getReadableDatabase();
         // selection criteria
@@ -750,12 +783,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,                      //filter by row groups
                 null);                      //The sort order
         int cursorCount = cursor.getCount();
+        String shift_id;
+        if (cursorCount > 0 && cursor.moveToFirst()) {
+           shift_id =  cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_ID));
+        } else {
+            shift_id =  "new shift";
+        }
         cursor.close();
         db.close();
-        if (cursorCount > 0) {
-            return true;
-        }
-        return false;
+        return shift_id;
     }
 
 
@@ -792,5 +828,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    //
 }

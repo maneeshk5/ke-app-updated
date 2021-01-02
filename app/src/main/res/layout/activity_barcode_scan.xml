@@ -11,13 +11,13 @@
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User: Ali"
+        android:text="User: "
         android:textAlignment="center"
         android:textColor="@color/textColor"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_layout"
         app:layout_constraintVertical_bias="0.146" />
@@ -34,7 +34,7 @@
         android:id="@+id/date_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="14-12-2020"
+        android:text="Date and Time"
         android:textColor="@color/textColor"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +48,7 @@
         android:id="@+id/back_button"
         android:layout_width="32dp"
         android:layout_height="22dp"
+        android:onClick="goBack"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.055"
@@ -62,7 +63,6 @@
         android:layout_width="286dp"
         android:layout_height="173dp"
         android:background="@drawable/custom_layout"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -73,6 +73,7 @@
 
     <Button
         android:id="@+id/barcode_scan_btn"
+        style="@android:style/Widget.Button.Inset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Scan"
@@ -83,9 +84,10 @@
         app:layout_constraintVertical_bias="0.711" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/app_path_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLength="500"
         android:text="App path"
         android:textColor="@color/textColor"
         android:textSize="10sp"

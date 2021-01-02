@@ -205,6 +205,7 @@
         android:text="App path"
         android:textColor="@color/textColor"
         android:textSize="10sp"
+        android:maxLength="500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.106"

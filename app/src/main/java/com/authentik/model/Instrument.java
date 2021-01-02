@@ -1,6 +1,10 @@
 package com.authentik.model;
 
-public class Instrument {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class Instrument implements Serializable {
 
     private int id;
     private String name;
@@ -11,6 +15,7 @@ public class Instrument {
     private double upperLimit;
     private int systemId;
     private int isActive;
+    private String status;
 
     public int getId() {
         return id;
@@ -82,5 +87,13 @@ public class Instrument {
 
     public void setIsActive(int isActive) {
         this.isActive = isActive;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

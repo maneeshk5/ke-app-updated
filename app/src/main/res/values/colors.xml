@@ -6,5 +6,6 @@
     <color name="textColor">#000000</color>
     <color name="blueke">#328db9</color>
     <color name="my_spinner_text_color">#808080</color>
+    <color name="grey_text_color">#AAAAAA</color>
 
 </resources>

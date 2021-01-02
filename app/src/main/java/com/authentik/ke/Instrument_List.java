@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
@@ -48,13 +50,13 @@ public class Instrument_List extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
+        String system_name = getIntent().getStringExtra("system_name");
+        app_path.setText(system_name + " > " + "Instrument List");
+
         db = new DatabaseHelper(getApplicationContext());
 
         int system_id = getIntent().getIntExtra("system_id",0);
         Log.i("system_id:",Integer.toString(system_id));
-
-        String system_name = getIntent().getStringExtra("system_name");
-        app_path.setText(system_name + " > " + "Instrument List");
 
         final List<Instrument> instruments = db.getSystemInstruments(system_id);
 
@@ -104,13 +106,14 @@ public class Instrument_List extends AppCompatActivity {
             inst_name.setPadding(10, 0, 0, 5);
             inst_name.setWidth(200);
 
-//            status.setText("Not Done");
             String shift_id = sharedPreferences.getString("shift_id","-");
             int instrumentReadingsTaken = db.getInstrumentStatus(instruments.get(i).getId(),shift_id);
             if (instrumentReadingsTaken == 0) {
+                instruments.get(i).setStatus("Not Done");
                 status.setText("Not Done");
             }
             else {
+                instruments.get(i).setStatus("Done");
                 status.setText("Done");
             }
             status.setTextColor(Color.BLACK);
@@ -128,14 +131,24 @@ public class Instrument_List extends AppCompatActivity {
             tr.setClickable(true);
 
             final int finalI = i;
+            final String finalStatus = status.getText().toString();
             tr.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Log.i("System id:", Integer.toString(.get(finalI).getId()));
-//                    Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
-//                    intent.putExtra("system_id", Integer.toString(systems.get(finalI).getId()));
-//                    intent.putExtra("plant", plants.get(finalI));
-//                    startActivity(intent);
+
+                    if (!finalStatus.equals("Done")) {
+//                    Log.i("Instrument id:", Integer.toString(.get(finalI).getId());
+                        Intent intent = new Intent(getApplicationContext(), barcode_scan.class);
+                        intent.putExtra("instrument_id", instruments.get(finalI).getId());
+                        intent.putExtra("instrument_name", instruments.get(finalI).getName());
+//                    Log.i("Instrument kks Code:",instruments.get(finalI).getKksCode());
+                        Log.i("Instrument unit:", instruments.get(finalI).getUnit());
+                        intent.putExtra("instrument_object", instruments.get(finalI));
+                        startActivity(intent);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),"Instrument Reading recorded in this shift",Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

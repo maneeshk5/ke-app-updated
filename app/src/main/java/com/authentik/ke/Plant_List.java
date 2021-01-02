@@ -111,8 +111,8 @@ public class Plant_List extends AppCompatActivity {
             int plantStatus = 0;
 
             for (int j = 0; j < noOfSystemsInPlant; j++) {
-                int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
-                plantStatus += systemStatus;
+                int systemStatus = db.getSystemStatus(systemList.get(j).getId(),shift_id);
+                plantStatus = plantStatus + systemStatus;
             }
                 status.setText(plantStatus + "/" + noOfSystemsInPlant);
                 status.setTextColor(Color.BLACK);

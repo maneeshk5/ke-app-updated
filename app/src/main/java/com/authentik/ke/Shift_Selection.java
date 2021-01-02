@@ -2,6 +2,7 @@ package com.authentik.ke;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -9,6 +10,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +39,7 @@ import java.util.Timer;
 public class Shift_Selection extends AppCompatActivity {
     String[] shifts = {"Select Shift","Night","Morning", "Evening"};
     String[] reading_types = {"Select Reading Types","First","Second","Third"};
-    TextView btnLogOut;
+    ImageView btnLogOut;
     TextView currDate;
     TextView currTime;
     Spinner spin;
@@ -45,6 +49,7 @@ public class Shift_Selection extends AppCompatActivity {
     String thisDate;
     SharedPreferences sharedpreferences;
     String timeComp;
+    private AlertDialog logOut_dialog;
 
     public boolean isInternetAvailable() {
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -58,6 +63,12 @@ public class Shift_Selection extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shift__selection);
+
+//        ActionBar actionBar = getSupportActionBar();
+//        getSupportActionBar().setTitle("Korange");
+//        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        actionBar.setDisplayShowCustomEnabled(true);
+//        actionBar.setCustomView(R.layout.custom_titlebar);
 
         db = new DatabaseHelper(getApplicationContext());
 //        try {
@@ -91,19 +102,39 @@ public class Shift_Selection extends AppCompatActivity {
         currTime.append(timeComp);
 
 
-//        btnLogOut = findViewById(R.id.logout_link);
+        btnLogOut = findViewById(R.id.btn_logout);
 //        logout User
-//        btnLogOut.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//                SharedPreferences.Editor editor = sharedpreferences.edit();
-//                editor.putBoolean("isLoggedIn",false);
-//                editor.putString("Username","-");
-//                editor.apply();
-//                finishAffinity();
-//            }
-//        });
+        btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder logout_dialogue_builder = new AlertDialog.Builder(Shift_Selection.this);
+                                                           logout_dialogue_builder.setTitle("Are you sure you want to Log Out?");
+                                                           logout_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                               @Override
+                                                               public void onClick(DialogInterface dialog, int which) {
+                                                                   sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                                                                   SharedPreferences.Editor editor = sharedpreferences.edit();
+                                                                   editor.putBoolean("isLoggedIn", false);
+                                                                   editor.putString("Username", "-");
+                                                                   editor.putString("shift_id", "-");
+                                                                   editor.apply();
+                                                                   finishAffinity();
+                                                               }
+                                                           });
+
+                                                           logout_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                               @Override
+                                                               public void onClick(DialogInterface dialog, int which) {
+                                                                    dialog.dismiss();
+//                                                                    logout_dialogue_builder.setView(null);
+                                                                   Log.i("Status", "logout confirmed");
+                                                               }
+                                                           });
+                                                           logOut_dialog = logout_dialogue_builder.create();
+                                                           logOut_dialog.show();
+                                                       }
+//                                                   }
+                                               });
 
         final TextView userName = findViewById(R.id.curr_user_text);
         sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
@@ -122,27 +153,6 @@ public class Shift_Selection extends AppCompatActivity {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin2.setAdapter(adapter2);
 
-        options_spinner = findViewById(R.id.options_spinner);
-        options_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selection = options_spinner.getSelectedItem().toString();
-                if (selection.equals("Logout")) {
-                    sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedpreferences.edit();
-                    editor.putBoolean("isLoggedIn",false);
-                    editor.putString("Username","-");
-                    editor.putString("shift_id","-");
-                    editor.apply();
-                    finishAffinity();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         Button btn = findViewById(R.id.shift_submit_btn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -175,10 +185,17 @@ public class Shift_Selection extends AppCompatActivity {
                     shift.setDate(thisDate);
                     shift.setEnd_time("-");
 
-                    if (!db.checkShift(shift.getName(),shift.getDate(),shift.getReading_type())) {
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+
+                    String shift_id = db.checkShift(shift.getName(),shift.getDate(),shift.getReading_type());
+
+                    if (shift_id.equals("new shift")) {
                         db.addShift(shift);
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
                         editor.putString("shift_id",shift.getId());
+                        editor.apply();
+                    }
+                    else {
+                        editor.putString("shift_id",shift_id);
                         editor.apply();
                     }
                     Intent intent = new Intent(Shift_Selection.this, Plant_List.class);
