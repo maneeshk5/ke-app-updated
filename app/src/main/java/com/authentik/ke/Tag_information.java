@@ -1,10 +1,12 @@
 package com.authentik.ke;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +36,9 @@ public class Tag_information extends AppCompatActivity {
     EditText reading_value_et;
     Button submit_tag_btn;
     DatabaseHelper db;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +127,12 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setShift_id(sharedPreferences.getString("shift_id","-"));
                                     reading.setReading_value(reading_value_et.getText().toString());
 
-                                    db.addReading(reading);
+                                    if(db.checkReading(reading.getShift_id(),reading.getInstrument_id())) {
+                                        Toast.makeText(Tag_information.this,"Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        db.addReading(reading);
+                                    }
 
                                     Intent intent = new Intent(Tag_information.this,Plant_List.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -153,8 +163,13 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setReading_value(reading_value_et.getText().toString());
 
                                     db.addReading(reading);
+//                                    Toast.makeText(Tag_information.this,"Open camera page",Toast.LENGTH_LONG).show();
+//                                    dispatchTakePictureIntent();
+                                    finish();
+                                    Intent intent = new Intent(Tag_information.this,reading_picture.class);
+                                    intent.putExtra("reading_id",reading.getId());
+                                    startActivity(intent);
 
-                                    Toast.makeText(Tag_information.this,"Open camera page",Toast.LENGTH_LONG).show();
                                 }
                             });
                             pic_dilogue_builder.create().show();
@@ -168,5 +183,15 @@ public class Tag_information extends AppCompatActivity {
 
     public void goBack(View view) {
         finish();
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        } catch (ActivityNotFoundException e) {
+            // display error state to the user
+            Toast.makeText(Tag_information.this,"Sorry cannot open camera",Toast.LENGTH_LONG).show();
+        }
     }
 }

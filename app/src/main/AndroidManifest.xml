@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.authentik.ke">
+
+
+
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
 
     <uses-permission android:name="com.honeywell.decode.permission.DECODE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
+<!--    <uses-permission android:name="android.permission.CAMERA" />-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,6 +19,7 @@
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ke_icon"
@@ -68,6 +75,15 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+<!--        <provider-->
+<!--            android:name="android.support.v4.content.FileProvider"-->
+<!--            android:authorities="com.authentik.ke.fileprovider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/file_paths" />-->
+<!--        </provider>-->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.authentik.ke.fileprovider"
@@ -77,6 +93,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
     </application>
 
 </manifest>

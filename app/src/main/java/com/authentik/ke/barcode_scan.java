@@ -50,8 +50,8 @@ public class barcode_scan extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finish();
                 Intent intent = new Intent(barcode_scan.this, Tag_information.class);
-//                Log.i("Instrument kksCode: ",instrument.getKksCode());
                 intent.putExtra("instrument_object",instrument);
                 startActivity(intent);
             }

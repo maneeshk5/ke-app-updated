@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/title_layout"
-        layout="@layout/custom_titlebar_login"
+        layout="@layout/custom_titlebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -89,6 +89,9 @@
 
     <ScrollView
         android:id="@+id/scrollView2"
+        style="@android:style/Widget.DeviceDefault.ScrollView"
+        android:scrollbarStyle="insideInset"
+        android:fadeScrollbars="false"
         android:layout_width="282dp"
         android:layout_height="304dp"
         app:layout_constraintBottom_toBottomOf="parent"

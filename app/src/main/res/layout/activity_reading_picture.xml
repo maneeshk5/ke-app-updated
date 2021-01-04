@@ -11,13 +11,13 @@
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User: Ali"
+        android:text="User: "
         android:textAlignment="center"
         android:textColor="@color/textColor"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_layout"
         app:layout_constraintVertical_bias="0.146" />
@@ -34,7 +34,7 @@
         android:id="@+id/date_time_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="14-12-2020"
+        android:text="Date and Time"
         android:textColor="@color/textColor"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +48,7 @@
         android:id="@+id/back_button"
         android:layout_width="32dp"
         android:layout_height="22dp"
+        android:onClick="goBack"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.055"
@@ -59,8 +60,9 @@
 
     <ImageView
         android:id="@+id/reading_image"
-        android:layout_width="251dp"
-        android:layout_height="232dp"
+        android:layout_width="199dp"
+        android:layout_height="180dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,29 +70,20 @@
         app:layout_constraintVertical_bias="0.316"
         app:srcCompat="@drawable/image_placeholder" />
 
-    <Button
-        android:id="@+id/image_save_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
+    <ImageView
+        android:id="@+id/take_img_btn"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="41dp"
+        android:onClick="open_camera"
+        android:src="@drawable/camera_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.206"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.851" />
+        app:layout_constraintTop_toBottomOf="@+id/reading_image"
+        app:layout_constraintVertical_bias="0.012">
 
-    <Button
-        android:id="@+id/retake_image_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Retake"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.719"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.851" />
+    </ImageView>
 
 
 </android.support.constraint.ConstraintLayout>

@@ -14,6 +14,7 @@ import com.authentik.model.Shift;
 import com.authentik.model.User;
 import com.authentik.model.System;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -114,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private String CREATE_READING_TABLE = "CREATE TABLE " + TABLE_READING + "("
             + COLUMN_READING_ID + " TEXT PRIMARY KEY ," + COLUMN_READING_INSTRUMENT_ID + " INTEGER,"
-            + COLUMN_READING_IMAGE_PATH + " TEXT," + COLUMN_READING_TIME + " TEXT,"
+            + COLUMN_READING_IMAGE_PATH + " BLOB," + COLUMN_READING_TIME + " TEXT,"
             + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " TEXT, "
             + COLUMN_READING_DATETIME + " TEXT " + ")";
 
@@ -598,6 +599,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(system.getId())});
         db.close();
     }
+
+    public void insertReadingImage(String reading_id,byte[] image) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_READING_IMAGE_PATH, image);
+
+        // updating row
+        db.update(TABLE_READING, values, COLUMN_READING_ID + " = ?",
+                new String[]{String.valueOf(reading_id)});
+        db.close();
+    }
+
 
 
     /**

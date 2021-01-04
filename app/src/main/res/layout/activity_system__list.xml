@@ -24,7 +24,7 @@
 
     <include
         android:id="@+id/title_layout"
-        layout="@layout/custom_titlebar_login"
+        layout="@layout/custom_titlebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -92,6 +92,9 @@
         android:id="@+id/scrollView2"
         android:layout_width="282dp"
         android:layout_height="303dp"
+        style="@android:style/Widget.DeviceDefault.ScrollView"
+        android:scrollbarStyle="insideInset"
+        android:fadeScrollbars="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
