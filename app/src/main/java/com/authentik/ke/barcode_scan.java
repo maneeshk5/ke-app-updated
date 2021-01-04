@@ -52,15 +52,15 @@ public class barcode_scan extends AppCompatActivity {
         app_path.setText(instrument.getName() + " > " + "Barcode");
 
         Button btn = findViewById(R.id.barcode_scan_btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                Intent intent = new Intent(barcode_scan.this, Tag_information.class);
-                intent.putExtra("instrument_object", instrument);
-                startActivity(intent);
-            }
-        });
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//                Intent intent = new Intent(barcode_scan.this, Tag_information.class);
+//                intent.putExtra("instrument_object", instrument);
+//                startActivity(intent);
+//            }
+//        });
     }
 
     private final String TAG = "IntentApiSample";

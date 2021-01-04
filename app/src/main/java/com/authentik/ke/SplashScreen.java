@@ -28,10 +28,16 @@ import org.json.JSONObject;
 
 public class SplashScreen extends Activity {
 
-    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
-    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
-    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
-    String instrumentsURL = "http://jaguar.atksrv.net:8090/ke_api/readInstruments.php";
+//    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
+//    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
+//    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
+//    String instrumentsURL = "http://jaguar.atksrv.net:8090/ke_api/readInstruments.php";
+
+    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
+    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
+    String plantsURL = "http://192.168.100.230:80/ke_app_api/readPlants.php";
+    String systemsURL = "http://192.168.100.230:80/ke_app_api/readSystems.php";
+
     DatabaseHelper db;
     ProgressDialog progressDialog;
 
@@ -39,8 +45,6 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-
-//        final ProgressDialog dialog= ProgressDialog.show(SplashScreen.this,"Syncing Database", "Please wait....",true);
 
         //create local database
         db = new DatabaseHelper(getApplicationContext());
@@ -50,23 +54,23 @@ public class SplashScreen extends Activity {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    DatabaseSync();
-//                    dialog.dismiss();
+//                    DbSync();
+//                    DatabaseSync();
+                    class DBSync extends AsyncTask<Void,Void,Void> {
+
+
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            DbSync();
+                            return null;
+                        }
+                    }
+                    DBSync dbSync = new DBSync();
+                    dbSync.execute();
                 }
             });
             thread.start();
-            //        try {
-//            Thread.sleep(8000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        dialog.dismiss();
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    dialog.dismiss();
-//                }
-//            }, 10000);
+//            thread.getState().toString();
             try {
                 thread.join();
             } catch (InterruptedException e) {
@@ -322,6 +326,131 @@ public class SplashScreen extends Activity {
 
         SystemSync sl = new SystemSync();
         sl.execute();
+    }
+
+    public void DbSync() {
+
+        //user Sync
+        RequestHandler requestHandler = new RequestHandler();
+        String getUsers =  requestHandler.sendReadRequest(usersURL);
+        try {
+
+            JSONArray arr = new JSONArray(getUsers);
+
+            if (arr.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+            } else {
+                for (int i = 0; i < arr.length(); i++) {
+                    User user = new User();
+                    JSONObject obj = arr.getJSONObject(i);
+                    user.setId(obj.getInt("user_id"));
+                    user.setName(obj.getString("userName"));
+                    user.setPassword(obj.getString("password"));
+                    user.setIsActive(obj.getInt("isActive"));
+                    user.setIsDeleted(obj.getInt("isDeleted"));
+
+                    if (!db.checkUser(user.getName()))  {
+                        db.addUser(user);
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //plant Sync
+        String getPlants =  requestHandler.sendReadRequest(plantsURL);
+        try {
+
+            JSONArray arr = new JSONArray(getPlants);
+
+            if (arr.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+            } else {
+                for (int i = 0; i < arr.length(); i++) {
+                    Plant plant = new Plant();
+                    JSONObject obj = arr.getJSONObject(i);
+                    plant.setPlant_id(obj.getInt("plant_id"));
+                    plant.setPlant_name(obj.getString("plant_name"));
+                    plant.setIsActive(obj.getInt("isActive"));
+                    plant.setReadingTimeId(obj.getInt("readingTimeId"));
+
+                    if (!db.checkPlant(plant.getPlant_id())) {
+                        db.addPlant(plant);
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //systemSync
+        String getSystems =  requestHandler.sendReadRequest(systemsURL);
+        try {
+
+            JSONArray arr = new JSONArray(getSystems);
+
+            if (arr.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+            } else {
+                for (int i = 0; i < arr.length(); i++) {
+                    System system = new System();
+                    JSONObject obj = arr.getJSONObject(i);
+                    system.setId(obj.getInt("system_id"));
+                    system.setName(obj.getString("system_name"));
+                    system.setIsActive(obj.getInt("isActive"));
+                    system.setLogSheet(obj.getString("logSheet"));
+                    system.setPlantId(obj.getInt("systemPlantId"));
+
+                    if (!db.checkSystem(system.getId())) {
+//                                Log.v("System","Hello");
+                        db.addSystem(system);
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //Instrument Sync
+        String getInstruments =  requestHandler.sendReadRequest(instrumentsURL);
+
+        try {
+
+            JSONArray arr = new JSONArray(getInstruments);
+
+            if (arr.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
+            } else {
+                for (int i = 0; i < arr.length(); i++) {
+                    Instrument instrument = new Instrument();
+                    JSONObject obj = arr.getJSONObject(i);
+                    instrument.setId(obj.getInt("instrument_id"));
+                    instrument.setName(obj.getString("instrument_name"));
+                    instrument.setIsActive(obj.getInt("isActive"));
+                    instrument.setKksCode(obj.getString("kksCode"));
+                    instrument.setBarcodeId(obj.getString("barcodeId"));
+                    instrument.setLowerLimit(obj.getDouble("lowerLimit"));
+                    instrument.setUpperLimit(obj.getDouble("upperLimit"));
+                    instrument.setUnit(obj.getString("unit"));
+                    instrument.setIsActive(obj.getInt("isActive"));
+                    instrument.setSystemId(obj.getInt("systemId"));
+
+
+                    if (!db.checkInstrument(instrument.getId())) {
+                        db.addInstrument(instrument);
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

@@ -335,15 +335,15 @@
         android:id="@+id/app_path_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLength="500"
         android:text="App path"
         android:textColor="@color/textColor"
         android:textSize="10sp"
+        android:maxLength="500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.056"
+        app:layout_constraintHorizontal_bias="0.106"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.939" />
+        app:layout_constraintVertical_bias="0.965" />
 
 </android.support.constraint.ConstraintLayout>

@@ -569,7 +569,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return systemDone;
     }
 
-
     /**
          * This method to update user record
          *
@@ -623,6 +622,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(instrument.getId())});
         db.close();
     }
+
 
 
     /**

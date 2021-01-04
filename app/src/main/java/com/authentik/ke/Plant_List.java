@@ -57,13 +57,13 @@ public class Plant_List extends AppCompatActivity {
         dateAndTime.setText(datetime);
 
 
-        final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                dialog.dismiss();
-            }
-        }, 10000);
+//        final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                dialog.dismiss();
+//            }
+//        }, 10000);
 
         db = new DatabaseHelper(getApplicationContext());
 
@@ -118,14 +118,11 @@ public class Plant_List extends AppCompatActivity {
 
                     int plantStatus = 0;
 
-                    for (int j = 0; j < noOfSystemsInPlant; j++) {
-                        int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
-                        plantStatus = plantStatus + systemStatus;
-                    }
+//                    for (int j = 0; j < noOfSystemsInPlant; j++) {
+//                        int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
+//                        plantStatus = plantStatus + systemStatus;
+//                    }
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
-                    if (i==3) {
-                        plantStatus = 20;
-                    }
 
                     status.setText(plantStatus + "/" + noOfSystemsInPlant);
                     status.setTextColor(Color.BLACK);
