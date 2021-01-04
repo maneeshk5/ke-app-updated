@@ -237,7 +237,7 @@ public class SplashScreen extends Activity {
                             instrument.setName(obj.getString("instrument_name"));
                             instrument.setIsActive(obj.getInt("isActive"));
                             instrument.setKksCode(obj.getString("kksCode"));
-                            instrument.setBarcodeId(obj.getInt("barcodeId"));
+                            instrument.setBarcodeId(obj.getString("barcodeId"));
                             instrument.setLowerLimit(obj.getDouble("lowerLimit"));
                             instrument.setUpperLimit(obj.getDouble("upperLimit"));
                             instrument.setUnit(obj.getString("unit"));

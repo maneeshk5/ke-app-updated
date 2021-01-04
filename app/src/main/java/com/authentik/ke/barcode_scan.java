@@ -1,8 +1,11 @@
 package com.authentik.ke;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.authentik.model.Instrument;
+import com.authentik.utils.DialogBox;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +25,7 @@ public class barcode_scan extends AppCompatActivity {
     TextView dateAndTime;
     TextView app_path;
     SharedPreferences sharedPreferences;
+    Instrument instrument;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +45,11 @@ public class barcode_scan extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-        String instrument_name = getIntent().getStringExtra("instrument_name");
-        app_path.setText( instrument_name + " > " + "Barcode");
+//        String instrument_name = getIntent().getStringExtra("instrument_name");
+//        app_path.setText(instrument_name + " > " + "Barcode");
 
-        final Instrument instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
-
+        instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
+        app_path.setText(instrument.getName() + " > " + "Barcode");
 
         Button btn = findViewById(R.id.barcode_scan_btn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -52,13 +57,133 @@ public class barcode_scan extends AppCompatActivity {
             public void onClick(View view) {
                 finish();
                 Intent intent = new Intent(barcode_scan.this, Tag_information.class);
-                intent.putExtra("instrument_object",instrument);
+                intent.putExtra("instrument_object", instrument);
                 startActivity(intent);
             }
         });
     }
 
-    public void goBack(View view) {
+    private final String TAG = "IntentApiSample";
+    private final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.BARCODE_DATA";
+    private static final String ACTION_CLAIM_SCANNER = "com.honeywell.aidc.action.ACTION_CLAIM_SCANNER";
+
+    private static final String ACTION_RELEASE_SCANNER = "com.honeywell.aidc.action.ACTION_RELEASE_SCANNER";
+
+    private static final String EXTRA_SCANNER = "com.honeywell.aidc.extra.EXTRA_SCANNER";
+
+    private static final String EXTRA_PROFILE = "com.honeywell.aidc.extra.EXTRA_PROFILE";
+
+    private static final String EXTRA_PROPERTIES = "com.honeywell.aidc.extra.EXTRA_PROPERTIES";
+    private TextView textView;
+    private BroadcastReceiver barcodeDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ACTION_BARCODE_DATA.equals(intent.getAction())) {
+/*
+These extras are available:
+"version" (int) = Data Intent Api version
+"aimId" (String) = The AIM Identifier
+            "charset" (String) = The charset used to convert "dataBytes" to "data" string
+"codeId" (String) = The Honeywell Symbology Identifier
+"data" (String) = The barcode data as a string
+"dataBytes" (byte[]) = The barcode data as a byte array
+"timestamp" (String) = The barcode timestamp
+*/
+                int version = intent.getIntExtra("version", 1);
+                if (version >= 1) {
+                    String aimId = intent.getStringExtra("aimId");
+                    String charset = intent.getStringExtra("charset");
+                    String codeId = intent.getStringExtra("codeId");
+                    String data = intent.getStringExtra("data");
+                    byte[] dataBytes = intent.getByteArrayExtra("dataBytes");
+                    String dataBytesStr = bytesToHexString(dataBytes);
+                    String timestamp = intent.getStringExtra("timestamp");
+                    String text = String.format(
+                            "Data:%s\n" +
+                                    "Charset:%s\n" +
+                                    "Bytes:%s\n" +
+                                    "AimId:%s\n" +
+                                    "CodeId:%s\n" +
+                                    "Timestamp:%s\n",
+                            data, charset, dataBytesStr, aimId, codeId, timestamp);
+
+                    String text2 = String.format(
+                            "Data:%s\n",
+                            data);
+
+                    Log.i("Scan Result ", text2);
+//                    setText(text2);
+//                    goQuestionsActivity(data);
+
+//                    start Tag Activity
+                    finish();
+                    Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
+                    instrument.setBarcodeId(data);
+                    intent2.putExtra("instrument_object", instrument);
+                    startActivity(intent2);
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(barcodeDataReceiver, new IntentFilter(ACTION_BARCODE_DATA));
+        claimScanner();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(barcodeDataReceiver);
+        releaseScanner();
+    }
+
+
+    private void claimScanner() {
+        Bundle properties = new Bundle();
+        properties.putBoolean("DPR_DATA_INTENT", true);
+        properties.putString("DPR_DATA_INTENT_ACTION", ACTION_BARCODE_DATA);
+        sendBroadcast(new Intent(ACTION_CLAIM_SCANNER)
+                .putExtra(EXTRA_SCANNER, "dcs.scanner.imager")
+                .putExtra(EXTRA_PROFILE, "MyProfile1")
+                .putExtra(EXTRA_PROPERTIES, properties)
+        );
+    }
+
+    private void releaseScanner() {
+        sendBroadcast(new Intent(ACTION_RELEASE_SCANNER));
+    }
+//    private void setText(final String text) {
+//        if (textView != null) {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    textView.setText(text);
+//                }
+//            });
+//        }
+//    }
+
+    private String bytesToHexString(byte[] arr) {
+        String s = "[]";
+        if (arr != null) {
+            s = "[";
+            for (int i = 0; i < arr.length; i++) {
+                s += "0x" + Integer.toHexString(arr[i]) + ", ";
+            }
+            s = s.substring(0, s.length() - 2) + "]";
+        }
+        return s;
+    }
+
+//    public void newRecord(View view) {
+//        AlertDialog dialog = DialogBox.dismissButtonDialog(this, "Alert", "Please Scan the Barcode");
+//        dialog.show();
+//    }
+
+    public void goBack (View view){
         finish();
     }
 }

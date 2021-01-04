@@ -9,7 +9,7 @@ public class Instrument implements Serializable {
     private int id;
     private String name;
     private String kksCode;
-    private int barcodeId;
+    private String barcodeId;
     private String unit;
     private double lowerLimit;
     private double upperLimit;
@@ -41,11 +41,11 @@ public class Instrument implements Serializable {
         this.kksCode = kksCode;
     }
 
-    public int getBarcodeId() {
+    public String getBarcodeId() {
         return barcodeId;
     }
 
-    public void setBarcodeId(int barcodeId) {
+    public void setBarcodeId(String barcodeId) {
         this.barcodeId = barcodeId;
     }
 

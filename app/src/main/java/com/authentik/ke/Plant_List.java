@@ -113,14 +113,6 @@ public class Plant_List extends AppCompatActivity {
                     plant_name.setPadding(10, 0, 0, 5);
                     plant_name.setWidth(200);
 
-//                    class myTask extends AsyncTask<Void, Void, Void> {
-//
-//                        @Override
-//                        protected Void doInBackground(Void... voids) {
-//                            return null;
-//                        }
-//
-//                    }
                     List<System> systemList = db.getPlantSystem(plants.get(i).getPlant_id());
                     int noOfSystemsInPlant = systemList.size();
 

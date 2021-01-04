@@ -77,6 +77,10 @@ public class Tag_information extends AppCompatActivity {
         tag_kksCode.append(instrument.getKksCode());
         tag_unit.append(instrument.getUnit());
         tag_range.append("Min (" + instrument.getLowerLimit() + ") " + "Max (" + instrument.getUpperLimit() + ")");
+        tag_serialNo.append(instrument.getBarcodeId());
+
+        //set Instrument barcode ID in local db
+        db.setInstrumentBarcodeId(instrument);
 
         submit_tag_btn.setOnClickListener(new View.OnClickListener() {
             @Override

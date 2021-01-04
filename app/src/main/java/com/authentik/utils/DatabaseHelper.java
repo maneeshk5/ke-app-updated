@@ -105,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_INSTRUMENT_ID + " INTEGER PRIMARY KEY," + COLUMN_INSTRUMENT_NAME + " TEXT,"
             + COLUMN_INSTRUMENT_IS_ACTIVE + " INTEGER," + COLUMN_INSTRUMENT_KKSCODE + " TEXT," + COLUMN_INSTRUMENT_SYSTEM_ID + " INTEGER, "
             +  COLUMN_INSTRUMENT_UNIT + " INTEGER, " + COLUMN_INSTRUMENT_LOWER_LIMIT + " REAL, " + COLUMN_INSTRUMENT_UPPER_LIMIT
-            + " REAL, " + COLUMN_INSTRUMENT_BARCODE_ID + " INTEGER " + ")";
+            + " REAL, " + COLUMN_INSTRUMENT_BARCODE_ID + " TEXT " + ")";
 
     private String CREATE_SHIFT_TABLE = "CREATE TABLE " + TABLE_SHIFT + "("
             + COLUMN_SHIFT_ID + " TEXT PRIMARY KEY ," + COLUMN_SHIFT_NAME + " TEXT,"
@@ -489,7 +489,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 instrument.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_ID))));
                 instrument.setName(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_NAME)));
                 instrument.setKksCode(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_KKSCODE)));
-                instrument.setBarcodeId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_BARCODE_ID))));
+                instrument.setBarcodeId(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_BARCODE_ID)));
                 instrument.setUnit(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_UNIT)));
                 instrument.setLowerLimit(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_LOWER_LIMIT))));
                 instrument.setUpperLimit(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_UPPER_LIMIT))));
@@ -612,6 +612,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void setInstrumentBarcodeId(Instrument instrument) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_INSTRUMENT_BARCODE_ID, instrument.getBarcodeId());
+
+        // updating row
+        db.update(TABLE_INSTRUMENTS, values, COLUMN_INSTRUMENT_ID + " = ?",
+                new String[]{String.valueOf(instrument.getId())});
+        db.close();
+    }
 
 
     /**
