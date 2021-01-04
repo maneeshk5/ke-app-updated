@@ -44,7 +44,7 @@ public class Shift_Selection extends AppCompatActivity {
     TextView currTime;
     Spinner spin;
     Spinner spin2;
-    Spinner options_spinner;
+    ImageView btnSettings;
     DatabaseHelper db;
     String thisDate;
     SharedPreferences sharedpreferences;
@@ -103,38 +103,7 @@ public class Shift_Selection extends AppCompatActivity {
 
 
         btnLogOut = findViewById(R.id.btn_logout);
-//        logout User
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder logout_dialogue_builder = new AlertDialog.Builder(Shift_Selection.this);
-                                                           logout_dialogue_builder.setTitle("Are you sure you want to Log Out?");
-                                                           logout_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                               @Override
-                                                               public void onClick(DialogInterface dialog, int which) {
-                                                                   sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-                                                                   SharedPreferences.Editor editor = sharedpreferences.edit();
-                                                                   editor.putBoolean("isLoggedIn", false);
-                                                                   editor.putString("Username", "-");
-                                                                   editor.putString("shift_id", "-");
-                                                                   editor.apply();
-                                                                   finishAffinity();
-                                                               }
-                                                           });
-
-                                                           logout_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                               @Override
-                                                               public void onClick(DialogInterface dialog, int which) {
-                                                                    dialog.dismiss();
-//                                                                    logout_dialogue_builder.setView(null);
-                                                                   Log.i("Status", "logout confirmed");
-                                                               }
-                                                           });
-                                                           logOut_dialog = logout_dialogue_builder.create();
-                                                           logOut_dialog.show();
-                                                       }
-//                                                   }
-                                               });
+        btnSettings = findViewById(R.id.btn_settings);
 
         final TextView userName = findViewById(R.id.curr_user_text);
         sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
@@ -204,7 +173,38 @@ public class Shift_Selection extends AppCompatActivity {
             }
         });
 
+    }
 
+    public void settingsPage(View view) {
+            startActivity(new Intent(Shift_Selection.this,Settings_Page.class));
+    }
+
+    public void log_Out(View view) {
+        AlertDialog.Builder logout_dialogue_builder = new AlertDialog.Builder(Shift_Selection.this);
+        logout_dialogue_builder.setTitle("Are you sure you want to Log Out and Exit?");
+        logout_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                finishAffinity();
+            }
+        });
+
+        logout_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+//                                                                    logout_dialogue_builder.setView(null);
+                Log.i("Status", "logout confirmed");
+            }
+        });
+        logOut_dialog = logout_dialogue_builder.create();
+        logOut_dialog.show();
     }
 
 }

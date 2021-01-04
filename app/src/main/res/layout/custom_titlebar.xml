@@ -43,9 +43,10 @@
         <ImageView
             android:id="@+id/btn_settings"
             android:layout_width="41dp"
-            android:layout_gravity="center_vertical"
             android:layout_height="26dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            android:onClick="settingsPage"
             android:paddingRight="8dp"
             app:srcCompat="@drawable/settings_icon" />
 
@@ -54,6 +55,7 @@
             android:layout_width="41dp"
             android:layout_height="18dp"
             android:layout_weight="1"
+            android:onClick="log_Out"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/logout_icon" />
 

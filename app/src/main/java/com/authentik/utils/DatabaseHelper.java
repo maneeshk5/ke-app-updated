@@ -853,4 +853,69 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public Instrument getInstrumentFromBarcode(String barcode_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_INSTRUMENT_ID,
+                COLUMN_INSTRUMENT_NAME,
+                COLUMN_INSTRUMENT_KKSCODE,
+                COLUMN_INSTRUMENT_BARCODE_ID,
+                COLUMN_INSTRUMENT_UNIT,
+                COLUMN_INSTRUMENT_LOWER_LIMIT,
+                COLUMN_INSTRUMENT_UPPER_LIMIT,
+                COLUMN_INSTRUMENT_SYSTEM_ID,
+                COLUMN_INSTRUMENT_IS_ACTIVE,
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_INSTRUMENT_ID + " ASC";
+
+        String selection = COLUMN_INSTRUMENT_BARCODE_ID + " = ?";
+
+        String[] selectionArgs = {barcode_id};
+
+//        List<Instrument> instrumentList = new ArrayList<Instrument>();
+        Instrument instrument = new Instrument();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
+         */
+        Cursor cursor = db.query(TABLE_INSTRUMENTS, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+//                Instrument instrument = new Instrument();
+                instrument.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_ID))));
+                instrument.setName(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_NAME)));
+                instrument.setKksCode(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_KKSCODE)));
+                instrument.setBarcodeId(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_BARCODE_ID)));
+                instrument.setUnit(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_UNIT)));
+                instrument.setLowerLimit(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_LOWER_LIMIT))));
+                instrument.setUpperLimit(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_UPPER_LIMIT))));
+                instrument.setSystemId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_SYSTEM_ID))));
+                instrument.setIsActive(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_INSTRUMENT_IS_ACTIVE))));
+
+                // Adding user record to list
+//                instrumentList.add(instrument);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return instrument;
+    }
 }

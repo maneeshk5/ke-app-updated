@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.authentik.model.Instrument;
+import com.authentik.utils.DatabaseHelper;
 import com.authentik.utils.DialogBox;
 
 import java.text.SimpleDateFormat;
@@ -25,7 +27,8 @@ public class barcode_scan extends AppCompatActivity {
     TextView dateAndTime;
     TextView app_path;
     SharedPreferences sharedPreferences;
-    Instrument instrument;
+    Instrument instrument_selected;
+    DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,8 @@ public class barcode_scan extends AppCompatActivity {
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
         app_path = findViewById(R.id.app_path_tv);
+
+        db = new DatabaseHelper(getApplicationContext());
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
@@ -48,8 +53,8 @@ public class barcode_scan extends AppCompatActivity {
 //        String instrument_name = getIntent().getStringExtra("instrument_name");
 //        app_path.setText(instrument_name + " > " + "Barcode");
 
-        instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
-        app_path.setText(instrument.getName() + " > " + "Barcode");
+        instrument_selected = (Instrument) getIntent().getSerializableExtra("instrument_object");
+        app_path.setText(instrument_selected.getName() + " > " + "Barcode");
 
         Button btn = findViewById(R.id.barcode_scan_btn);
 //        btn.setOnClickListener(new View.OnClickListener() {
@@ -114,13 +119,18 @@ These extras are available:
                     Log.i("Scan Result ", text2);
 //                    setText(text2);
 //                    goQuestionsActivity(data);
+                    Instrument instrument_scanned = db.getInstrumentFromBarcode(data);
 
-//                    start Tag Activity
-                    finish();
-                    Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
-                    instrument.setBarcodeId(data);
-                    intent2.putExtra("instrument_object", instrument);
-                    startActivity(intent2);
+                    if (instrument_scanned.getBarcodeId().equals(instrument_selected.getBarcodeId())) {
+                        //start Tag Activity
+                        finish();
+                        Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
+                        intent2.putExtra("instrument_object", instrument_selected);
+                        startActivity(intent2);
+                    }
+                    else {
+                        Toast.makeText(barcode_scan.this,"Scanned Barcode does not match with selected Instrument",Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
@@ -155,16 +165,7 @@ These extras are available:
     private void releaseScanner() {
         sendBroadcast(new Intent(ACTION_RELEASE_SCANNER));
     }
-//    private void setText(final String text) {
-//        if (textView != null) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    textView.setText(text);
-//                }
-//            });
-//        }
-//    }
+
 
     private String bytesToHexString(byte[] arr) {
         String s = "[]";
@@ -178,10 +179,6 @@ These extras are available:
         return s;
     }
 
-//    public void newRecord(View view) {
-//        AlertDialog dialog = DialogBox.dismissButtonDialog(this, "Alert", "Please Scan the Barcode");
-//        dialog.show();
-//    }
 
     public void goBack (View view){
         finish();
