@@ -4,23 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffff"
-    tools:context=".barcode_scan">
+    tools:context=".Barcode_Instrument_List">
 
     <TextView
-        android:id="@+id/username_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User: "
+        android:id="@+id/barcode_id_tv"
+        android:layout_width="113dp"
+        android:layout_height="21dp"
+        android:text="Barcode: "
         android:textAlignment="center"
-        android:textColor="@color/textColor"
+        android:textColor="@color/colorPrimary"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.146" />
+        app:layout_constraintVertical_bias="0.22" />
 
     <include
         android:id="@+id/title_layout"
@@ -44,6 +43,22 @@
         app:layout_constraintTop_toTopOf="@+id/title_layout"
         app:layout_constraintVertical_bias="0.146" />
 
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User: "
+        android:textAlignment="center"
+        android:textColor="@color/textColor"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.146" />
+
     <ImageView
         android:id="@+id/back_button"
         android:layout_width="32dp"
@@ -57,47 +72,36 @@
         app:layout_constraintVertical_bias="0.146"
         app:srcCompat="@drawable/back_button" />
 
-
-    <ImageView
-        android:id="@+id/barcode_image"
-        android:layout_width="286dp"
-        android:layout_height="173dp"
+    <ListView
+        android:id="@+id/barcode_instrument_list"
+        android:layout_width="263dp"
+        android:layout_height="317dp"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/custom_layout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.397"
-        app:srcCompat="@drawable/barcode" />
-
-    <Button
-        android:id="@+id/barcode_scan_btn"
-        style="@android:style/Widget.Button.Inset"
-        android:layout_width="111dp"
-        android:layout_height="42dp"
-        android:clickable="false"
-        android:text="Scan Barcode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.711" />
+        app:layout_constraintVertical_bias="0.709" />
 
-    <TextView
-        android:id="@+id/app_path_tv"
-        android:layout_width="165dp"
-        android:layout_height="14dp"
-        android:maxLength="1000"
-        android:text="App path"
-        android:textColor="@color/textColor"
-        android:textSize="10sp"
+    <Button
+        android:id="@+id/button"
+        style="@android:style/Widget.Button.Inset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="16dp"
+        android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.109"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.918" />
+        app:layout_constraintTop_toBottomOf="@+id/barcode_instrument_list" />
 
 
 </android.support.constraint.ConstraintLayout>

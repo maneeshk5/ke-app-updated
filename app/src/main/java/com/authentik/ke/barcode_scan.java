@@ -135,6 +135,8 @@ These extras are available:
                         finish();
                         Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
                         intent2.putExtra("instrument_object", instrument_selected);
+                        intent2.putExtra("system_object", system);
+                        intent2.putExtra("plant_object", plant);
                         startActivity(intent2);
                     }
                     else {

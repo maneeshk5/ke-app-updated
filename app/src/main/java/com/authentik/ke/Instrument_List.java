@@ -67,7 +67,7 @@ public class Instrument_List extends AppCompatActivity {
         int itemCount = instruments.size();
 
         TableLayout tl = findViewById(R.id.instrument_table);
-        TableLayout t2 = findViewById(R.id.instrument_header_table);
+//        TableLayout t2 = findViewById(R.id.instrument_header_table);
 
         TextView row_header_1  = new TextView(this);
         TextView row_header_2  = new TextView(this);

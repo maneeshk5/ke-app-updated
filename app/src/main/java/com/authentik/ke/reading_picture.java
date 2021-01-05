@@ -79,7 +79,6 @@ public class reading_picture extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-        int system_id = getIntent().getIntExtra("system_id",0);
         reading_id = getIntent().getStringExtra("reading_id");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
@@ -87,6 +86,13 @@ public class reading_picture extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_PERMISSION);
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA},
+                    REQUEST_PERMISSION);
+        }
+
 
     }
 
@@ -144,16 +150,21 @@ public class reading_picture extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                db.insertReadingImage(reading_id,inputData);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(reading_picture.this);
                 builder.setTitle("Confirmation!");
                 builder.setMessage("Do you want to save this picture?");
 
+                final byte[] finalInputData = inputData;
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        db.insertReadingImage(reading_id, finalInputData);
                         Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+
+                        //next instrument with the barcode
+
+
                         Intent intent = new Intent(reading_picture.this,Plant_List.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);

@@ -37,8 +37,8 @@ import java.util.Date;
 import java.util.Timer;
 
 public class Shift_Selection extends AppCompatActivity {
-    String[] shifts = {"Select Shift","Night","Morning", "Evening"};
-    String[] reading_types = {"Select Reading Types","First","Second","Third"};
+//    String[] shifts = {"Select Shift","Night","Morning", "Evening"};
+//    String[] reading_types = {"Select Reading Types","First","Second","Third"};
     ImageView btnLogOut;
     TextView currDate;
     TextView currTime;
@@ -112,14 +112,14 @@ public class Shift_Selection extends AppCompatActivity {
 
 
         spin = findViewById(R.id.spinner);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shifts);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin.setAdapter(adapter);
+//        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shifts);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spin.setAdapter(adapter);
 
         spin2 = findViewById(R.id.spinner2);
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, reading_types);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spin2.setAdapter(adapter2);
+//        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, reading_types);
+//        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spin2.setAdapter(adapter2);
 
 
         Button btn = findViewById(R.id.shift_submit_btn);
