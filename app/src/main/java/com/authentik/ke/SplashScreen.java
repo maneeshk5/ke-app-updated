@@ -28,23 +28,29 @@ import org.json.JSONObject;
 
 public class SplashScreen extends Activity {
 
-//    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
-//    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
-//    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
-//    String instrumentsURL = "http://jaguar.atksrv.net:8090/ke_api/readInstruments.php";
+    String usersURL;
+    String plantsURL;
+    String systemsURL;
+    String instrumentsURL;
 
-    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
-    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
-    String plantsURL = "http://192.168.100.230:80/ke_app_api/readPlants.php";
-    String systemsURL = "http://192.168.100.230:80/ke_app_api/readSystems.php";
+//    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
+//    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
+//    String plantsURL = "http://192.168.100.230:80/ke_app_api/readPlants.php";
+//    String systemsURL = "http://192.168.100.230:80/ke_app_api/readSystems.php";
 
     DatabaseHelper db;
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        //intialize api urls
+        usersURL =  getString(R.string.server_name) + "readUsers.php";
+        plantsURL = getString(R.string.server_name) + "readPlants.php";
+        systemsURL = getString(R.string.server_name) + "readSystems.php";
+        instrumentsURL = getString(R.string.server_name) + "readInstruments.php";
+
 
         //create local database
         db = new DatabaseHelper(getApplicationContext());
@@ -58,9 +64,9 @@ public class SplashScreen extends Activity {
 //                    DatabaseSync();
                     class DBSync extends AsyncTask<Void,Void,Void> {
 
-
                         @Override
                         protected Void doInBackground(Void... voids) {
+//                            DatabaseSync();
                             DbSync();
                             return null;
                         }
@@ -328,7 +334,7 @@ public class SplashScreen extends Activity {
         sl.execute();
     }
 
-    public void DbSync() {
+    private void DbSync() {
 
         //user Sync
         RequestHandler requestHandler = new RequestHandler();

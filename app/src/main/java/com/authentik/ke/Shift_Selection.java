@@ -49,7 +49,6 @@ public class Shift_Selection extends AppCompatActivity {
     String thisDate;
     SharedPreferences sharedpreferences;
     String timeComp;
-    private AlertDialog logOut_dialog;
 
     public boolean isInternetAvailable() {
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -199,12 +198,10 @@ public class Shift_Selection extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-//                                                                    logout_dialogue_builder.setView(null);
                 Log.i("Status", "logout confirmed");
             }
         });
-        logOut_dialog = logout_dialogue_builder.create();
-        logOut_dialog.show();
+        logout_dialogue_builder.create().show();
     }
 
 }

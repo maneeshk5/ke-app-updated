@@ -2,6 +2,7 @@ package com.authentik.ke;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -119,7 +120,7 @@ These extras are available:
                     Log.i("Scan Result ", text2);
 //                    setText(text2);
 //                    goQuestionsActivity(data);
-                    Instrument instrument_scanned = db.getInstrumentFromBarcode(data);
+                    final Instrument instrument_scanned = db.getInstrumentFromBarcode(data);
 
                     if (instrument_scanned.getBarcodeId().equals(instrument_selected.getBarcodeId())) {
                         //start Tag Activity
@@ -129,7 +130,27 @@ These extras are available:
                         startActivity(intent2);
                     }
                     else {
-                        Toast.makeText(barcode_scan.this,"Scanned Barcode does not match with selected Instrument",Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(barcode_scan.this,"Scanned Barcode does not match with selected Instrument",Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(barcode_scan.this);
+                        builder.setTitle("Warning!");
+                        builder.setMessage("Scanned Barcode does not match with selected instrument barcode. Are you sure you want to continue?");
+                        builder.setPositiveButton("Yes ", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                                Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
+                                intent2.putExtra("instrument_object", instrument_scanned);
+                                startActivity(intent2);
+                            }
+                        });
+
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.create().show();
                     }
                 }
             }

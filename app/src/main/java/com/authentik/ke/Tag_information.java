@@ -299,5 +299,34 @@ These extras are available:
         return s;
     }
 
+    public void settingsPage(View view) {
+        startActivity(new Intent(Tag_information.this,Settings_Page.class));
+    }
+
+    public void log_Out(View view) {
+        android.support.v7.app.AlertDialog.Builder logout_dialogue_builder = new android.support.v7.app.AlertDialog.Builder(Tag_information.this);
+        logout_dialogue_builder.setTitle("Are you sure you want to Log Out and Exit?");
+        logout_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                finishAffinity();
+            }
+        });
+
+        logout_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Log.i("Status", "logout confirmed");
+            }
+        });
+        logout_dialogue_builder.create().show();
+    }
 
 }

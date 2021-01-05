@@ -116,7 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String CREATE_READING_TABLE = "CREATE TABLE " + TABLE_READING + "("
             + COLUMN_READING_ID + " TEXT PRIMARY KEY ," + COLUMN_READING_INSTRUMENT_ID + " INTEGER,"
             + COLUMN_READING_IMAGE_PATH + " BLOB," + COLUMN_READING_TIME + " TEXT,"
-            + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " TEXT, "
+            + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " DOUBLE , "
             + COLUMN_READING_DATETIME + " TEXT " + ")";
 
 

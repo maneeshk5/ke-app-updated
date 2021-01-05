@@ -2,11 +2,13 @@ package com.authentik.ke;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Parcelable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -273,4 +275,33 @@ These extras are available:
         return s;
     }
 
+    public void settingsPage(View view) {
+        startActivity(new Intent(Instrument_List.this,Settings_Page.class));
+    }
+
+    public void log_Out(View view) {
+        AlertDialog.Builder logout_dialogue_builder = new AlertDialog.Builder(Instrument_List.this);
+        logout_dialogue_builder.setTitle("Are you sure you want to Log Out and Exit?");
+        logout_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                finishAffinity();
+            }
+        });
+
+        logout_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Log.i("Status", "logout confirmed");
+            }
+        });
+        logout_dialogue_builder.create().show();
+    }
 }
