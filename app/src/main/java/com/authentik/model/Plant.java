@@ -1,6 +1,8 @@
 package com.authentik.model;
 
-public class Plant {
+import java.io.Serializable;
+
+public class Plant implements Serializable {
 
     private int plant_id;
     private String plant_name;

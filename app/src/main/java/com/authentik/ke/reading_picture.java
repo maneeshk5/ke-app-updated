@@ -30,6 +30,8 @@ import android.widget.Toast;
 //import com.bumptech.glide.Glide;
 
 import com.authentik.model.Instrument;
+import com.authentik.model.Plant;
+import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -291,9 +293,17 @@ These extras are available:
 
 //                    start Tag Activity
 //                    finish();
-                    Intent intent2 = new Intent(reading_picture.this, Tag_information.class);
                     Instrument instrument = db.getInstrumentFromBarcode(data);
+                    System system = db.getSystemFromInstrument(instrument);
+                    Plant plant = db.getPlantFromSystem(system);
+                    Log.i("Plant of Instrument",plant.getPlant_name());
+                    Log.i("System of Instrument",system.getName());
+
+                    Intent intent2 = new Intent(reading_picture.this, Tag_information.class);
                     intent2.putExtra("instrument_object", instrument);
+                    intent2.putExtra("system_object", system);
+                    intent2.putExtra("plant_object", plant);
+
                     startActivity(intent2);
                 }
             }

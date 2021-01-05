@@ -20,7 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authentik.model.Instrument;
+import com.authentik.model.Plant;
 import com.authentik.model.Reading;
+import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
 import java.text.SimpleDateFormat;
@@ -36,12 +38,13 @@ public class Tag_information extends AppCompatActivity {
     TextView tag_serialNo;
     TextView tag_unit;
     TextView tag_range;
+    TextView tag_plant;
+    TextView tag_system;
+
     SharedPreferences sharedPreferences;
     EditText reading_value_et;
     Button submit_tag_btn;
     DatabaseHelper db;
-
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
 
     @Override
@@ -60,6 +63,8 @@ public class Tag_information extends AppCompatActivity {
         tag_serialNo = findViewById(R.id.tag_serial);
         tag_unit = findViewById(R.id.tag_unit);
         tag_range = findViewById(R.id.tag_range);
+        tag_plant = findViewById(R.id.tag_plant);
+        tag_system = findViewById(R.id.tag_system);
 
         reading_value_et = findViewById(R.id.reading_value_et);
         submit_tag_btn = findViewById(R.id.submit_tag_btn);
@@ -76,12 +81,19 @@ public class Tag_information extends AppCompatActivity {
         final Instrument instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
         app_path.setText( instrument.getName() + " > " + "Tag");
 
+        final Plant plant = (Plant) getIntent().getSerializableExtra("plant_object");
+
+        final System system = (System) getIntent().getSerializableExtra("system_object");
+
+
         //set tag details
         tag_instrument.append(instrument.getName());
         tag_kksCode.append(instrument.getKksCode());
         tag_unit.append(instrument.getUnit());
         tag_range.append("Min (" + instrument.getLowerLimit() + ") " + "Max (" + instrument.getUpperLimit() + ")");
         tag_serialNo.append(instrument.getBarcodeId());
+        tag_plant.append(plant.getPlant_name());
+        tag_system.append(system.getName());
 
         //set Instrument barcode ID in local db
         db.setInstrumentBarcodeId(instrument);
@@ -247,9 +259,17 @@ These extras are available:
 
 //                    start Tag Activity
                     finish();
-                    Intent intent2 = new Intent(Tag_information.this, Tag_information.class);
                     Instrument instrument = db.getInstrumentFromBarcode(data);
+                    System system = db.getSystemFromInstrument(instrument);
+                    Plant plant = db.getPlantFromSystem(system);
+                    Log.i("Plant of Instrument",plant.getPlant_name());
+                    Log.i("System of Instrument",system.getName());
+
+                    Intent intent2 = new Intent(Tag_information.this, Tag_information.class);
                     intent2.putExtra("instrument_object", instrument);
+                    intent2.putExtra("system_object", system);
+                    intent2.putExtra("plant_object", plant);
+
                     startActivity(intent2);
                 }
             }

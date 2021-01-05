@@ -93,7 +93,7 @@
         android:scrollbarStyle="insideInset"
         android:fadeScrollbars="false"
         android:layout_width="282dp"
-        android:layout_height="304dp"
+        android:layout_height="290dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"

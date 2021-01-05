@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authentik.model.Instrument;
+import com.authentik.model.Plant;
+import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 import com.authentik.utils.DialogBox;
 
@@ -57,7 +59,7 @@ public class barcode_scan extends AppCompatActivity {
         instrument_selected = (Instrument) getIntent().getSerializableExtra("instrument_object");
         app_path.setText(instrument_selected.getName() + " > " + "Barcode");
 
-        Button btn = findViewById(R.id.barcode_scan_btn);
+//        Button btn = findViewById(R.id.barcode_scan_btn);
 //        btn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -122,6 +124,12 @@ These extras are available:
 //                    goQuestionsActivity(data);
                     final Instrument instrument_scanned = db.getInstrumentFromBarcode(data);
 
+                    System system = db.getSystemFromInstrument(instrument_scanned);
+                    Plant plant = db.getPlantFromSystem(system);
+
+                    Log.i("Plant of Instrument",plant.getPlant_name());
+                    Log.i("System of Instrument",system.getName());
+
                     if (instrument_scanned.getBarcodeId().equals(instrument_selected.getBarcodeId())) {
                         //start Tag Activity
                         finish();
@@ -137,9 +145,13 @@ These extras are available:
                         builder.setPositiveButton("Yes ", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                System system = db.getSystemFromInstrument(instrument_scanned);
+                                Plant plant = db.getPlantFromSystem(system);
                                 finish();
                                 Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
                                 intent2.putExtra("instrument_object", instrument_scanned);
+                                intent2.putExtra("system_object", system);
+                                intent2.putExtra("plant_object", plant);
                                 startActivity(intent2);
                             }
                         });

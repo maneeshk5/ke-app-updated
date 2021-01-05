@@ -1,6 +1,8 @@
 package com.authentik.model;
 
-public class System {
+import java.io.Serializable;
+
+public class System implements Serializable {
     private int id;
     private String name;
     private String logSheet;

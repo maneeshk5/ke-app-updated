@@ -918,4 +918,112 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // return user list
         return instrument;
     }
+
+    public System getSystemFromInstrument(Instrument instrument) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_SYSTEM_ID,
+                COLUMN_SYSTEM_NAME,
+                COLUMN_SYSTEM_LOGSHEET,
+                COLUMN_SYSTEM_IS_ACTIVE,
+                COLUMN_SYSTEM_PLANT_ID};
+        // sorting orders
+        String sortOrder =
+                COLUMN_SYSTEM_ID + " ASC";
+
+        String selection = COLUMN_SYSTEM_ID + " = ?";
+
+        String[] selectionArgs = {Integer.toString(instrument.getSystemId())};
+
+        System system = new System();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
+         */
+        Cursor cursor = db.query(TABLE_SYSTEMS, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                system.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_SYSTEM_ID))));
+                system.setName(cursor.getString(cursor.getColumnIndex(COLUMN_SYSTEM_NAME)));
+                system.setIsActive(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_SYSTEM_IS_ACTIVE))));
+                system.setLogSheet(cursor.getString(cursor.getColumnIndex(COLUMN_SYSTEM_LOGSHEET)));
+                system.setPlantId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_SYSTEM_PLANT_ID))));
+
+                // Adding user record to list
+//                systemList.add(system);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return system;
+    }
+
+    public Plant getPlantFromSystem(System system) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_PLANT_ID,
+                COLUMN_PLANT_NAME,
+                COLUMN_PLANT_READING_TIME_ID,
+                COLUMN_PLANT_IS_ACTIVE};
+        // sorting orders
+        String sortOrder =
+                COLUMN_PLANT_ID + " ASC";
+
+        String selection = COLUMN_PLANT_ID + " = ?";
+
+        String[] selectionArgs = {Integer.toString(system.getPlantId())};
+
+        Plant plant = new Plant();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
+         */
+        Cursor cursor = db.query(TABLE_PLANTS, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                plant.setPlant_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PLANT_ID))));
+                plant.setPlant_name(cursor.getString(cursor.getColumnIndex(COLUMN_PLANT_NAME)));
+                plant.setIsActive(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PLANT_IS_ACTIVE))));
+                plant.setReadingTimeId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_PLANT_READING_TIME_ID))));
+
+                // Adding user record to list
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return plant;
+    }
+
 }
