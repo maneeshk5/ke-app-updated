@@ -27,6 +27,7 @@ import com.authentik.utils.DatabaseHelper;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class Plant_List extends AppCompatActivity {
@@ -91,6 +92,12 @@ public class Plant_List extends AppCompatActivity {
 
         final List<Plant> plants = db.getAllPlants();
 
+//        for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext(); ) {
+//            Plant plant = iterator.next();
+//            if (plant.getIsActive() == 0) {
+//                iterator.remove();
+//            }
+//        }
 //        Thread thread = new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -164,10 +171,10 @@ public class Plant_List extends AppCompatActivity {
                     for (int j = 0; j < noOfSystemsInPlant; j++) {
                         int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
                         plantStatus += systemStatus;
-//                        Log.i("System Name",systemList.get(j).getName());
-//                        Log.i("System Status",Integer.toString(systemStatus));
-//                        Log.i("Plant Name",plants.get(i).getPlant_name());
-//                        Log.i("Plant Status",Integer.toString(plantStatus));
+                        Log.i("System Name",systemList.get(j).getName());
+                        Log.i("System Status",Integer.toString(systemStatus));
+                        Log.i("Plant Name",plants.get(i).getPlant_name());
+                        Log.i("Plant Status",Integer.toString(plantStatus));
                     }
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
 

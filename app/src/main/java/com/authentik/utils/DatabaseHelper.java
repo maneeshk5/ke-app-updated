@@ -441,6 +441,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return systemList;
     }
 
+    public Reading getReading(String shift_id, int instrument_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID,
+                COLUMN_READING_DATETIME,
+                COLUMN_READING_TIME,
+                COLUMN_READING_VALUE,
+                COLUMN_READING_SHIFT_ID,
+                COLUMN_READING_INSTRUMENT_ID};
+        // sorting orders
+        String sortOrder =
+                COLUMN_READING_ID + " ASC";
+
+        String selection = COLUMN_READING_SHIFT_ID + " = ?" + " AND " + COLUMN_READING_INSTRUMENT_ID + " = ?";
+
+        String[] selectionArgs = {shift_id,Integer.toString(instrument_id)};
+
+//        List<System> systemList = new ArrayList<System>();
+        Reading reading = new Reading();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
+         */
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    reading.setId(cursor.getString(cursor.getColumnIndex(COLUMN_READING_ID)));
+                    reading.setReading_value(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_READING_VALUE))));
+                    reading.setShift_id(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SHIFT_ID)));
+                    reading.setInstrument_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_INSTRUMENT_ID))));
+                    reading.setDate_time(cursor.getString(cursor.getColumnIndex(COLUMN_READING_DATETIME)));
+                    reading.setTime(cursor.getString(cursor.getColumnIndex(COLUMN_READING_TIME)));
+
+                    // Adding user record to list
+                } while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return reading;
+    }
+
 
     public List<Instrument> getSystemInstruments(int system_id) {
         // array of columns to fetch
@@ -557,9 +616,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int systemDone;
         List<Instrument> instrumentList = getSystemInstruments(system_id);
         int instStatus = 0;
-//        for (int i=0; i<instrumentList.size(); i++) {
-//            instStatus = instStatus + getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
-//        }
+        for (int i=0; i<instrumentList.size(); i++) {
+            instStatus = instStatus + getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
+        }
         if (instStatus == instrumentList.size()) {
             systemDone = 1;
         }

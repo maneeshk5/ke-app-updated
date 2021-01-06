@@ -30,8 +30,10 @@ import com.authentik.model.Plant;
 import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class System_List extends AppCompatActivity {
@@ -70,6 +72,13 @@ public class System_List extends AppCompatActivity {
         app_path.setText(plant_name + " > " + "System List");
 
         final List<System> systems = db.getPlantSystem(plant_id);
+
+//        for (Iterator<System> iterator = systems.iterator(); iterator.hasNext(); ) {
+//            System system = iterator.next();
+//            if (system.getIsActive() == 0) {
+//                iterator.remove();
+//            }
+//        }
 
         int itemCount = systems.size();
 
@@ -286,17 +295,16 @@ These extras are available:
 
 //                    start Tag Activity
 //                    finish();
-                    Instrument instrument = db.getInstrumentFromBarcode(data);
-                    System system = db.getSystemFromInstrument(instrument);
-                    Plant plant = db.getPlantFromSystem(system);
-                    Log.i("Plant of Instrument",plant.getPlant_name());
-                    Log.i("System of Instrument",system.getName());
+//                    Instrument instrument = db.getInstrumentFromBarcode(data);
+//                    System system = db.getSystemFromInstrument(instrument);
+//                    Plant plant = db.getPlantFromSystem(system);
+//                    Log.i("Plant of Instrument",plant.getPlant_name());
+//                    Log.i("System of Instrument",system.getName());
 
-                    Intent intent2 = new Intent(System_List.this, Tag_information.class);
-                    intent2.putExtra("instrument_object", instrument);
-                    intent2.putExtra("system_object", system);
-                    intent2.putExtra("plant_object", plant);
-
+                    List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
+                    Intent intent2 = new Intent(System_List.this,Barcode_Instrument_List.class);
+                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                    intent2.putExtra("barcode_id",data);
                     startActivity(intent2);
                 }
             }

@@ -10,16 +10,15 @@
         android:id="@+id/barcode_id_tv"
         android:layout_width="113dp"
         android:layout_height="21dp"
-        android:text="Barcode: "
-        android:textAlignment="center"
+        android:text="Instrument List "
         android:textColor="@color/colorPrimary"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.091"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.22" />
+        app:layout_constraintVertical_bias="0.218" />
 
     <include
         android:id="@+id/title_layout"
@@ -74,34 +73,50 @@
 
     <ListView
         android:id="@+id/barcode_instrument_list"
-        android:layout_width="263dp"
-        android:layout_height="317dp"
+        android:layout_width="260dp"
+        android:layout_height="297dp"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="38dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/custom_layout"
+        android:layout_marginBottom="5dp"
+        android:fadeScrollbars="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.709" />
+        app:layout_constraintVertical_bias="0.686" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_save_readings"
         style="@android:style/Widget.Button.Inset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="128dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="38dp"
         android:layout_marginBottom="16dp"
+        android:onClick="saveReadings"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/app_path_tv" />
+
+    <TextView
+        android:id="@+id/app_path_tv"
+        android:layout_width="165dp"
+        android:layout_height="14dp"
+        android:maxLength="1000"
+        android:text="App path"
+        android:textColor="@color/textColor"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.106"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barcode_instrument_list" />
+        app:layout_constraintTop_toBottomOf="@+id/title_layout"
+        app:layout_constraintVertical_bias="0.965" />
+
 
 
 </android.support.constraint.ConstraintLayout>

@@ -6,7 +6,7 @@ public class Reading {
     private int instrument_id;
     private String time;
     private String shift_id;
-    private String reading_value;
+    private Double reading_value;
     private String date_time;
     private String image_path;
 
@@ -35,11 +35,11 @@ public class Reading {
     }
 
 
-    public String getReading_value() {
+    public Double getReading_value() {
         return reading_value;
     }
 
-    public void setReading_value(String reading_value) {
+    public void setReading_value(Double reading_value) {
         this.reading_value = reading_value;
     }
 

@@ -25,8 +25,12 @@ import com.authentik.model.Reading;
 import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 public class Tag_information extends AppCompatActivity {
 
@@ -45,6 +49,7 @@ public class Tag_information extends AppCompatActivity {
     EditText reading_value_et;
     Button submit_tag_btn;
     DatabaseHelper db;
+    Instrument instrument;
 
 
     @Override
@@ -70,6 +75,7 @@ public class Tag_information extends AppCompatActivity {
         submit_tag_btn = findViewById(R.id.submit_tag_btn);
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        String shift_id =  sharedPreferences.getString("shift_id","-");
         String value = sharedPreferences.getString("Username", "no name");
         currUser.setText("User: " + value);
 
@@ -78,13 +84,11 @@ public class Tag_information extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-        final Instrument instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
+        instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
         app_path.setText( instrument.getName() + " > " + "Tag");
 
         final Plant plant = (Plant) getIntent().getSerializableExtra("plant_object");
-
         final System system = (System) getIntent().getSerializableExtra("system_object");
-
 
         //set tag details
         tag_instrument.append(instrument.getName());
@@ -95,8 +99,22 @@ public class Tag_information extends AppCompatActivity {
         tag_plant.append(plant.getPlant_name());
         tag_system.append(system.getName());
 
-        //set Instrument barcode ID in local db
-        db.setInstrumentBarcodeId(instrument);
+        try {
+
+            Reading reading = db.getReading(shift_id, instrument.getId());
+
+            if (reading != null) {
+                reading_value_et.setText(Double.toString(reading.getReading_value()));
+                reading_value_et.setEnabled(false);
+                submit_tag_btn.setEnabled(false);
+                Toast.makeText(Tag_information.this, "Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
+            }
+        }
+        catch (NullPointerException e) {
+//            e.printStackTrace();
+            Log.i("Reading object status:","Null continue");
+        }
+
 
         submit_tag_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +144,6 @@ public class Tag_information extends AppCompatActivity {
                             pic_dilogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Toast.makeText(Tag_information.this,"Data Saved Successfully",Toast.LENGTH_LONG).show();
 
                                     //Insert reading data locally
                                     Date dNow = new Date();
@@ -145,17 +162,24 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setTime(reading_time);
                                     reading.setInstrument_id(instrument.getId());
                                     reading.setShift_id(sharedPreferences.getString("shift_id","-"));
-                                    reading.setReading_value(reading_value_et.getText().toString());
+                                    reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
 
-                                    if(db.checkReading(reading.getShift_id(),reading.getInstrument_id())) {
-                                        Toast.makeText(Tag_information.this,"Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
+//                                    if(!db.checkReading(reading.getShift_id(),reading.getInstrument_id())) {
+//                                        Toast.makeText(Tag_information.this,"Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
+//                                        db.addReading(reading);
+//                                        Toast.makeText(Tag_information.this,"Data Saved Successfully",Toast.LENGTH_LONG).show();
+//                                    }
+                                    db.addReading(reading);
+                                    Toast.makeText(Tag_information.this,"Data Saved Successfully",Toast.LENGTH_LONG).show();
+                                    List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
+                                    for(int i=0; i<instrumentList.size(); i++) {
+                                        Log.i("Instrument Names:",instrumentList.get(i).getName());
+                                        Log.i("Instrument Barcode:",instrumentList.get(i).getBarcodeId());
                                     }
-                                    else {
-                                        db.addReading(reading);
-                                    }
-
-                                    Intent intent = new Intent(Tag_information.this,Plant_List.class);
+                                    Intent intent = new Intent(Tag_information.this,Barcode_Instrument_List.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.putExtra("Instrument_list",(Serializable) instrumentList);
+                                    intent.putExtra("barcode_id",instrument.getBarcodeId());
                                     startActivity(intent);
 
                                 }
@@ -180,13 +204,12 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setTime(reading_time);
                                     reading.setInstrument_id(instrument.getId());
                                     reading.setShift_id(sharedPreferences.getString("shift_id","-"));
-                                    reading.setReading_value(reading_value_et.getText().toString());
+                                    reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
 
                                     db.addReading(reading);
-//                                    Toast.makeText(Tag_information.this,"Open camera page",Toast.LENGTH_LONG).show();
-//                                    dispatchTakePictureIntent();
                                     finish();
                                     Intent intent = new Intent(Tag_information.this,reading_picture.class);
+                                    intent.putExtra("tag_instrument",(Serializable) instrument);
                                     intent.putExtra("reading_id",reading.getId());
                                     startActivity(intent);
 
@@ -259,17 +282,16 @@ These extras are available:
 
 //                    start Tag Activity
                     finish();
-                    Instrument instrument = db.getInstrumentFromBarcode(data);
-                    System system = db.getSystemFromInstrument(instrument);
-                    Plant plant = db.getPlantFromSystem(system);
-                    Log.i("Plant of Instrument",plant.getPlant_name());
-                    Log.i("System of Instrument",system.getName());
+//                    Instrument instrument = db.getInstrumentFromBarcode(data);
+//                    System system = db.getSystemFromInstrument(instrument);
+//                    Plant plant = db.getPlantFromSystem(system);
+//                    Log.i("Plant of Instrument",plant.getPlant_name());
+//                    Log.i("System of Instrument",system.getName());
 
-                    Intent intent2 = new Intent(Tag_information.this, Tag_information.class);
-                    intent2.putExtra("instrument_object", instrument);
-                    intent2.putExtra("system_object", system);
-                    intent2.putExtra("plant_object", plant);
-
+                    List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
+                    Intent intent2 = new Intent(Tag_information.this,Barcode_Instrument_List.class);
+                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                    intent2.putExtra("barcode_id",data);
                     startActivity(intent2);
                 }
             }

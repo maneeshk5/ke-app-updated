@@ -39,8 +39,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class reading_picture extends AppCompatActivity {
@@ -57,6 +59,7 @@ public class reading_picture extends AppCompatActivity {
 
     DatabaseHelper db;
     String reading_id;
+    Instrument instrument;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,7 @@ public class reading_picture extends AppCompatActivity {
         dateAndTime.setText(datetime);
 
         reading_id = getIntent().getStringExtra("reading_id");
+        instrument = (Instrument) getIntent().getSerializableExtra("tag_instrument");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -225,8 +229,11 @@ public class reading_picture extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(reading_picture.this,Plant_List.class);
+                List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
+                Intent intent = new Intent(reading_picture.this,Barcode_Instrument_List.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("Instrument_list",(Serializable) instrumentList);
+                intent.putExtra("barcode_id",instrument.getBarcodeId());
                 startActivity(intent);
             }
         });
@@ -303,18 +310,17 @@ These extras are available:
 //                    goQuestionsActivity(data);
 
 //                    start Tag Activity
-//                    finish();
-                    Instrument instrument = db.getInstrumentFromBarcode(data);
-                    System system = db.getSystemFromInstrument(instrument);
-                    Plant plant = db.getPlantFromSystem(system);
-                    Log.i("Plant of Instrument",plant.getPlant_name());
-                    Log.i("System of Instrument",system.getName());
+                    finish();
+//                    Instrument instrument = db.getInstrumentFromBarcode(data);
+//                    System system = db.getSystemFromInstrument(instrument);
+//                    Plant plant = db.getPlantFromSystem(system);
+//                    Log.i("Plant of Instrument",plant.getPlant_name());
+//                    Log.i("System of Instrument",system.getName());
 
-                    Intent intent2 = new Intent(reading_picture.this, Tag_information.class);
-                    intent2.putExtra("instrument_object", instrument);
-                    intent2.putExtra("system_object", system);
-                    intent2.putExtra("plant_object", plant);
-
+                    List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
+                    Intent intent2 = new Intent(reading_picture.this,Barcode_Instrument_List.class);
+                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                    intent2.putExtra("barcode_id",data);
                     startActivity(intent2);
                 }
             }

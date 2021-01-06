@@ -21,8 +21,10 @@ import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 import com.authentik.utils.DialogBox;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class barcode_scan extends AppCompatActivity {
 
@@ -150,10 +152,10 @@ These extras are available:
                                 System system = db.getSystemFromInstrument(instrument_scanned);
                                 Plant plant = db.getPlantFromSystem(system);
                                 finish();
-                                Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
-                                intent2.putExtra("instrument_object", instrument_scanned);
-                                intent2.putExtra("system_object", system);
-                                intent2.putExtra("plant_object", plant);
+                                List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument_scanned.getBarcodeId());
+                                Intent intent2 = new Intent(barcode_scan.this,Barcode_Instrument_List.class);
+                                intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                                intent2.putExtra("barcode_id",instrument_scanned.getBarcodeId());
                                 startActivity(intent2);
                             }
                         });
