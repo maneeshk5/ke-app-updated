@@ -150,7 +150,6 @@ public class System_List extends AppCompatActivity {
             }
 
             tr.setClickable(true);
-
             updateSystemStatus = false;
 
             final int finalI = i;

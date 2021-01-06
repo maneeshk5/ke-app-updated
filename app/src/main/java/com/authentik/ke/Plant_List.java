@@ -112,7 +112,7 @@ public class Plant_List extends AppCompatActivity {
 //        }
 
 
-        int itemCount = plants.size();
+                int itemCount = plants.size();
 
                 TableLayout tl = findViewById(R.id.plant_table);
 //                TableLayout t2 = findViewById(R.id.plant_header_table);
@@ -171,10 +171,10 @@ public class Plant_List extends AppCompatActivity {
                     for (int j = 0; j < noOfSystemsInPlant; j++) {
                         int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
                         plantStatus += systemStatus;
-                        Log.i("System Name",systemList.get(j).getName());
-                        Log.i("System Status",Integer.toString(systemStatus));
-                        Log.i("Plant Name",plants.get(i).getPlant_name());
-                        Log.i("Plant Status",Integer.toString(plantStatus));
+//                        Log.i("System Name",systemList.get(j).getName());
+//                        Log.i("System Status",Integer.toString(systemStatus));
+//                        Log.i("Plant Name",plants.get(i).getPlant_name());
+//                        Log.i("Plant Status",Integer.toString(plantStatus));
                     }
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
 
@@ -186,7 +186,7 @@ public class Plant_List extends AppCompatActivity {
 
                     if (plantStatus == 0) {
                         tr.setBackgroundResource(R.drawable.row_borders);
-                    } else if (plantStatus == noOfSystemsInPlant) {
+                    }  else if(plantStatus == noOfSystemsInPlant) {
                         tr.setBackgroundResource(R.drawable.row_border_green);
                     } else {
                         tr.setBackgroundResource(R.drawable.row_border_yellow);
@@ -221,6 +221,18 @@ public class Plant_List extends AppCompatActivity {
     public void goBack(View view) {
         finish();
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            public void run() {
+//                dialog.dismiss();
+//            }
+//        }, 10000);
+//    }
 
     public int calculatePlantStatus(final int noOfSystemsInPlant, final DatabaseHelper db, final List<System> systemList, final String shift_id) {
         final int[] plantStatus = {0};

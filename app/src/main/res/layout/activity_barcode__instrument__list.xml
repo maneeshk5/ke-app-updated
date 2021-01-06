@@ -89,8 +89,8 @@
 
     <Button
         android:id="@+id/btn_save_readings"
-        style="@android:style/Widget.Button.Inset"
-        android:layout_width="wrap_content"
+        android:background="@color/colorAccent"
+        android:textColor="#FFFFFF"        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="38dp"

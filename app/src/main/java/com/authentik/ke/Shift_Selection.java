@@ -25,15 +25,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.authentik.model.Plant;
 import com.authentik.model.Shift;
+import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 
 public class Shift_Selection extends AppCompatActivity {
@@ -166,8 +170,25 @@ public class Shift_Selection extends AppCompatActivity {
                         editor.putString("shift_id",shift_id);
                         editor.apply();
                     }
+//                    List<Plant> plantList = db.getAllPlants();
+//                    List<System> systemList = null;
+
+//                    for (int i=0; i<plantList.size(); i++) {
+//                        systemList = db.getPlantSystem(plantList.get(i).getPlant_id());
+//                    }
                     Intent intent = new Intent(Shift_Selection.this, Plant_List.class);
+//                    intent.putExtra("plant_list", (Serializable) plantList);
+//                    intent.putExtra("system_list",(Serializable) systemList);
+//                    Log.i("Plant Name",plantList.get(1).getPlant_name());
+//                    Log.i("System Name",systemList.get(1).getName());
                     startActivity(intent);
+//                    final ProgressDialog dialog = ProgressDialog.show(Shift_Selection.this, "Loading", "Please wait....", true);
+//                    Handler handler = new Handler();
+//                    handler.postDelayed(new Runnable() {
+//                        public void run() {
+//                            dialog.dismiss();
+//                        }
+//                    }, 10000);
                 }
             }
         });

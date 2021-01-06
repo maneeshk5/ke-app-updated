@@ -365,7 +365,8 @@
 
     <Button
         android:id="@+id/submit_tag_btn"
-        style="@android:style/Widget.Button.Inset"
+        android:background="@color/colorAccent"
+        android:textColor="#FFFFFF"
         android:layout_width="79dp"
         android:layout_height="38dp"
         android:text="Submit"
