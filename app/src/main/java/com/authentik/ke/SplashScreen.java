@@ -143,7 +143,7 @@ public class SplashScreen extends Activity {
                             user.setIsActive(obj.getInt("isActive"));
                             user.setIsDeleted(obj.getInt("isDeleted"));
 
-                            if (!db.checkUser(user.getName()))  {
+                            if (!db.checkUser(user.getName()) && user.getIsActive() == 1)  {
                                 db.addUser(user);
                             }
                         }
@@ -196,7 +196,7 @@ public class SplashScreen extends Activity {
                             plant.setIsActive(obj.getInt("isActive"));
                             plant.setReadingTimeId(obj.getInt("readingTimeId"));
 
-                            if (!db.checkPlant(plant.getPlant_id())) {
+                            if (!db.checkPlant(plant.getPlant_id()) && user.getIsActive() == 1) {
                                 db.addPlant(plant);
                             }
                         }
@@ -255,7 +255,7 @@ public class SplashScreen extends Activity {
                             instrument.setSystemId(obj.getInt("systemId"));
 
 
-                            if (!db.checkInstrument(instrument.getId())) {
+                            if (!db.checkInstrument(instrument.getId()) && instrument.getIsActive() == 1) {
                                 db.addInstrument(instrument);
                             }
                         }
@@ -307,7 +307,7 @@ public class SplashScreen extends Activity {
                             system.setLogSheet(obj.getString("logSheet"));
                             system.setPlantId(obj.getInt("systemPlantId"));
 
-                            if (!db.checkSystem(system.getId())) {
+                            if (!db.checkSystem(system.getId()) && system.getIsActive() == 1) {
 //                                Log.v("System","Hello");
                                 db.addSystem(system);
                             }
@@ -355,7 +355,7 @@ public class SplashScreen extends Activity {
                     user.setIsActive(obj.getInt("isActive"));
                     user.setIsDeleted(obj.getInt("isDeleted"));
 
-                    if (!db.checkUser(user.getName()))  {
+                    if (!db.checkUser(user.getName()) && user.getIsActive() == 1)  {
                         db.addUser(user);
                     }
                 }
@@ -382,7 +382,7 @@ public class SplashScreen extends Activity {
                     plant.setIsActive(obj.getInt("isActive"));
                     plant.setReadingTimeId(obj.getInt("readingTimeId"));
 
-                    if (!db.checkPlant(plant.getPlant_id())) {
+                    if (!db.checkPlant(plant.getPlant_id()) && plant.getIsActive() == 1) {
                         db.addPlant(plant);
                     }
                 }
@@ -410,7 +410,7 @@ public class SplashScreen extends Activity {
                     system.setLogSheet(obj.getString("logSheet"));
                     system.setPlantId(obj.getInt("systemPlantId"));
 
-                    if (!db.checkSystem(system.getId())) {
+                    if (!db.checkSystem(system.getId()) && system.getIsActive() == 1) {
 //                                Log.v("System","Hello");
                         db.addSystem(system);
                     }
@@ -446,7 +446,7 @@ public class SplashScreen extends Activity {
                     instrument.setSystemId(obj.getInt("systemId"));
 
 
-                    if (!db.checkInstrument(instrument.getId())) {
+                    if (!db.checkInstrument(instrument.getId()) && instrument.getIsActive() == 1) {
                         db.addInstrument(instrument);
                     }
                 }
