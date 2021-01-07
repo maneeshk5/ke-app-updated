@@ -9,6 +9,8 @@ public class Reading {
     private Double reading_value;
     private String date_time;
     private String image_path;
+    private int system_id;
+    private int plant_id;
 
     public String getId() {
         return id;
@@ -65,5 +67,21 @@ public class Reading {
 
     public void setShift_id(String shift_id) {
         this.shift_id = shift_id;
+    }
+
+    public int getSystem_id() {
+        return system_id;
+    }
+
+    public void setSystem_id(int system_id) {
+        this.system_id = system_id;
+    }
+
+    public int getPlant_id() {
+        return plant_id;
+    }
+
+    public void setPlant_id(int plant_id) {
+        this.plant_id = plant_id;
     }
 }

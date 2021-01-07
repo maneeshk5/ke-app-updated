@@ -35,9 +35,9 @@ public class Login extends AppCompatActivity {
     EditText editUserName;
     EditText editPassword;
     Button btnLogin;
-    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
-    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
-    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
+//    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
+//    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
+//    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
     DatabaseHelper db;
 
     public boolean isInternetAvailable() {
@@ -87,6 +87,9 @@ public class Login extends AppCompatActivity {
         final String password = editPassword.getText().toString();
         SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
+
+        //decrypt password
+        
 
         if(db.checkUser(username,password)) {
             editor.putString("Username",username);

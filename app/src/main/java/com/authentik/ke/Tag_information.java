@@ -163,6 +163,8 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setInstrument_id(instrument.getId());
                                     reading.setShift_id(sharedPreferences.getString("shift_id","-"));
                                     reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
+                                    reading.setSystem_id(system.getId());
+                                    reading.setPlant_id(plant.getPlant_id());
 
 //                                    if(!db.checkReading(reading.getShift_id(),reading.getInstrument_id())) {
 //                                        Toast.makeText(Tag_information.this,"Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
@@ -205,11 +207,13 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setInstrument_id(instrument.getId());
                                     reading.setShift_id(sharedPreferences.getString("shift_id","-"));
                                     reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
+                                    reading.setSystem_id(system.getId());
+                                    reading.setPlant_id(plant.getPlant_id());
 
                                     db.addReading(reading);
                                     finish();
                                     Intent intent = new Intent(Tag_information.this,reading_picture.class);
-                                    intent.putExtra("tag_instrument",(Serializable) instrument);
+                                    intent.putExtra("tag_instrument",instrument);
                                     intent.putExtra("reading_id",reading.getId());
                                     startActivity(intent);
 

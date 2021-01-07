@@ -358,24 +358,24 @@
         android:textColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintHorizontal_bias="0.396"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.849" />
+        app:layout_constraintVertical_bias="0.853" />
 
     <Button
         android:id="@+id/submit_tag_btn"
+        android:layout_width="60dp"
+        android:layout_height="28dp"
         android:background="@color/colorAccent"
-        android:textColor="#FFFFFF"
-        android:layout_width="79dp"
-        android:layout_height="38dp"
         android:text="Submit"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.892"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.939" />
+        app:layout_constraintVertical_bias="0.843" />
 
     <TextView
         android:id="@+id/textView6"
@@ -386,16 +386,15 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.841" />
+        app:layout_constraintVertical_bias="0.845" />
 
     <TextView
         android:id="@+id/app_path_tv"
         android:layout_width="165dp"
-        android:layout_height="14dp"
-        android:maxLength="1000"
+        android:layout_height="30dp"        android:maxLength="1000"
         android:text="App path"
         android:textColor="@color/textColor"
         android:textSize="10sp"

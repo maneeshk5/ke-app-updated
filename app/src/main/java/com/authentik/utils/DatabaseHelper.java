@@ -81,8 +81,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_READING_IMAGE_PATH = "image";
     private static final String COLUMN_READING_TIME = "time";
     private static final String COLUMN_READING_DATETIME = "date_time";
-    private static final String COLUMN_READING_VALUE= "reading_value";
+    private static final String COLUMN_READING_VALUE = "reading_value";
     private static final String COLUMN_READING_SHIFT_ID = "shift_id";
+    private static final String COLUMN_READING_SYSTEM_ID = "system_id";
+    private static final String COLUMN_READING_PLANT_ID = "plant_id";
 
 
 
@@ -117,7 +119,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_READING_ID + " TEXT PRIMARY KEY ," + COLUMN_READING_INSTRUMENT_ID + " INTEGER,"
             + COLUMN_READING_IMAGE_PATH + " BLOB," + COLUMN_READING_TIME + " TEXT,"
             + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " DOUBLE , "
-            + COLUMN_READING_DATETIME + " TEXT " + ")";
+            + COLUMN_READING_DATETIME + " TEXT, " + COLUMN_READING_SYSTEM_ID + " INTEGER, " + COLUMN_READING_PLANT_ID
+            + " INTEGER " + ")";
 
 
     // drop table sql query
@@ -272,6 +275,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_READING_SHIFT_ID, reading.getShift_id());
         values.put(COLUMN_READING_VALUE, reading.getReading_value());
         values.put(COLUMN_READING_DATETIME, reading.getDate_time());
+        values.put(COLUMN_READING_SYSTEM_ID, reading.getSystem_id());
+        values.put(COLUMN_READING_PLANT_ID, reading.getPlant_id());
 
 
         // Inserting Row
@@ -589,11 +594,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // selection argument
         String[] selectionArgs = {Integer.toString(instrument_id),shift_id};
         // query user table with condition
-        /**
-         EL* Here query function is used to fetch records from user table this function works like we use sql query.
-         *          * SQL query equivalent to this query function is
-         *          * SECT user_id FROM user WHERE user_email = 'jack@androidtutorialshub.com';
-         */
+
         Cursor cursor = db.query(TABLE_READING, //Table to query
                 columns,                    //columns to return
                 selection,                  //columns for the WHERE clause
@@ -613,20 +614,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int getSystemStatus(int system_id, String shift_id) {
-        int systemDone;
-        List<Instrument> instrumentList = getSystemInstruments(system_id);
-        int instStatus = 0;
-        for (int i=0; i<instrumentList.size(); i++) {
-            instStatus = instStatus + getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
-        }
-        if (instStatus == instrumentList.size()) {
-            systemDone = 1;
-        }
-        else {
-            systemDone = 0;
-        }
-        return systemDone;
+//        int systemDone;
+//        List<Instrument> instrumentList = getSystemInstruments(system_id);
+//        int instStatus = 0;
+//        for (int i=0; i<instrumentList.size(); i++) {
+//            instStatus = instStatus + getInstrumentStatus(instrumentList.get(i).getId(),shift_id);
+//        }
+//        if (instStatus == instrumentList.size()) {
+//            systemDone = 1;
+//        }
+//        else {
+//            systemDone = 0;
+//        }
+//        return systemDone;
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_READING_SYSTEM_ID + " = ?" + " AND " + COLUMN_READING_SHIFT_ID + " = ?";
+        // selection argument
+        String[] selectionArgs = {Integer.toString(system_id),shift_id};
+        // query user table with condition
+
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                      //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+//        if (cursorCount > 0) {
+//            return true;
+//        }
+//        return false;
+//    }
+        return cursorCount;
     }
+
+    public int getPlantStatus(int plant_id, String shift_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_READING_PLANT_ID + " = ?" + " AND " + COLUMN_READING_SHIFT_ID + " = ?";
+        // selection argument
+        String[] selectionArgs = {Integer.toString(plant_id),shift_id};
+        // query user table with condition
+
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                      //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+//        if (cursorCount > 0) {
+//            return true;
+//        }
+//        return false;
+//    }
+        return cursorCount;
+    }
+
 
     /**
          * This method to update user record

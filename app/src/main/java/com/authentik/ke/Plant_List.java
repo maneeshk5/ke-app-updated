@@ -165,16 +165,22 @@ public class Plant_List extends AppCompatActivity {
                     plant_name.setWidth(200);
 
                     List<System> systemList = db.getPlantSystem(plants.get(i).getPlant_id());
+//                    List<Instrument> instrumentList = db.getPlantInstruments(plants.get(i).getPlant_id());
                     int noOfSystemsInPlant = systemList.size();
                     int plantStatus = 0;
 
+//                    int plantReadingsTaken = db.getPlantStatus(plants.get(i).getPlant_id(),shift_id);
+//                    plantStatus += plantReadingsTaken;
+
                     for (int j = 0; j < noOfSystemsInPlant; j++) {
                         int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
-                        plantStatus += systemStatus;
-//                        Log.i("System Name",systemList.get(j).getName());
-//                        Log.i("System Status",Integer.toString(systemStatus));
-//                        Log.i("Plant Name",plants.get(i).getPlant_name());
-//                        Log.i("Plant Status",Integer.toString(plantStatus));
+                        if (systemStatus == db.getSystemInstruments(systemList.get(j).getId()).size()){
+                            plantStatus += 1;
+                        }
+                        Log.i("System Name",systemList.get(j).getName());
+                        Log.i("System Status",Integer.toString(systemStatus));
+                        Log.i("Plant Name",plants.get(i).getPlant_name());
+                        Log.i("Plant Status",Integer.toString(plantStatus));
                     }
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
 
@@ -216,7 +222,6 @@ public class Plant_List extends AppCompatActivity {
                     tl.addView(tr);
                 }
     }
-
 
     public void goBack(View view) {
         finish();

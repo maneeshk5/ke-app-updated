@@ -201,7 +201,7 @@
     <TextView
         android:id="@+id/app_path_tv"
         android:layout_width="165dp"
-        android:layout_height="14dp"
+        android:layout_height="30dp"
         android:maxLength="1000"
         android:text="App path"
         android:textColor="@color/textColor"

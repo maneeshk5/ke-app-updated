@@ -127,11 +127,14 @@ public class System_List extends AppCompatActivity {
 
             List<Instrument> instrumentList = db.getSystemInstruments(systems.get(i).getId());
             int noOfinstrumentsInSystem = instrumentList.size();
+//            int systemStatus = 0;
+//            for (int j=0; j<noOfinstrumentsInSystem; j++) {
+//                int instStatus = db.getInstrumentStatus(instrumentList.get(j).getId(),shift_id);
+//                systemStatus += instStatus;
+//            }
             int systemStatus = 0;
-            for (int j=0; j<noOfinstrumentsInSystem; j++) {
-                int instStatus = db.getInstrumentStatus(instrumentList.get(j).getId(),shift_id);
-                systemStatus += instStatus;
-            }
+            int systemReadingsTaken = db.getSystemStatus(systems.get(i).getId(),shift_id);
+            systemStatus += systemReadingsTaken;
             status.setText(systemStatus + "/" + noOfinstrumentsInSystem);
 //            Log.i("No. of instruments: ", String.valueOf(noOfinstrumentsInSystem));
             status.setTextColor(Color.BLACK);
