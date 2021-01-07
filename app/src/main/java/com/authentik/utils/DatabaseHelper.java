@@ -505,6 +505,61 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return reading;
     }
 
+    public User getPassword(String user_name) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_USER_ID,
+                COLUMN_USER_NAME,
+                COLUMN_USER_PASSWORD,
+                COLUMN_USER_IS_ACTIVE};
+        // sorting orders
+        String sortOrder =
+                COLUMN_USER_ID + " ASC";
+
+        String selection = COLUMN_USER_NAME + " = ?";
+
+        String[] selectionArgs = {user_name};
+
+//        List<System> systemList = new ArrayList<System>();
+//        Reading reading = new Reading();
+        User user = new User();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+        /**
+         * Here query function is used to fetch records from user table this function works like we use sql query.
+         * SQL query equivalent to this query function is
+         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
+         */
+        Cursor cursor = db.query(TABLE_USER, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    user.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_ID))));
+                    user.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PASSWORD)));
+                    user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
+                    user.setIsActive(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_USER_IS_ACTIVE))));
+
+                    // Adding user record to list
+                } while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return user;
+    }
+
 
     public List<Instrument> getSystemInstruments(int system_id) {
         // array of columns to fetch

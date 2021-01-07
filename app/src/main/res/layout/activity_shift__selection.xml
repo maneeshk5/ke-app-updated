@@ -34,6 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="72dp"
         android:text="User:"
+        android:maxLength="12"
         android:textColor="@color/textColor"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"

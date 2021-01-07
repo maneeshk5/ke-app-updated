@@ -113,6 +113,7 @@ public class RequestHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
+            return "Invalid Server URL";
         }
         List<String> responseStrings = new ArrayList<>();
 

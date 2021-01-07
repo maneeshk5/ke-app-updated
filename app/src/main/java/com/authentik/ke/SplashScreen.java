@@ -20,6 +20,7 @@ import com.authentik.model.Plant;
 import com.authentik.model.Shift;
 import com.authentik.model.System;
 import com.authentik.model.User;
+import com.authentik.utils.Constant;
 import com.authentik.utils.DatabaseHelper;
 
 import org.json.JSONArray;
@@ -45,15 +46,24 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+        SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
+        final String server_url = sharedpreferences.getString("server_url","http://jaguar.atksrv.net:80/ke_api/");
+
         //intialize api urls
-        usersURL =  getString(R.string.server_name) + "readUsers.php";
-        plantsURL = getString(R.string.server_name) + "readPlants.php";
-        systemsURL = getString(R.string.server_name) + "readSystems.php";
-        instrumentsURL = getString(R.string.server_name) + "readInstruments.php";
+//        usersURL =  getString(R.string.server_name) + "readUsers.php";
+//        plantsURL = getString(R.string.server_name) + "readPlants.php";
+//        systemsURL = getString(R.string.server_name) + "readSystems.php";
+//        instrumentsURL = getString(R.string.server_name) + "readInstruments.php";
+
+        usersURL =  server_url + "readUsers.php";
+        plantsURL = server_url + "readPlants.php";
+        systemsURL = server_url + "readSystems.php";
+        instrumentsURL = server_url + "readInstruments.php";
 
 
         //create local database
         db = new DatabaseHelper(getApplicationContext());
+        final boolean[] serverURL = new boolean[1];
 
         // sync server db to local db if internet is available
         if (isInternetAvailable()) {
@@ -67,8 +77,18 @@ public class SplashScreen extends Activity {
                         @Override
                         protected Void doInBackground(Void... voids) {
 //                            DatabaseSync();
-                            DbSync();
+                          serverURL[0] =  DbSync();
                             return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            if (!serverURL[0]) {
+                                Toast.makeText(getApplicationContext(),"Invalid Server URL, Change it in settings > Server Settings",Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(),"Data Synced with Server",Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                     DBSync dbSync = new DBSync();
@@ -84,13 +104,13 @@ public class SplashScreen extends Activity {
             }
 //            MyTask task = new MyTask(SplashScreen.this);
 //            task.execute();
-            Toast.makeText(getApplicationContext(), "Internet Available", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(), "Internet Available", Toast.LENGTH_SHORT).show();
 
         } else {
             Toast.makeText(getApplicationContext(), "Sever Sync not available due to no internet", Toast.LENGTH_SHORT).show();
         }
 
-        SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+         sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
             if (sharedpreferences.contains("isLoggedIn")) {
                 boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
@@ -334,11 +354,15 @@ public class SplashScreen extends Activity {
         sl.execute();
     }
 
-    private void DbSync() {
+    private boolean DbSync() {
 
         //user Sync
         RequestHandler requestHandler = new RequestHandler();
         String getUsers =  requestHandler.sendReadRequest(usersURL);
+
+        if (getUsers.equals("Invalid Server URL")) {
+            return false;
+        }
         try {
 
             JSONArray arr = new JSONArray(getUsers);
@@ -456,7 +480,7 @@ public class SplashScreen extends Activity {
             e.printStackTrace();
         }
 
-
+    return true;
     }
 
 }

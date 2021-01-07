@@ -30,4 +30,5 @@ public class Constant {
     public static final String COLUMN_ANS_USERID = "user_id";
     public static final String COLUMN_RECORDED_TIME = "recorded_time";
     public static final String COLUMN_SENT_STATUS = "status";
+    public static String SERVER_URL = "http://jaguar.atksrv.net:80/ke_api/";
 }

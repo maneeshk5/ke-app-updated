@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,7 @@ import com.authentik.model.Plant;
 import com.authentik.model.System;
 import com.authentik.model.User;
 //import com.authentik.utils.DatabaseHandler;
+import com.authentik.utils.BCrypt;
 import com.authentik.utils.DatabaseHelper;
 
 import org.json.JSONArray;
@@ -83,23 +85,32 @@ public class Login extends AppCompatActivity {
 
     private void userLogin() {
 
-        final String username = editUserName.getText().toString();
-        final String password = editPassword.getText().toString();
+        String username = editUserName.getText().toString();
+        String password = editPassword.getText().toString();
         SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        //decrypt password
-        
+        Log.i("User Name",username);
 
-        if(db.checkUser(username,password)) {
-            editor.putString("Username",username);
-            editor.putBoolean("isLoggedIn",true);
-            editor.apply();
-            finish();
-            startActivity(new Intent(getApplicationContext(),Shift_Selection.class));
+        if(db.checkUser(username)) {
+            User user = db.getPassword(username);
+            boolean bcrypt = BCrypt.checkpw(password,user.getPassword());
+//            Log.i("Entered Password",BCrypt.hashpw(password,BCrypt.gensalt(8)));
+//            Log.i("Db Password",user.getPassword());
+
+            if (bcrypt) {
+                editor.putString("Username",username);
+                editor.putBoolean("isLoggedIn",true);
+                editor.apply();
+                finish();
+                startActivity(new Intent(getApplicationContext(),Shift_Selection.class));
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Invalid password", Toast.LENGTH_SHORT).show();
+            }
         }
         else {
-            Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Invalid username", Toast.LENGTH_SHORT).show();
         }
 
     }
