@@ -77,7 +77,7 @@ public class Tag_information extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String shift_id =  sharedPreferences.getString("shift_id","-");
         String value = sharedPreferences.getString("Username", "no name");
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -85,10 +85,11 @@ public class Tag_information extends AppCompatActivity {
         dateAndTime.setText(datetime);
 
         instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
-        app_path.setText( instrument.getName() + " > " + "Tag");
-
         final Plant plant = (Plant) getIntent().getSerializableExtra("plant_object");
         final System system = (System) getIntent().getSerializableExtra("system_object");
+
+        app_path.setText( plant.getPlant_name() + " > " + system.getName() + " > " + instrument.getName() + " > " + "Tag");
+
 
         //set tag details
         tag_instrument.append(instrument.getName());
@@ -166,11 +167,6 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
 
-//                                    if(!db.checkReading(reading.getShift_id(),reading.getInstrument_id())) {
-//                                        Toast.makeText(Tag_information.this,"Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
-//                                        db.addReading(reading);
-//                                        Toast.makeText(Tag_information.this,"Data Saved Successfully",Toast.LENGTH_LONG).show();
-//                                    }
                                     db.addReading(reading);
                                     Toast.makeText(Tag_information.this,"Data Saved Successfully",Toast.LENGTH_LONG).show();
                                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());

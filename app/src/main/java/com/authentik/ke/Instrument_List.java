@@ -37,6 +37,9 @@ public class Instrument_List extends AppCompatActivity {
     TextView dateAndTime;
     SharedPreferences sharedPreferences;
     TextView app_path;
+    String plant_name;
+    String system_name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +52,16 @@ public class Instrument_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-        String system_name = getIntent().getStringExtra("system_name");
-        app_path.setText(system_name + " > " + "Instrument List");
+        system_name = getIntent().getStringExtra("system_name");
+        plant_name = getIntent().getStringExtra("plant_name");
+        app_path.setText(plant_name + " > " + system_name + " > " + "Instrument List");
 
         db = new DatabaseHelper(getApplicationContext());
 
@@ -66,12 +70,6 @@ public class Instrument_List extends AppCompatActivity {
 
         final List<Instrument> instruments = db.getSystemInstruments(system_id);
 
-//        for (Iterator<Instrument> iterator = instruments.iterator(); iterator.hasNext(); ) {
-//            Instrument instrument = iterator.next();
-//            if (instrument.getIsActive() == 0) {
-//                iterator.remove();
-//            }
-//        }
 
         int itemCount = instruments.size();
 
@@ -155,8 +153,10 @@ public class Instrument_List extends AppCompatActivity {
                         intent.putExtra("instrument_id", instruments.get(finalI).getId());
                         intent.putExtra("instrument_name", instruments.get(finalI).getName());
 //                    Log.i("Instrument kks Code:",instruments.get(finalI).getKksCode());
-                        Log.i("Instrument unit:", instruments.get(finalI).getUnit());
+//                        Log.i("Instrument unit:", instruments.get(finalI).getUnit());
                         intent.putExtra("instrument_object", instruments.get(finalI));
+                        intent.putExtra("plant_name",plant_name);
+                        intent.putExtra("system_name",system_name);
                         startActivity(intent);
                     }
                     else {

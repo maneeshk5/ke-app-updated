@@ -48,7 +48,7 @@ public class barcode_scan extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -59,7 +59,11 @@ public class barcode_scan extends AppCompatActivity {
 //        app_path.setText(instrument_name + " > " + "Barcode");
 
         instrument_selected = (Instrument) getIntent().getSerializableExtra("instrument_object");
-        app_path.setText(instrument_selected.getName() + " > " + "Barcode");
+
+        String plant_name = getIntent().getStringExtra("plant_name");
+        String system_name = getIntent().getStringExtra("system_name");
+        String instrument_name = getIntent().getStringExtra("instrument_name");
+        app_path.setText(plant_name + " > " + system_name + " > " + instrument_name  + " > " + "Barcode: " + instrument_selected.getBarcodeId());
 
 //        Button btn = findViewById(R.id.barcode_scan_btn);
 //        btn.setOnClickListener(new View.OnClickListener() {

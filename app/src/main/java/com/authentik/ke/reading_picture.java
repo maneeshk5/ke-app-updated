@@ -75,7 +75,7 @@ public class reading_picture extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -167,9 +167,11 @@ public class reading_picture extends AppCompatActivity {
                         Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
 
                         //next instrument with the barcode
-
-
-                        Intent intent = new Intent(reading_picture.this,Plant_List.class);
+                        Intent intent = new Intent(reading_picture.this,Barcode_Instrument_List.class);
+                        List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
+                        intent.putExtra("Instrument_list", (Serializable) instrumentList);
+                        intent.putExtra("barcode_id", instrument.getBarcodeId());
+                        startActivity(intent);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }

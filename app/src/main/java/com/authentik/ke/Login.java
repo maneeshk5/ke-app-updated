@@ -65,7 +65,7 @@ public class Login extends AppCompatActivity {
                 public void run() {
                     dialog.dismiss();
                 }
-            }, 10000);
+            }, 8000);
         }
 
         editUserName = findViewById(R.id.userName_et);

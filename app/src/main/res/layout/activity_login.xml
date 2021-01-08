@@ -21,7 +21,7 @@
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/login_avatar"
+            android:src="@drawable/profile_pic_nobg"
             android:paddingTop="20dp"
             />
     </LinearLayout>
@@ -99,7 +99,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#4a5a71"></LinearLayout>
+                android:background="#4a5a71">
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

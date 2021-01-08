@@ -59,7 +59,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
         db = new DatabaseHelper(getApplicationContext());
 
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -87,10 +87,10 @@ public class Barcode_Instrument_List extends AppCompatActivity {
                 View view = super.getView(position,convertView,parent);
                 int instrumentReadingTaken = db.getInstrumentStatus(instrumentList.get(position).getId(), shift_id);
                 if (instrumentReadingTaken == 0) {
-                    view.setBackgroundColor(Color.RED);
+                    view.setBackgroundColor(Color.parseColor("#B22222"));
                 }
                 else {
-                    view.setBackgroundColor(Color.GREEN);
+                    view.setBackgroundColor(Color.parseColor("#68922e"));
                     totalReadingsTaken++;
                 }
                 return view;
@@ -121,7 +121,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
         builder.setTitle("Confirmation!");
-        builder.setMessage("All instrument readings not taken, Do you want to continue?");
+        builder.setMessage("Exit without saving?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -141,7 +141,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     public void goBack(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
         builder.setTitle("Confirmation!");
-        builder.setMessage("All instrument readings not taken, Do you want to continue?");
+        builder.setMessage("Exit without saving?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -169,7 +169,6 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
         }
         else {
-//            Toast.makeText(getApplicationContext(),"All instrument readings not taken",Toast.LENGTH_SHORT).show();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
             builder.setTitle("Confirmation!");

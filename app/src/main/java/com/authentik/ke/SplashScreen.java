@@ -48,6 +48,7 @@ public class SplashScreen extends Activity {
 
         SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
         final String server_url = sharedpreferences.getString("server_url","http://jaguar.atksrv.net:80/ke_api/");
+//        final String server_url = sharedpreferences.getString("server_url","http://jaguar.atksrv.net:80/ke_api/");
 
         //intialize api urls
 //        usersURL =  getString(R.string.server_name) + "readUsers.php";

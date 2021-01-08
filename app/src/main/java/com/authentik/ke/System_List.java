@@ -45,6 +45,7 @@ public class System_List extends AppCompatActivity {
     TextView app_path;
     String [] system_status_options = {"Select Status","Stand by", "PFW/Shutdown"};
     boolean updateSystemStatus;
+    String plant_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class System_List extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
         String shift_id = sharedPreferences.getString("shift_id","-");
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -68,7 +69,7 @@ public class System_List extends AppCompatActivity {
         db = new DatabaseHelper(getApplicationContext());
 
         int plant_id = getIntent().getIntExtra("plant_id",0);
-        String plant_name = getIntent().getStringExtra("plant_name");
+        plant_name = getIntent().getStringExtra("plant_name");
         app_path.setText(plant_name + " > " + "System List");
 
         final List<System> systems = db.getPlantSystem(plant_id);
@@ -169,8 +170,10 @@ public class System_List extends AppCompatActivity {
 
                             Log.i(" System id:", Integer.toString(systems.get(finalI).getId()));
                             Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
+                            intent.putExtra("app_path",app_path.getText().toString());
                             intent.putExtra("system_id", systems.get(finalI).getId());
                             intent.putExtra("system_name",systems.get(finalI).getName());
+                            intent.putExtra("plant_name",plant_name);
                             startActivity(intent);
                         }
                     });
@@ -207,8 +210,10 @@ public class System_List extends AppCompatActivity {
                                         db.updateSystemStatus(systems.get(finalI));
                                         Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
                                         Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
+                                        intent.putExtra("app_path",app_path.getText().toString());
                                         intent.putExtra("system_id", systems.get(finalI).getId());
                                         intent.putExtra("system_name", systems.get(finalI).getName());
+                                        intent.putExtra("plant_name",plant_name);
                                         startActivity(intent);
                                     }
                                 }
@@ -305,6 +310,7 @@ These extras are available:
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
                     Intent intent2 = new Intent(System_List.this,Barcode_Instrument_List.class);
+                    intent.putExtra("app_path",app_path.getText().toString());
                     intent2.putExtra("Instrument_list", (Serializable) instrumentList);
                     intent2.putExtra("barcode_id",data);
                     startActivity(intent2);

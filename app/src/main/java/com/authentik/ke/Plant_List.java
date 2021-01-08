@@ -37,27 +37,6 @@ public class Plant_List extends AppCompatActivity {
     TextView dateAndTime;
     SharedPreferences sharedPreferences;
 
-//    private List<Plant> plants;
-//    private List<System> systemList;
-//    private int plantStatus;
-//    private String shift_id;
-
-
-//    private void doHeavyWork(List<Plant> plants) {
-//        db = new DatabaseHelper(getApplicationContext());
-
-//        plants = db.getAllPlants();
-//
-//        for (int i=0; i<plants.size(); i++) {
-//            systemList = db.getPlantSystem(plants.get(i).getPlant_id());
-//            int noOfSystemsInPlant = systemList.size();
-//
-//            for (int j = 0; j < noOfSystemsInPlant; j++) {
-//                int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
-//                plantStatus = plantStatus + systemStatus;
-//            }
-//        }
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +51,7 @@ public class Plant_List extends AppCompatActivity {
         String value = sharedPreferences.getString("Username", "no name");
         String shift_id = sharedPreferences.getString("shift_id", "-");
 
-        currUser.setText("User: " + value);
+        currUser.setText(value);
 
         Date dNow = new Date();
         SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -80,36 +59,9 @@ public class Plant_List extends AppCompatActivity {
         dateAndTime.setText(datetime);
 
 
-//        final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                dialog.dismiss();
-//            }
-//        }, 10000);
-
         db = new DatabaseHelper(getApplicationContext());
 
         final List<Plant> plants = db.getAllPlants();
-
-//        for (Iterator<Plant> iterator = plants.iterator(); iterator.hasNext(); ) {
-//            Plant plant = iterator.next();
-//            if (plant.getIsActive() == 0) {
-//                iterator.remove();
-//            }
-//        }
-//        Thread thread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                doHeavyWork(plants);
-//            }
-//        });
-//        thread.start();
-//        try {
-//            thread.join();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
 
                 int itemCount = plants.size();
@@ -308,34 +260,30 @@ These extras are available:
                             data);
 
                     Log.i("Scan Result ", text2);
-//                    setText(text2);
-//                    goQuestionsActivity(data);
-
-//                    start Tag Activity
-//                    finish();
-//                    Instrument instrument = db.getInstrumentFromBarcode(data);
-//                    System system = db.getSystemFromInstrument(instrument);
-//                    Plant plant = db.getPlantFromSystem(system);
-//                    Log.i("Plant of Instrument",plant.getPlant_name());
-//                    Log.i("System of Instrument",system.getName());
-
-//                    for(int i=0; i<instrumentList.size(); i++) {
-//                        Log.i("Instrument" + i, instrumentList.get(i).getName());
-//                    }
-//
-//                    Intent intent2 = new Intent(Plant_List.this, Tag_information.class);
-//                    intent2.putExtra("instrument_object", instrument);
-//                    intent2.putExtra("system_object", system);
-//                    intent2.putExtra("plant_object", plant);
-//
-//                    startActivity(intent2);
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
-                    Intent intent2 = new Intent(Plant_List.this,Barcode_Instrument_List.class);
-                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
-                    intent2.putExtra("barcode_id",data);
-                    startActivity(intent2);
 
+//                    if (instrumentList.size() == 1) {
+//                        Intent intent2 = new Intent(Plant_List.this,Tag_information.class);
+//                        Instrument instrument = instrumentList.get(0);
+//                        System system = db.getSystemFromInstrument(instrument);
+//                        Plant plant = db.getPlantFromSystem(system);
+//
+//                        intent2.putExtra("instrument_object",instrument);
+//                        intent2.putExtra("plant_object",plant);
+//                        intent2.putExtra("system_object",system);
+//                        startActivity(intent2);
+//                    }
+//                    else {
+//                        Intent intent2 = new Intent(Plant_List.this, Barcode_Instrument_List.class);
+//                        intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+//                        intent2.putExtra("barcode_id", data);
+//                        startActivity(intent2);
+//                    }
+                    Intent intent2 = new Intent(Plant_List.this, Barcode_Instrument_List.class);
+                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                    intent2.putExtra("barcode_id", data);
+                    startActivity(intent2);
                 }
             }
         }

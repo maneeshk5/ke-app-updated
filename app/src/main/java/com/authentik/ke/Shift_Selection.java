@@ -87,7 +87,7 @@ public class Shift_Selection extends AppCompatActivity {
                 public void run() {
                     dialog.dismiss();
                 }
-            }, 10000);
+            }, 8000);
         }
 
         currDate = findViewById(R.id.curr_date_text);
@@ -108,23 +108,15 @@ public class Shift_Selection extends AppCompatActivity {
         btnLogOut = findViewById(R.id.btn_logout);
         btnSettings = findViewById(R.id.btn_settings);
 
-        final TextView userName = findViewById(R.id.curr_user_text);
+        final TextView userName = findViewById(R.id.username_tv);
         sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
         String value = sharedpreferences.getString("Username","-");
-        userName.setText("User: " + value);
-
+        userName.setText(value);
 
         spin = findViewById(R.id.spinner);
-//        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, shifts);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spin.setAdapter(adapter);
 
         spin2 = findViewById(R.id.spinner2);
-//        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, reading_types);
-//        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spin2.setAdapter(adapter2);
-
 
         Button btn = findViewById(R.id.shift_submit_btn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -170,25 +162,9 @@ public class Shift_Selection extends AppCompatActivity {
                         editor.putString("shift_id",shift_id);
                         editor.apply();
                     }
-//                    List<Plant> plantList = db.getAllPlants();
-//                    List<System> systemList = null;
 
-//                    for (int i=0; i<plantList.size(); i++) {
-//                        systemList = db.getPlantSystem(plantList.get(i).getPlant_id());
-//                    }
                     Intent intent = new Intent(Shift_Selection.this, Plant_List.class);
-//                    intent.putExtra("plant_list", (Serializable) plantList);
-//                    intent.putExtra("system_list",(Serializable) systemList);
-//                    Log.i("Plant Name",plantList.get(1).getPlant_name());
-//                    Log.i("System Name",systemList.get(1).getName());
                     startActivity(intent);
-//                    final ProgressDialog dialog = ProgressDialog.show(Shift_Selection.this, "Loading", "Please wait....", true);
-//                    Handler handler = new Handler();
-//                    handler.postDelayed(new Runnable() {
-//                        public void run() {
-//                            dialog.dismiss();
-//                        }
-//                    }, 10000);
                 }
             }
         });
