@@ -51,7 +51,6 @@ public class Tag_information extends AppCompatActivity {
     DatabaseHelper db;
     Instrument instrument;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,11 +205,12 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
 
-                                    db.addReading(reading);
+//                                    db.addReading(reading);
                                     finish();
                                     Intent intent = new Intent(Tag_information.this,reading_picture.class);
                                     intent.putExtra("tag_instrument",instrument);
-                                    intent.putExtra("reading_id",reading.getId());
+                                    intent.putExtra("reading_object",reading);
+//                                    intent.putExtra("reading_id",reading.getId());
                                     startActivity(intent);
 
                                 }

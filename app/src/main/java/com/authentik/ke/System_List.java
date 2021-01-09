@@ -44,7 +44,6 @@ public class System_List extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     TextView app_path;
     String [] system_status_options = {"Select Status","Stand by", "PFW/Shutdown"};
-    boolean updateSystemStatus;
     String plant_name;
 
     @Override
@@ -58,7 +57,7 @@ public class System_List extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString("Username", "no name");
-        String shift_id = sharedPreferences.getString("shift_id","-");
+        final String shift_id = sharedPreferences.getString("shift_id","-");
         currUser.setText(value);
 
         Date dNow = new Date();
@@ -154,7 +153,6 @@ public class System_List extends AppCompatActivity {
             }
 
             tr.setClickable(true);
-            updateSystemStatus = false;
 
             final int finalI = i;
             tr.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +166,15 @@ public class System_List extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
+                            Date dNow = new Date();
+                            SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+                            SimpleDateFormat ft2 = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                            String status_id = ft.format(dNow);
+                            String date_time = ft2.format(dNow);
+                            String status_value = "Running";
+
+                            db.addSystemStatus(status_id,shift_id,systems.get(finalI).getId(),status_value,date_time);
+
                             Log.i(" System id:", Integer.toString(systems.get(finalI).getId()));
                             Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
                             intent.putExtra("app_path",app_path.getText().toString());
@@ -180,25 +187,16 @@ public class System_List extends AppCompatActivity {
                     system_active_dialogue_builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                            Toast.makeText(getApplicationContext(),"System not running",Toast.LENGTH_SHORT).show();
                             final ArrayAdapter<String> adapter =
                                     new ArrayAdapter<>(System_List.this, android.R.layout.simple_spinner_dropdown_item,system_status_options);
                             final Spinner sp = new Spinner(System_List.this);
                             sp.setLayoutParams(new LinearLayout.LayoutParams(20, 20,1f));
-//                            sp.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT,));
-//                            sp.setGravity(Gravity.CENTER);
-//                            sp.setPrompt("Select status");
-//                            sp.setBackgroundResource(R.drawable.border);
                             sp.setPadding(30,10,10,10);
-//                            sp.setPaddingRelative(30,10,10,10);
-//                            sp.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
                             sp.setAdapter(adapter);
 
                             final AlertDialog.Builder system_status_dialogue_builder = new AlertDialog.Builder(System_List.this);
                             system_status_dialogue_builder.setView(null).setMessage(null);
                             system_status_dialogue_builder.setTitle("Update System Status");
-//                            system_status_dialogue_builder.setMessage("Update System Status");
                             system_status_dialogue_builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -206,15 +204,62 @@ public class System_List extends AppCompatActivity {
                                         Toast.makeText(System_List.this,"Select a valid status",Toast.LENGTH_SHORT).show();
 
                                     } else {
-                                        systems.get(finalI).setStatus(sp.getSelectedItem().toString());
-                                        db.updateSystemStatus(systems.get(finalI));
-                                        Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
-                                        Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
-                                        intent.putExtra("app_path",app_path.getText().toString());
-                                        intent.putExtra("system_id", systems.get(finalI).getId());
-                                        intent.putExtra("system_name", systems.get(finalI).getName());
-                                        intent.putExtra("plant_name",plant_name);
-                                        startActivity(intent);
+//                                        String status_value = systems.get(finalI).setStatus(sp.getSelectedItem().toString());
+//                                        db.updateSystemStatus(systems.get(finalI));
+                                        String status_value = sp.getSelectedItem().toString();
+                                        Date dNow = new Date();
+                                        SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
+                                        SimpleDateFormat ft2 = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                                        String status_id = ft.format(dNow);
+                                        String date_time = ft2.format(dNow);
+
+                                        db.addSystemStatus(status_id,shift_id,systems.get(finalI).getId(),status_value,date_time);
+
+                                        if (status_value.equals("PFW/Shutdown")) {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(System_List.this);
+                                            builder.setView(null).setMessage(null);
+                                            builder.setMessage("Select Another system?");
+                                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                   dialog.dismiss();
+                                                }
+                                            });
+                                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    AlertDialog.Builder plant_alert = new AlertDialog.Builder(System_List.this);
+                                                    plant_alert.setView(null).setMessage(null);
+                                                    plant_alert.setMessage("Select Another Plant?");
+                                                    plant_alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+//                                                            Intent intent = new Intent(System_List.this,Plant_List.class);
+//                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                    });
+                                                    plant_alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    });
+                                                    plant_alert.create().show();
+                                                }
+                                            });
+                                            builder.create().show();
+                                        }
+                                        else {
+//                                        Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
+                                            Intent intent = new Intent(System_List.this, Instrument_List.class);
+                                            intent.putExtra("app_path", app_path.getText().toString());
+                                            intent.putExtra("system_id", systems.get(finalI).getId());
+                                            intent.putExtra("system_name", systems.get(finalI).getName());
+                                            intent.putExtra("plant_name", plant_name);
+                                            startActivity(intent);
+                                        }
                                     }
                                 }
                             });

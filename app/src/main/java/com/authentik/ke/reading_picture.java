@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
+import com.authentik.model.Reading;
 import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
@@ -58,7 +59,8 @@ public class reading_picture extends AppCompatActivity {
     SharedPreferences sharedPreferences;
 
     DatabaseHelper db;
-    String reading_id;
+//    String reading_id;
+    Reading reading;
     Instrument instrument;
 
     @Override
@@ -82,7 +84,8 @@ public class reading_picture extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-        reading_id = getIntent().getStringExtra("reading_id");
+        reading = (Reading) getIntent().getSerializableExtra("reading_object");
+//        reading_id = getIntent().getStringExtra("reading_id");
         instrument = (Instrument) getIntent().getSerializableExtra("tag_instrument");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
@@ -163,7 +166,9 @@ public class reading_picture extends AppCompatActivity {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        db.insertReadingImage(reading_id, finalInputData);
+//                        db.insertReadingImage(reading_id, finalInputData);
+                        reading.setImage_path(finalInputData);
+                        db.addReading(reading);
                         Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
 
                         //next instrument with the barcode

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">K-Electric</string>
+    <string name="app_name">KE-Data Logger</string>
     <string-array name="settings">
         <item>Server Settings</item>
         <item>Logout</item>

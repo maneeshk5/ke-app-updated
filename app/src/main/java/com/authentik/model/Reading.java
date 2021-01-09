@@ -1,6 +1,8 @@
 package com.authentik.model;
 
-public class Reading {
+import java.io.Serializable;
+
+public class Reading implements Serializable {
 
     private String id;
     private int instrument_id;
@@ -8,9 +10,10 @@ public class Reading {
     private String shift_id;
     private Double reading_value;
     private String date_time;
-    private String image_path;
+    private byte[] image_path;
     private int system_id;
     private int plant_id;
+    private String system_status;
 
     public String getId() {
         return id;
@@ -53,11 +56,11 @@ public class Reading {
         this.date_time = date_time;
     }
 
-    public String getImage_path() {
+    public byte[] getImage_path() {
         return image_path;
     }
 
-    public void setImage_path(String image_path) {
+    public void setImage_path(byte[] image_path) {
         this.image_path = image_path;
     }
 
@@ -83,5 +86,13 @@ public class Reading {
 
     public void setPlant_id(int plant_id) {
         this.plant_id = plant_id;
+    }
+
+    public String getSystem_status() {
+        return system_status;
+    }
+
+    public void setSystem_status(String system_status) {
+        this.system_status = system_status;
     }
 }

@@ -61,7 +61,6 @@ public class SplashScreen extends Activity {
         systemsURL = server_url + "readSystems.php";
         instrumentsURL = server_url + "readInstruments.php";
 
-
         //create local database
         db = new DatabaseHelper(getApplicationContext());
         final boolean[] serverURL = new boolean[1];
@@ -71,8 +70,6 @@ public class SplashScreen extends Activity {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-//                    DbSync();
-//                    DatabaseSync();
                     class DBSync extends AsyncTask<Void,Void,Void> {
 
                         @Override

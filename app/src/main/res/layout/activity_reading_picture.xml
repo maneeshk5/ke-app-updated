@@ -73,6 +73,7 @@
 
     <ImageView
         android:id="@+id/reading_image"
+        android:background="@drawable/imageview_border"
         android:layout_width="200dp"
         android:layout_height="180dp"
         android:scaleType="fitXY"

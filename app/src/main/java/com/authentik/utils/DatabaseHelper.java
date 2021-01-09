@@ -32,6 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_INSTRUMENTS = "instruments";
     private static final String TABLE_SHIFT = "shift_details";
     private static final String TABLE_READING  = "readings";
+    private static final String TABLE_SYSTEM_STATUS  = "shift_system_status";
 
 
     // User Table Columns names
@@ -85,8 +86,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_READING_SHIFT_ID = "shift_id";
     private static final String COLUMN_READING_SYSTEM_ID = "system_id";
     private static final String COLUMN_READING_PLANT_ID = "plant_id";
+    private static final String COLUMN_READING_SYSTEM_STATUS = "system_status";
 
 
+    //System Status Column Names
+    private static final String COLUMN_STATUS_ID = "id";
+    private static final String COLUMN_STATUS_SYSTEM_ID = "system_id";
+    private static final String COLUMN_STATUS_SHIFT_ID = "shift_id";
+    private static final String COLUMN_STATUS_VALUE = "system_status_value";
+    private static final String COLUMN_STATUS_DATETIME = "date_time";
 
     // create table sql query
     private String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
@@ -120,7 +128,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_READING_IMAGE_PATH + " BLOB," + COLUMN_READING_TIME + " TEXT,"
             + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " DOUBLE , "
             + COLUMN_READING_DATETIME + " TEXT, " + COLUMN_READING_SYSTEM_ID + " INTEGER, " + COLUMN_READING_PLANT_ID
-            + " INTEGER " + ")";
+            + " INTEGER, " + COLUMN_READING_SYSTEM_STATUS + " TEXT " + ")";
+
+    private String CREATE_SHIFT_SYSTEM_STATUS_TABLE = "CREATE TABLE " + TABLE_SYSTEM_STATUS + "("
+            + COLUMN_STATUS_ID + " TEXT PRIMARY KEY, " + COLUMN_STATUS_SHIFT_ID + " TEXT, " + COLUMN_STATUS_SYSTEM_ID
+            + " INTEGER, " + COLUMN_STATUS_VALUE + " TEXT, " + COLUMN_STATUS_DATETIME + " TEXT " + ")";
 
 
     // drop table sql query
@@ -130,6 +142,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String DROP_INSTRUMENT_TABLE = "DROP TABLE IF EXISTS " + TABLE_INSTRUMENTS;
     private String DROP_SHIFT_TABLE = "DROP TABLE IF EXISTS " + TABLE_SHIFT;
     private String DROP_READING_TABLE = "DROP TABLE IF EXISTS " + TABLE_READING;
+    private String DROP_SYSTEM_STATUS_TABLE = "DROP TABLE IF EXISTS " + TABLE_SYSTEM_STATUS;
+
 
     //empty table query
     private String TRUNCATE_SHIFT_TABLE = "DELETE FROM " + TABLE_SHIFT;
@@ -153,6 +167,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_INSTRUMENT_TABLE);
         db.execSQL(CREATE_SHIFT_TABLE);
         db.execSQL(CREATE_READING_TABLE);
+        db.execSQL(CREATE_SHIFT_SYSTEM_STATUS_TABLE);
     }
 
 
@@ -166,10 +181,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DROP_INSTRUMENT_TABLE);
         db.execSQL(DROP_SHIFT_TABLE);
         db.execSQL(DROP_READING_TABLE);
+        db.execSQL(DROP_SYSTEM_STATUS_TABLE);
 
         // Create tables again
         onCreate(db);
+    }
 
+    public void rebuildDB(SQLiteDatabase db) {
+        //Drop User Table if exist
+        db.execSQL(DROP_USER_TABLE);
+        db.execSQL(DROP_PLANT_TABLE);
+        db.execSQL(DROP_SYSTEM_TABLE);
+        db.execSQL(DROP_INSTRUMENT_TABLE);
+        db.execSQL(DROP_SHIFT_TABLE);
+        db.execSQL(DROP_READING_TABLE);
+        db.execSQL(DROP_SYSTEM_STATUS_TABLE);
+
+        // Create tables again
+        onCreate(db);
     }
 
     /**
@@ -277,7 +306,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_READING_DATETIME, reading.getDate_time());
         values.put(COLUMN_READING_SYSTEM_ID, reading.getSystem_id());
         values.put(COLUMN_READING_PLANT_ID, reading.getPlant_id());
-
 
         // Inserting Row
         db.insert(TABLE_READING, null, values);
@@ -769,6 +797,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // updating row
         db.update(TABLE_SYSTEMS, values, COLUMN_SYSTEM_ID + " = ?",
                 new String[]{String.valueOf(system.getId())});
+        db.close();
+    }
+
+    public void addSystemStatus(String id, String shift_id, int system_id, String status_value, String date_time) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STATUS_ID, id);
+        values.put(COLUMN_STATUS_SHIFT_ID, shift_id);
+        values.put(COLUMN_STATUS_SYSTEM_ID, system_id);
+        values.put(COLUMN_STATUS_VALUE, status_value);
+        values.put(COLUMN_STATUS_DATETIME, date_time);
+
+        // updating row
+//        db.update(TABLE_SYSTEM_STATUS, values, COLUMN_SYSTEM_ID + " = ?",
+//                new String[]{String.valueOf(system.getId())});
+        db.insert(TABLE_SYSTEM_STATUS, null, values);
         db.close();
     }
 

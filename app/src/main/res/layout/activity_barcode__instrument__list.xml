@@ -86,12 +86,11 @@
     <ListView
         android:id="@+id/barcode_instrument_list"
         android:background="@drawable/listview_border"
-        android:layout_width="260dp"
-        android:layout_height="297dp"
+        android:layout_width="282dp"
+        android:layout_height="290dp"
         android:layout_marginStart="19dp"
-        android:layout_marginTop="5dp"
         android:layout_marginEnd="38dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="2dp"
         android:fadeScrollbars="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -102,19 +101,16 @@
 
     <Button
         android:id="@+id/btn_save_readings"
+        android:layout_width="69dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="28dp"
         android:background="@color/colorAccent"
-        android:textColor="#FFFFFF"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="38dp"
-        android:layout_marginBottom="16dp"
         android:onClick="saveReadings"
         android:text="Save"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/app_path_tv" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/app_path_tv"
@@ -126,11 +122,10 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.106"
+        app:layout_constraintHorizontal_bias="0.103"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.965" />
-
+        app:layout_constraintVertical_bias="0.959" />
 
 
 </android.support.constraint.ConstraintLayout>
