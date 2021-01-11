@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,12 +27,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authentik.model.Plant;
+import com.authentik.model.Reading;
 import com.authentik.model.Shift;
 import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
 import java.io.Serializable;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -61,39 +64,43 @@ public class Shift_Selection extends AppCompatActivity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
+//        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+//        registerReceiver(connectivityReceiver, intentFilter);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shift__selection);
 
-//        ActionBar actionBar = getSupportActionBar();
-//        getSupportActionBar().setTitle("Korange");
-//        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-//        actionBar.setDisplayShowCustomEnabled(true);
-//        actionBar.setCustomView(R.layout.custom_titlebar);
-
         db = new DatabaseHelper(getApplicationContext());
-//        try {
-//            Thread.sleep(8000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        dialog.dismiss();
-        if (isInternetAvailable()) {
-            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    dialog.dismiss();
-                }
-            }, 8000);
+
+        //clear db history
+        try {
+            clearDb();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+
+//        if (isInternetAvailable()) {
+//            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    dialog.dismiss();
+//                }
+//            }, 8000);
+//        }
 
         currDate = findViewById(R.id.curr_date_text);
         currTime = findViewById(R.id.curr_time_text);
 
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
         thisDate = currentDate.format(todayDate);
         currDate.append(thisDate);
@@ -187,7 +194,9 @@ public class Shift_Selection extends AppCompatActivity {
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
                 finishAffinity();
+                startActivity(intent);
             }
         });
 
@@ -199,6 +208,30 @@ public class Shift_Selection extends AppCompatActivity {
             }
         });
         logout_dialogue_builder.create().show();
+    }
+
+    private void clearDb() throws ParseException {
+        Log.i("clearDb method","Hello");
+        List<Reading> readingList =  db.getAllReadings();
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdformat = new SimpleDateFormat("dd-MM-yyyy");
+        Date todayDate = new Date();
+        String fortodayDate = currentDate.format(todayDate);
+        Date todayDate1 =sdformat.parse(fortodayDate);
+
+        if (readingList.size() > 0) {
+            for (int i=0; i<readingList.size(); i++) {
+                Date recordedDate = sdformat.parse(readingList.get(i).getDate_time());
+                if (recordedDate.compareTo(todayDate1) < 0) {
+                    Log.i("Reading status",readingList.get(i).getId() +  " should be deleted");
+                }
+                else {
+                    Log.i("Reading status",readingList.get(i).getId() + " should not be deleted");
+
+                }
+
+            }
+        }
     }
 
 }

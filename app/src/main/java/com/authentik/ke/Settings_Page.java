@@ -3,6 +3,7 @@ package com.authentik.ke;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -25,6 +26,7 @@ import com.authentik.model.System;
 import com.authentik.model.User;
 import com.authentik.utils.Constant;
 import com.authentik.utils.DatabaseHelper;
+import com.authentik.utils.SyncDbService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +47,8 @@ public class Settings_Page extends AppCompatActivity {
         setContentView(R.layout.activity_settings__page);
 
         settings_lv = findViewById(R.id.settings_lv);
+
+        db = new DatabaseHelper(getApplicationContext());
 
         SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
         final String server_url = sharedpreferences.getString("server_url", "http://jaguar.atksrv.net:80/ke_api/");
@@ -85,7 +89,7 @@ public class Settings_Page extends AppCompatActivity {
                                 } else {
                                     SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
-                                    editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_app_api");
+                                    editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_api");
                                     editor.apply();
                                     Toast.makeText(Settings_Page.this, "App needs a restart after server change", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());
@@ -101,15 +105,14 @@ public class Settings_Page extends AppCompatActivity {
                 } else if (position == 1) {
 
                     if (isInternetAvailable()) {
+                        //Send local db to server before clearing
+                        startService(new Intent(Settings_Page.this, SyncDbService.class));
                         final ProgressDialog dialog = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            public void run() {
-                                dialog.dismiss();
-                            }
-                        }, 20000);
-                        getApplicationContext().deleteDatabase("pvs_ke");
-                        db = new DatabaseHelper(getApplicationContext());
+
+                        db.rebuildDB(db.getWritableDatabase());
+
+//                        getApplicationContext().deleteDatabase("pvs_ke");
+//                        db = new DatabaseHelper(getApplicationContext());
 
                         final boolean[] serverURL = new boolean[1];
 
@@ -121,17 +124,17 @@ public class Settings_Page extends AppCompatActivity {
 
                                     @Override
                                     protected Void doInBackground(Void... voids) {
-//                            DatabaseSync();
                                         serverURL[0] = DbSync();
                                         return null;
                                     }
 
                                     @Override
                                     protected void onPostExecute(Void aVoid) {
+                                        dialog.dismiss();
                                         if (!serverURL[0]) {
                                             Toast.makeText(getApplicationContext(), "Invalid Server URL, Change it in settings > Server Settings", Toast.LENGTH_LONG).show();
                                         } else {
-                                            Toast.makeText(getApplicationContext(), "Data Synced with Server, App needs a restart", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "Data Synced with Server, Restarting app", Toast.LENGTH_LONG).show();
                                             finishAffinity();
                                         }
                                     }
@@ -146,7 +149,6 @@ public class Settings_Page extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-//                        Toast.makeText(getApplicationContext(), "App needs a restart", Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();

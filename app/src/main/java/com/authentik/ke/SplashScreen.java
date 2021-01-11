@@ -12,20 +12,28 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
+import com.authentik.model.Reading;
 import com.authentik.model.Shift;
 import com.authentik.model.System;
 import com.authentik.model.User;
 import com.authentik.utils.Constant;
 import com.authentik.utils.DatabaseHelper;
+import com.authentik.utils.SyncDbService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class SplashScreen extends Activity {
 
@@ -33,6 +41,8 @@ public class SplashScreen extends Activity {
     String plantsURL;
     String systemsURL;
     String instrumentsURL;
+    ProgressDialog dialog;
+    SharedPreferences sharedpreferences;
 
 //    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
 //    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
@@ -46,9 +56,11 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
-        final String server_url = sharedpreferences.getString("server_url","http://jaguar.atksrv.net:80/ke_api/");
-//        final String server_url = sharedpreferences.getString("server_url","http://jaguar.atksrv.net:80/ke_api/");
+        db = new DatabaseHelper(getApplicationContext());
+
+        String serverDefaultURL = getResources().getString(R.string.server_name);
+        sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
+        final String server_url = sharedpreferences.getString("server_url", serverDefaultURL);
 
         //intialize api urls
 //        usersURL =  getString(R.string.server_name) + "readUsers.php";
@@ -56,37 +68,75 @@ public class SplashScreen extends Activity {
 //        systemsURL = getString(R.string.server_name) + "readSystems.php";
 //        instrumentsURL = getString(R.string.server_name) + "readInstruments.php";
 
-        usersURL =  server_url + "readUsers.php";
+        usersURL = server_url + "readUsers.php";
         plantsURL = server_url + "readPlants.php";
         systemsURL = server_url + "readSystems.php";
         instrumentsURL = server_url + "readInstruments.php";
 
-        //create local database
-        db = new DatabaseHelper(getApplicationContext());
         final boolean[] serverURL = new boolean[1];
 
         // sync server db to local db if internet is available
         if (isInternetAvailable()) {
+            dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+
+            //Send local db to server before clearing
+            startService(new Intent(this, SyncDbService.class));
+
+//            clear db history
+//            try {
+//                clearDb();
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    class DBSync extends AsyncTask<Void,Void,Void> {
+                    class DBSync extends AsyncTask<Void, Void, Void> {
 
                         @Override
                         protected Void doInBackground(Void... voids) {
 //                            DatabaseSync();
-                          serverURL[0] =  DbSync();
+                            serverURL[0] = DbSync();
                             return null;
                         }
 
                         @Override
                         protected void onPostExecute(Void aVoid) {
+                            dialog.dismiss();
                             if (!serverURL[0]) {
-                                Toast.makeText(getApplicationContext(),"Invalid Server URL, Change it in settings > Server Settings",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Invalid Server URL, Change it in settings > Server Settings", Toast.LENGTH_LONG).show();
+                                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+
+                                if (sharedpreferences.contains("isLoggedIn")) {
+                                    boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
+                                    if (value) {
+                                        startActivity(new Intent(SplashScreen.this, Shift_Selection.class));
+                                    } else {
+                                        startActivity(new Intent(SplashScreen.this, Login.class));
+                                    }
+                                } else {
+                                    startActivity(new Intent(SplashScreen.this, Login.class));
+                                }
+
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Data Synced with Server", Toast.LENGTH_LONG).show();
+
+                                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+
+                                if (sharedpreferences.contains("isLoggedIn")) {
+                                    boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
+                                    if (value) {
+                                        startActivity(new Intent(SplashScreen.this, Shift_Selection.class));
+                                    } else {
+                                        startActivity(new Intent(SplashScreen.this, Login.class));
+                                    }
+                                } else {
+                                    startActivity(new Intent(SplashScreen.this, Login.class));
+                                }
+
                             }
-                            else {
-                                Toast.makeText(getApplicationContext(),"Data Synced with Server",Toast.LENGTH_LONG).show();
-                            }
+                            finish();
                         }
                     }
                     DBSync dbSync = new DBSync();
@@ -94,21 +144,16 @@ public class SplashScreen extends Activity {
                 }
             });
             thread.start();
-//            thread.getState().toString();
             try {
                 thread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            MyTask task = new MyTask(SplashScreen.this);
-//            task.execute();
-//            Toast.makeText(getApplicationContext(), "Internet Available", Toast.LENGTH_SHORT).show();
 
         } else {
             Toast.makeText(getApplicationContext(), "Sever Sync not available due to no internet", Toast.LENGTH_SHORT).show();
-        }
 
-         sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
             if (sharedpreferences.contains("isLoggedIn")) {
                 boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
@@ -121,6 +166,7 @@ public class SplashScreen extends Activity {
                 startActivity(new Intent(SplashScreen.this, Login.class));
             }
             finish();
+        }
 
     }
 
@@ -129,6 +175,12 @@ public class SplashScreen extends Activity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    @Override
+    protected void onDestroy() {
+//        dialog.dismiss();
+        super.onDestroy();
     }
 
     private void DatabaseSync() {
@@ -481,5 +533,28 @@ public class SplashScreen extends Activity {
     return true;
     }
 
+    private void clearDb() throws ParseException {
+//        Log.i("clearDb method","Hello");
+        List<Reading> readingList =  db.getAllReadings();
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yyyy");
+        Date todayDate = new Date();
+        String fortodayDate = currentDate.format(todayDate);
+        Date todayDate1 =sdformat.parse(fortodayDate);
+
+        if (readingList.size() > 0) {
+            for (int i=0; i<readingList.size(); i++) {
+                Date recordedDate = sdformat.parse(readingList.get(i).getDate_time());
+                if (recordedDate.compareTo(todayDate1) < 0) {
+                    Log.i("Reading status",readingList.get(i).getId() +  " should be deleted");
+                }
+                else {
+                    Log.i("Reading status",readingList.get(i).getId() + " should not be deleted");
+
+                }
+
+            }
+        }
+    }
 }
 

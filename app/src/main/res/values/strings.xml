@@ -28,6 +28,6 @@
     </string-array>
 
 <!--    <string name="server_name">http://192.168.100.230:80/ke_app_api/</string>-->
-    <string name="server_name">http://jaguar.atksrv.net:80/ke_api/</string>
+    <string name="server_name">http://192.168.100.230/ke_api/</string>
 
 </resources>

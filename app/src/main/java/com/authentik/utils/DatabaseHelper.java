@@ -193,12 +193,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DROP_PLANT_TABLE);
         db.execSQL(DROP_SYSTEM_TABLE);
         db.execSQL(DROP_INSTRUMENT_TABLE);
-        db.execSQL(DROP_SHIFT_TABLE);
-        db.execSQL(DROP_READING_TABLE);
-        db.execSQL(DROP_SYSTEM_STATUS_TABLE);
+//        db.execSQL(DROP_SHIFT_TABLE);
+//        db.execSQL(DROP_READING_TABLE);
+//        db.execSQL(DROP_SYSTEM_STATUS_TABLE);
 
         // Create tables again
-        onCreate(db);
+        db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_PLANT_TABLE);
+        db.execSQL(CREATE_SYSTEM_TABLE);
+        db.execSQL(CREATE_INSTRUMENT_TABLE);
     }
 
     /**
@@ -322,6 +325,111 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return list
      */
 
+    public List<Shift> getAllShifts() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_SHIFT_ID,
+                COLUMN_SHIFT_NAME,
+                COLUMN_SHIFT_READING_TYPE,
+                COLUMN_SHIFT_USER_NAME,
+                COLUMN_SHIFT_START_TIME,
+                COLUMN_SHIFT_END_TIME,
+                COLUMN_SHIFT_DATE
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_SHIFT_ID + " ASC";
+        List<Shift> shiftList = new ArrayList<Shift>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+
+        Cursor cursor = db.query(TABLE_SHIFT, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Shift shift = new Shift();
+                shift.setId(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_ID)));
+                shift.setName(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_NAME)));
+                shift.setReading_type(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_READING_TYPE)));
+                shift.setUser_Name(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_USER_NAME)));
+                shift.setStart_time(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_START_TIME)));
+                shift.setEnd_time(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_END_TIME)));
+                shift.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_DATE)));
+
+                // Adding user record to list
+                shiftList.add(shift);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return shiftList;
+    }
+
+    public List<ContentValues> getAllSystemStatus() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_STATUS_ID,
+                COLUMN_STATUS_VALUE,
+                COLUMN_STATUS_SYSTEM_ID,
+                COLUMN_STATUS_SHIFT_ID,
+                COLUMN_STATUS_DATETIME,
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_STATUS_ID + " ASC";
+
+        List<ContentValues> valuesList = new ArrayList<>();
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+
+        Cursor cursor = db.query(TABLE_SYSTEM_STATUS, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+//                Shift shift = new Shift();
+                ContentValues values = new ContentValues();
+                values.put("id",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_ID)));
+                values.put("shift_id",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_SHIFT_ID)));
+                values.put("system_id",Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_SYSTEM_ID))));
+                values.put("system_status_value",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_VALUE)));
+                values.put("date_time",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_DATETIME)));
+
+
+                // Adding user record to list
+                valuesList.add(values);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return valuesList;
+    }
+
+
     public List<User> getAllUser() {
         // array of columns to fetch
         String[] columns = {
@@ -337,11 +445,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         // query the user table
-        /**
-         * Here query function is used to fetch records from user table this function works like we use sql query.
-         * SQL query equivalent to this query function is
-         * SELECT user_id,user_name,user_email,user_password FROM user ORDER BY user_name;
-         */
+
         Cursor cursor = db.query(TABLE_USER, //Table to query
                 columns,    //columns to return
                 null,        //columns for the WHERE clause
@@ -367,6 +471,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // return user list
         return userList;
+    }
+
+    public List<Reading> getAllReadings() {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID,
+                COLUMN_READING_DATETIME,
+                COLUMN_READING_TIME,
+                COLUMN_READING_VALUE,
+                COLUMN_READING_SHIFT_ID,
+                COLUMN_READING_IMAGE_PATH,
+                COLUMN_READING_INSTRUMENT_ID};
+        // sorting orders
+        String sortOrder =
+                COLUMN_READING_ID + " ASC";
+
+        List<Reading> readingList = new ArrayList<Reading>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,    //columns to return
+                null,        //columns for the WHERE clause
+                null,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+//                User user = new User();
+                Reading reading = new Reading();
+                reading.setId(cursor.getString(cursor.getColumnIndex(COLUMN_READING_ID)));
+                reading.setReading_value(Double.parseDouble(cursor.getString(cursor.getColumnIndex(COLUMN_READING_VALUE))));
+                reading.setShift_id(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SHIFT_ID)));
+                reading.setInstrument_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_INSTRUMENT_ID))));
+                reading.setDate_time(cursor.getString(cursor.getColumnIndex(COLUMN_READING_DATETIME)));
+                reading.setTime(cursor.getString(cursor.getColumnIndex(COLUMN_READING_TIME)));
+                reading.setImage_path(cursor.getBlob(cursor.getColumnIndex(COLUMN_READING_IMAGE_PATH)));
+                // Adding user record to list
+                readingList.add(reading);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return readingList;
     }
 
     public List<Plant> getAllPlants() {
@@ -810,12 +966,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_STATUS_VALUE, status_value);
         values.put(COLUMN_STATUS_DATETIME, date_time);
 
-        // updating row
-//        db.update(TABLE_SYSTEM_STATUS, values, COLUMN_SYSTEM_ID + " = ?",
-//                new String[]{String.valueOf(system.getId())});
         db.insert(TABLE_SYSTEM_STATUS, null, values);
         db.close();
     }
+
+
 
     public void insertReadingImage(String reading_id,byte[] image) {
         SQLiteDatabase db = this.getWritableDatabase();

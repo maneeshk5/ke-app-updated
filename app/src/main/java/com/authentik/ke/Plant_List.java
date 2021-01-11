@@ -129,10 +129,10 @@ public class Plant_List extends AppCompatActivity {
                         if (systemStatus == db.getSystemInstruments(systemList.get(j).getId()).size()){
                             plantStatus += 1;
                         }
-                        Log.i("System Name",systemList.get(j).getName());
-                        Log.i("System Status",Integer.toString(systemStatus));
-                        Log.i("Plant Name",plants.get(i).getPlant_name());
-                        Log.i("Plant Status",Integer.toString(plantStatus));
+//                        Log.i("System Name",systemList.get(j).getName());
+//                        Log.i("System Status",Integer.toString(systemStatus));
+//                        Log.i("Plant Name",plants.get(i).getPlant_name());
+//                        Log.i("Plant Status",Integer.toString(plantStatus));
                     }
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
 
@@ -348,7 +348,9 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
                 finishAffinity();
+                startActivity(intent);
             }
         });
 

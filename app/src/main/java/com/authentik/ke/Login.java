@@ -59,13 +59,13 @@ public class Login extends AppCompatActivity {
 
         if (isInternetAvailable()) {
 
-            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    dialog.dismiss();
-                }
-            }, 8000);
+//            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    dialog.dismiss();
+//                }
+//            }, 8000);
         }
 
         editUserName = findViewById(R.id.userName_et);
