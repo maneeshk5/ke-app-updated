@@ -46,6 +46,25 @@ public class Settings_Page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings__page);
 
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                finishAffinity();
+//                startActivity(intent);
+            }
+        };
+        startHandler();
+
         settings_lv = findViewById(R.id.settings_lv);
 
         db = new DatabaseHelper(getApplicationContext());
@@ -157,6 +176,23 @@ public class Settings_Page extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    Handler handler;
+    Runnable r;
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3600*1000);
     }
 
     public boolean isInternetAvailable() {

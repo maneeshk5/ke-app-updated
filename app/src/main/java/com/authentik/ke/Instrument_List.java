@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,25 @@ public class Instrument_List extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instrument__list);
+
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                finishAffinity();
+//                startActivity(intent);
+            }
+        };
+        startHandler();
 
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
@@ -109,11 +129,11 @@ public class Instrument_List extends AppCompatActivity {
             TextView status = new TextView(this);
 
             serial_num.setText(Integer.toString(i + 1));
-            serial_num.setTextColor(Color.BLACK);
+            serial_num.setTextColor(Color.WHITE);
             serial_num.setPadding(10, 5, 20, 5);
 
             inst_name.setText(instruments.get(i).getName());
-            inst_name.setTextColor(Color.BLACK);
+            inst_name.setTextColor(Color.WHITE);
             inst_name.setPadding(10, 0, 0, 5);
             inst_name.setWidth(200);
 
@@ -122,12 +142,16 @@ public class Instrument_List extends AppCompatActivity {
             if (instrumentReadingsTaken == 0) {
                 instruments.get(i).setStatus("Not Done");
                 status.setText("Not Done");
+//                serial_num.setTextColor(Color.WHITE);
+//                inst_name.setTextColor(Color.WHITE);
             }
             else {
                 instruments.get(i).setStatus("Done");
                 status.setText("Done");
+//                serial_num.setTextColor(Color.WHITE);
+//                inst_name.setTextColor(Color.WHITE);
             }
-            status.setTextColor(Color.BLACK);
+            status.setTextColor(Color.WHITE);
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
@@ -172,6 +196,23 @@ public class Instrument_List extends AppCompatActivity {
             tr.setId(instruments.get(i).getId());
             tl.addView(tr);
         }
+    }
+
+    Handler handler;
+    Runnable r;
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3600*1000);
     }
 
     public void goBack(View view) {
@@ -308,7 +349,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

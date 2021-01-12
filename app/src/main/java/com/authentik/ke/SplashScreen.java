@@ -43,7 +43,7 @@ public class SplashScreen extends Activity {
     String instrumentsURL;
     ProgressDialog dialog;
     SharedPreferences sharedpreferences;
-//    Intent serviceIntent;
+    Intent serviceIntent;
 
 //    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
 //    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
@@ -81,8 +81,8 @@ public class SplashScreen extends Activity {
             dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
 
             //Send local db to server before clearing
-//            serviceIntent = new Intent(this, SyncDbService.class);
-//            startService(serviceIntent);
+            serviceIntent = new Intent(this, SyncDbService.class);
+            startService(serviceIntent);
 
 
             Thread thread = new Thread(new Runnable() {
@@ -176,9 +176,9 @@ public class SplashScreen extends Activity {
     @Override
     protected void onDestroy() {
 //        dialog.dismiss();
-//        if (isInternetAvailable()) {
-//            stopService(serviceIntent);
-//        }
+        if (isInternetAvailable()) {
+            stopService(serviceIntent);
+        }
         super.onDestroy();
     }
 
@@ -532,28 +532,5 @@ public class SplashScreen extends Activity {
     return true;
     }
 
-    private void clearDb() throws ParseException {
-//        Log.i("clearDb method","Hello");
-        List<Reading> readingList =  db.getAllReadings();
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yyyy");
-        Date todayDate = new Date();
-        String fortodayDate = currentDate.format(todayDate);
-        Date todayDate1 =sdformat.parse(fortodayDate);
-
-        if (readingList.size() > 0) {
-            for (int i=0; i<readingList.size(); i++) {
-                Date recordedDate = sdformat.parse(readingList.get(i).getDate_time());
-                if (recordedDate.compareTo(todayDate1) < 0) {
-                    Log.i("Reading status",readingList.get(i).getId() +  " should be deleted");
-                }
-                else {
-                    Log.i("Reading status",readingList.get(i).getId() + " should not be deleted");
-
-                }
-
-            }
-        }
-    }
 }
 

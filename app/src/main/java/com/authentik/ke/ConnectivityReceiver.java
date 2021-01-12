@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 
 import com.authentik.utils.SyncDbService;
 
@@ -13,26 +14,28 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-//        if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-//            ConnectivityManager cm =
-//                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//            isConnected = activeNetwork != null &&
-//                    activeNetwork.isAvailable();
-
-            ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-            isConnected =  (networkInfo != null && networkInfo.isConnected());
-
-            if (isConnected) {
+            if (isOnline(context)) {
                 Intent intent2 = new Intent(context, SyncDbService.class);
                 context.startService(intent2);
+//                Toast.makeText(context,"Network Connected",Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent2 = new Intent(context, SyncDbService.class);
                 context.stopService(intent2);
+//                Toast.makeText(context,"No Network Connection",Toast.LENGTH_SHORT).show();
             }
+
+    }
+
+    public boolean isOnline(Context context) {
+        try {
+            ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            isConnected = (networkInfo != null && networkInfo.isConnected());
+            return isConnected;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+            return false;
         }
-//    }
+    }
 
 }

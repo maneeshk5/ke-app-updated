@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
@@ -42,6 +43,25 @@ public class Plant_List extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plant__list);
+
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                finishAffinity();
+//                startActivity(intent);
+            }
+        };
+        startHandler();
 
 
         currUser = findViewById(R.id.username_tv);
@@ -108,11 +128,9 @@ public class Plant_List extends AppCompatActivity {
                     TextView status = new TextView(Plant_List.this);
 
                     serial_num.setText(Integer.toString(i + 1));
-                    serial_num.setTextColor(Color.BLACK);
                     serial_num.setPadding(10, 5, 20, 5);
 
                     plant_name.setText(plants.get(i).getPlant_name());
-                    plant_name.setTextColor(Color.BLACK);
                     plant_name.setPadding(10, 0, 0, 5);
                     plant_name.setWidth(200);
 
@@ -137,17 +155,26 @@ public class Plant_List extends AppCompatActivity {
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
 
                     status.setText(plantStatus + "/" + noOfSystemsInPlant);
-                    status.setTextColor(Color.BLACK);
                     status.setPadding(60, 0, 10, 5);
+//                    status.setTextAlignment(COLOR);
 
                     TableRow tr = new TableRow(Plant_List.this);
 
                     if (plantStatus == 0) {
                         tr.setBackgroundResource(R.drawable.row_borders);
+                        serial_num.setTextColor(Color.WHITE);
+                        plant_name.setTextColor(Color.WHITE);
+                        status.setTextColor(Color.WHITE);
                     }  else if(plantStatus == noOfSystemsInPlant) {
                         tr.setBackgroundResource(R.drawable.row_border_green);
+                        serial_num.setTextColor(Color.BLACK);
+                        plant_name.setTextColor(Color.BLACK);
+                        status.setTextColor(Color.BLACK);
                     } else {
                         tr.setBackgroundResource(R.drawable.row_border_yellow);
+                        serial_num.setTextColor(Color.WHITE);
+                        plant_name.setTextColor(Color.WHITE);
+                        status.setTextColor(Color.WHITE);
                     }
 
                     tr.setClickable(true);
@@ -175,21 +202,28 @@ public class Plant_List extends AppCompatActivity {
                 }
     }
 
+    Handler handler;
+    Runnable r;
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3600*1000);
+    }
+
+
     public void goBack(View view) {
         finish();
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                dialog.dismiss();
-//            }
-//        }, 10000);
-//    }
 
     public int calculatePlantStatus(final int noOfSystemsInPlant, final DatabaseHelper db, final List<System> systemList, final String shift_id) {
         final int[] plantStatus = {0};
@@ -350,7 +384,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

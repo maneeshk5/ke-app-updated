@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -57,6 +58,25 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode__instrument__list);
+
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                finishAffinity();
+//                startActivity(intent);
+            }
+        };
+        startHandler();
 
         serviceIntent = new Intent(this, SyncDbService.class);
 
@@ -145,6 +165,23 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             }
         });
 
+    }
+
+    Handler handler;
+    Runnable r;
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3600*1000);
     }
 
     @Override
@@ -246,7 +283,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

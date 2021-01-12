@@ -1,6 +1,7 @@
 package com.authentik.ke;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,6 +56,9 @@ public class Shift_Selection extends AppCompatActivity {
     String thisDate;
     SharedPreferences sharedpreferences;
     String timeComp;
+//    BroadcastReceiver broadcastReceiver;
+    Handler handler;
+    Runnable r;
 
     public boolean isInternetAvailable() {
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -68,15 +72,29 @@ public class Shift_Selection extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shift__selection);
 
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                finishAffinity();
+//                startActivity(intent);
+            }
+        };
+        startHandler();
+
         db = new DatabaseHelper(getApplicationContext());
 
-        //clear db history
-        try {
-            clearDb();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+//        broadcastReceiver = new ConnectivityReceiver();
+//        registerBroadcastReceiver();
 
         currDate = findViewById(R.id.curr_date_text);
         currTime = findViewById(R.id.curr_time_text);
@@ -159,6 +177,30 @@ public class Shift_Selection extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3600*1000);
+    }
+
+//    private void registerBroadcastReceiver() {
+//        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.N) {
+//            registerReceiver(broadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
+//        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M) {
+//            registerReceiver(broadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+//        }
+//    }
+
+
     public void settingsPage(View view) {
             startActivity(new Intent(Shift_Selection.this,Settings_Page.class));
     }
@@ -175,7 +217,7 @@ public class Shift_Selection extends AppCompatActivity {
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }
@@ -189,30 +231,6 @@ public class Shift_Selection extends AppCompatActivity {
             }
         });
         logout_dialogue_builder.create().show();
-    }
-
-    private void clearDb() throws ParseException {
-        Log.i("clearDb method","Hello");
-        List<Reading> readingList =  db.getAllReadings();
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat sdformat = new SimpleDateFormat("dd-MM-yyyy");
-        Date todayDate = new Date();
-        String fortodayDate = currentDate.format(todayDate);
-        Date todayDate1 =sdformat.parse(fortodayDate);
-
-        if (readingList.size() > 0) {
-            for (int i=0; i<readingList.size(); i++) {
-                Date recordedDate = sdformat.parse(readingList.get(i).getDate_time());
-                if (recordedDate.compareTo(todayDate1) < 0) {
-                    Log.i("Reading status",readingList.get(i).getId() +  " should be deleted");
-                }
-                else {
-                    Log.i("Reading status",readingList.get(i).getId() + " should not be deleted");
-
-                }
-
-            }
-        }
     }
 
 }

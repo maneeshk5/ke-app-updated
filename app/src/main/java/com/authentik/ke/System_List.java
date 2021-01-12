@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,6 +52,25 @@ public class System_List extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_system__list);
 
+        handler = new Handler();
+        r = new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putBoolean("isLoggedIn", false);
+                editor.putString("Username", "-");
+                editor.putString("shift_id", "-");
+                editor.apply();
+                Intent intent = new Intent(getApplicationContext(),Login.class);
+                finishAffinity();
+//                startActivity(intent);
+            }
+        };
+        startHandler();
+
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
         app_path = findViewById(R.id.app_path_tv);
@@ -73,12 +93,6 @@ public class System_List extends AppCompatActivity {
 
         final List<System> systems = db.getPlantSystem(plant_id);
 
-//        for (Iterator<System> iterator = systems.iterator(); iterator.hasNext(); ) {
-//            System system = iterator.next();
-//            if (system.getIsActive() == 0) {
-//                iterator.remove();
-//            }
-//        }
 
         int itemCount = systems.size();
 
@@ -117,11 +131,11 @@ public class System_List extends AppCompatActivity {
             TextView status = new TextView(this);
 
             serial_num.setText(Integer.toString(i + 1));
-            serial_num.setTextColor(Color.BLACK);
+//            serial_num.setTextColor(Color.BLACK);
             serial_num.setPadding(10, 5, 20, 5);
 
             system_name.setText(systems.get(i).getName());
-            system_name.setTextColor(Color.BLACK);
+//            system_name.setTextColor(Color.BLACK);
             system_name.setPadding(10, 0, 0, 5);
             system_name.setWidth(200);
 
@@ -137,19 +151,28 @@ public class System_List extends AppCompatActivity {
             systemStatus += systemReadingsTaken;
             status.setText(systemStatus + "/" + noOfinstrumentsInSystem);
 //            Log.i("No. of instruments: ", String.valueOf(noOfinstrumentsInSystem));
-            status.setTextColor(Color.BLACK);
+//            status.setTextColor(Color.BLACK);
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
 
             if (systemStatus == 0) {
                 tr.setBackgroundResource(R.drawable.row_borders);
+                serial_num.setTextColor(Color.WHITE);
+                system_name.setTextColor(Color.WHITE);
+                status.setTextColor(Color.WHITE);
             }
             else if (systemStatus == noOfinstrumentsInSystem){
                 tr.setBackgroundResource(R.drawable.row_border_green);
+                serial_num.setTextColor(Color.WHITE);
+                system_name.setTextColor(Color.WHITE);
+                status.setTextColor(Color.WHITE);
             }
             else {
                 tr.setBackgroundResource(R.drawable.row_border_yellow);
+                serial_num.setTextColor(Color.BLACK);
+                system_name.setTextColor(Color.BLACK);
+                status.setTextColor(Color.BLACK);
             }
 
             tr.setClickable(true);
@@ -289,6 +312,23 @@ public class System_List extends AppCompatActivity {
         }
     }
 
+    Handler handler;
+    Runnable r;
+
+    @Override
+    public void onUserInteraction() {
+        // TODO Auto-generated method stub
+        super.onUserInteraction();
+        stopHandler();
+        startHandler();
+    }
+    public void stopHandler() {
+        handler.removeCallbacks(r);
+    }
+    public void startHandler() {
+        handler.postDelayed(r, 3600*1000);
+    }
+
     public void goBack(View view) {
         finish();
     }
@@ -414,7 +454,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

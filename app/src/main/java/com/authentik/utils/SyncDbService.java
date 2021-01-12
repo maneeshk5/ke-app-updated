@@ -33,12 +33,6 @@ public class SyncDbService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("Service Status:","Sync Service Started");
-        return START_STICKY;
-    }
-
-    @Override
-    public void onCreate() {
-
         String serverURL = getResources().getString(R.string.server_name);
         SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
         final String server_url = sharedpreferences.getString("server_url", serverURL);
@@ -46,8 +40,8 @@ public class SyncDbService extends Service {
         final String readingsURL =  server_url + "addReading.php";
         final String shiftsURL = server_url + "addShift.php";
         final String shiftSystemStatusURL = server_url + "addSystemStatus.php";
-        
-         db = new DatabaseHelper(getApplicationContext());
+
+        db = new DatabaseHelper(getApplicationContext());
 
 
         class ReadingSync extends AsyncTask<Void, Void, String> {
@@ -75,7 +69,7 @@ public class SyncDbService extends Service {
             protected String doInBackground(Void... voids) {
 
                 String status = " ";
-                
+
                 final HashMap<String,String> reading_params = new HashMap<>();
                 List<Reading> readingList = db.getAllReadings();
 
@@ -100,16 +94,16 @@ public class SyncDbService extends Service {
                         try {
                             obj = new JSONObject(status);
 
-                        if (obj.getInt("success") == 1) {
-                            db.changeReadingSyncStatus(readingList.get(i).getId(),1);
-                        }
+                            if (obj.getInt("success") == 1) {
+                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 }
-                
+
                 //sync shift_system_status db table
                 final HashMap<String,String> shift_params = new HashMap<>();
                 List<Shift> shiftList = db.getAllShifts();
@@ -176,13 +170,19 @@ public class SyncDbService extends Service {
                         }
                     }
                 }
-                
+
                 return status;
             }
         }
 
         ReadingSync ul = new ReadingSync();
         ul.execute();
+        return START_STICKY;
+    }
+
+    @Override
+    public void onCreate() {
+
     }
 
     @Override
