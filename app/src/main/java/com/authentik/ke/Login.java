@@ -57,17 +57,6 @@ public class Login extends AppCompatActivity {
 
         db = new DatabaseHelper(getApplicationContext());
 
-        if (isInternetAvailable()) {
-
-//            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    dialog.dismiss();
-//                }
-//            }, 8000);
-        }
-
         editUserName = findViewById(R.id.userName_et);
         editPassword = findViewById(R.id.password_et);
         btnLogin = findViewById(R.id.login_btn);

@@ -132,7 +132,7 @@ public class Settings_Page extends AppCompatActivity {
                                     protected void onPostExecute(Void aVoid) {
                                         dialog.dismiss();
                                         if (!serverURL[0]) {
-                                            Toast.makeText(getApplicationContext(), "Invalid Server URL, Change it in settings > Server Settings", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "Server Connection failed", Toast.LENGTH_LONG).show();
                                         } else {
                                             Toast.makeText(getApplicationContext(), "Data Synced with Server, Restarting app", Toast.LENGTH_LONG).show();
                                             finishAffinity();

@@ -14,6 +14,10 @@ import com.authentik.ke.RequestHandler;
 import com.authentik.model.Reading;
 import com.authentik.model.Shift;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +32,7 @@ public class SyncDbService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("Service Status:","Sync Service Started");
         return START_STICKY;
     }
 
@@ -55,11 +60,6 @@ public class SyncDbService extends Service {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                try {
-                    clearDb();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
 
                 Log.i("Response JSON",s);
 
@@ -96,6 +96,17 @@ public class SyncDbService extends Service {
                         RequestHandler requestHandler = new RequestHandler();
                         //returing the response
                         status = requestHandler.sendPostRequest(readingsURL, reading_params);
+                        JSONObject obj;
+                        try {
+                            obj = new JSONObject(status);
+
+                        if (obj.getInt("success") == 1) {
+                            db.changeReadingSyncStatus(readingList.get(i).getId(),1);
+                        }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 
@@ -119,6 +130,19 @@ public class SyncDbService extends Service {
                         RequestHandler requestHandler = new RequestHandler();
                         //returning the response
                         status = requestHandler.sendPostRequest(shiftsURL, shift_params);
+
+                        JSONObject obj;
+                        try {
+                            obj = new JSONObject(status);
+
+                            if (obj.getInt("success") == 1) {
+//                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
+                                db.changeShiftSyncStatus(shiftList.get(i).getId(),1);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -138,6 +162,18 @@ public class SyncDbService extends Service {
                         RequestHandler requestHandler = new RequestHandler();
                         //returing the response
                         status = requestHandler.sendPostRequest(shiftSystemStatusURL, shift_system_status_params);
+                        JSONObject obj;
+                        try {
+                            obj = new JSONObject(status);
+
+                            if (obj.getInt("success") == 1) {
+//                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
+                                db.changeSystemStatusSync(values.get(i).getAsString("id"),1);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 
@@ -156,23 +192,56 @@ public class SyncDbService extends Service {
     }
 
     private void clearDb() throws ParseException {
-//        Log.i("clearDb method","Hello");
-        List<Reading> readingList =  db.getAllReadings();
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
-        SimpleDateFormat sdformat = new SimpleDateFormat("dd/MM/yyyy");
+        Log.i("clearDb method","Hello");
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdformat = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
         String fortodayDate = currentDate.format(todayDate);
-        Date todayDate1 =sdformat.parse(fortodayDate);
+        Date todayDate1 = sdformat.parse(fortodayDate);
 
+        //clear reading table data
+        List<Reading> readingList =  db.getAllReadings();
         if (readingList.size() > 0) {
             for (int i=0; i<readingList.size(); i++) {
-                Date recordedDate = sdformat.parse(readingList.get(i).getDate_time());
-                if (recordedDate.compareTo(todayDate1) < 0) {
+                Date recordedReadingDate = sdformat.parse(readingList.get(i).getDate_time());
+                if (recordedReadingDate.compareTo(todayDate) > 0 && readingList.get(i).getSync_status() == 1) {
                     Log.i("Reading status",readingList.get(i).getId() +  " should be deleted");
+                    db.deleteReading(readingList.get(i));
                 }
                 else {
                     Log.i("Reading status",readingList.get(i).getId() + " should not be deleted");
+                }
 
+            }
+        }
+
+        //clear shift table data
+        List<Shift> shiftList = db.getAllShifts();
+        if (shiftList.size() > 0) {
+            for (int i=0; i<shiftList.size(); i++) {
+                Date recordedShiftDate = sdformat.parse(shiftList.get(i).getDate());
+                if (recordedShiftDate.compareTo(todayDate) > 0 && shiftList.get(i).getSync_status() == 1) {
+                    Log.i("shift status",shiftList.get(i).getId() +  " should be deleted");
+                    db.deleteShift(shiftList.get(i));
+                }
+                else {
+                    Log.i("shift status",shiftList.get(i).getId() + " should not be deleted");
+                }
+
+            }
+        }
+        //clear status table data
+        List<ContentValues> values = db.getAllSystemStatus();
+        SimpleDateFormat sdformat2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        if(values.size() > 0) {
+            for (int i = 0; i < values.size(); i++) {
+                Date recordedStatusDate = sdformat2.parse(values.get(i).getAsString("date_time"));
+                if (recordedStatusDate.compareTo(todayDate) > 0 && Integer.parseInt(values.get(i).getAsString("sync_status")) == 1) {
+                    Log.i("system status",values.get(i).getAsString("id") +  " should be deleted");
+                    db.deleteStatus(values.get(i).getAsString("id"));
+                }
+                else {
+                    Log.i("system status",values.get(i).getAsString("id") + " should not be deleted");
                 }
 
             }

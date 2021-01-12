@@ -30,8 +30,8 @@ public class RequestHandler {
         try {
             url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(15000);
-            conn.setConnectTimeout(15000);
+            conn.setReadTimeout(20000);
+            conn.setConnectTimeout(20000);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setDoInput(true);

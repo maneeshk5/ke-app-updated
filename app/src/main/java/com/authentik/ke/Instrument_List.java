@@ -242,6 +242,7 @@ These extras are available:
                     Intent intent2 = new Intent(Instrument_List.this,Barcode_Instrument_List.class);
                     intent2.putExtra("Instrument_list", (Serializable) instrumentList);
                     intent2.putExtra("barcode_id",data);
+                    finish();
                     startActivity(intent2);
                 }
             }

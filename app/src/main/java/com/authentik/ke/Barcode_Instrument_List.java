@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +28,7 @@ import com.authentik.model.Plant;
 import com.authentik.model.Reading;
 import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
+import com.authentik.utils.SyncDbService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,11 +51,14 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     DatabaseHelper db;
     int totalReadingsTaken;
     List<Instrument> instrumentList;
+    Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode__instrument__list);
+
+        serviceIntent = new Intent(this, SyncDbService.class);
 
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
@@ -75,6 +81,24 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
 
         instrumentList = (List<Instrument>) getIntent().getSerializableExtra("Instrument_list");
+
+        if (instrumentList.size() == 1) {
+            Instrument instrument = instrumentList.get(0);
+            System system = db.getSystemFromInstrument(instrument);
+            Plant plant = db.getPlantFromSystem(system);
+            Intent intent2 = new Intent(Barcode_Instrument_List.this, Tag_information.class);
+            intent2.putExtra("instrument_object", instrument);
+            intent2.putExtra("system_object", system);
+            intent2.putExtra("plant_object", plant);
+            finish();
+            startActivity(intent2);
+        }
+
+        if (instrumentList.size() == 0) {
+            Toast.makeText(getApplicationContext(),"No instrument with this barcode",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         String barcode_id = getIntent().getStringExtra("barcode_id");
 
         Log.i("Barcode id",barcode_id);
@@ -164,84 +188,19 @@ public class Barcode_Instrument_List extends AppCompatActivity {
         builder.create().show();
     }
 
+    public boolean isInternetAvailable() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
     public void saveReadings(View view) {
 
-//        class ReadingSync extends AsyncTask<Void, Void, String> {
-//
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-////                super.onPostExecute(s);
-////
-////                try {
-////
-////                    JSONArray arr = new JSONArray("{" + s + "}");
-//////                    JSONObject obj = new JSONObject(s);
-////                    Log.i("JSON response",s);
-////
-////                    if (arr.length() == 0) {
-////                        Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-////                    } else {
-////                        for (int i = 0; i < arr.length(); i++) {
-////                        JSONObject obj = arr.getJSONObject(i);
-////                            int code = obj.getInt("success");
-////                            String msg = obj.getString("message");
-////                        }
-////
-//////                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-////
-////                    }
-////
-////                } catch (JSONException e) {
-////                    e.printStackTrace();
-////                }
-//
-//            }
-//
-//            @Override
-//            protected String doInBackground(Void... voids) {
-//
-//                String status = " ";
-//
-//                Log.i("Instrument List size ",Integer.toString(instrumentList.size()));
-//                Log.i("total Readings Taken", Integer.toString(totalReadingsTaken));
-//
-//                final HashMap<String,String> params = new HashMap<>();
-////        JSONObject params = new JSONObject();
-//                List<Reading> readingList = db.getAllReadings();
-//
-//                if(readingList.size() > 0) {
-//
-//                    for (int i = 0; i < readingList.size(); i++) {
-//                        params.put("id", readingList.get(i).getId());
-//                        params.put("instrument_id", Integer.toString(readingList.get(i).getInstrument_id()));
-//                        params.put("shift_id", readingList.get(i).getShift_id());
-//                        params.put("reading_value", Double.toString(readingList.get(i).getReading_value()));
-//                        params.put("date", readingList.get(i).getDate_time());
-//                        params.put("system_id", Integer.toString(readingList.get(i).getInstrument_id()));
-//                        params.put("plant_id", Integer.toString(readingList.get(i).getInstrument_id()));
-//                        params.put("time", readingList.get(i).getTime());
-//                        if (readingList.get(i).getImage_path() != null) {
-//                            params.put("image", readingList.get(i).getImage_path().toString());
-//                        }
-//                        RequestHandler requestHandler = new RequestHandler();
-//                        //returing the response
-//                        status = requestHandler.sendPostRequest("http://192.168.100.230/ke_app_api/addReading.php", params);
-//                    }
-//                }
-//                else {
-//                    status = "No records found";
-//                }
-//                return status;
-//            }
-//        }
-//
-//        ReadingSync ul = new ReadingSync();
-//        ul.execute();
+        // send data to server and clear db history
+        if (isInternetAvailable()) {
+            startService(serviceIntent);
+        }
 
 
         if (totalReadingsTaken == instrumentList.size()) {
@@ -257,7 +216,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    finish();
+                    finishAffinity();
                     startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
                 }
             });
@@ -301,5 +260,11 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             }
         });
         logout_dialogue_builder.create().show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(serviceIntent);
+        super.onDestroy();
     }
 }

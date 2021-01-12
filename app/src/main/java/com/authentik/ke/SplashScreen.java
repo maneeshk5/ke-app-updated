@@ -43,6 +43,7 @@ public class SplashScreen extends Activity {
     String instrumentsURL;
     ProgressDialog dialog;
     SharedPreferences sharedpreferences;
+//    Intent serviceIntent;
 
 //    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
 //    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
@@ -80,14 +81,9 @@ public class SplashScreen extends Activity {
             dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
 
             //Send local db to server before clearing
-            startService(new Intent(this, SyncDbService.class));
+//            serviceIntent = new Intent(this, SyncDbService.class);
+//            startService(serviceIntent);
 
-//            clear db history
-//            try {
-//                clearDb();
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
 
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -105,7 +101,7 @@ public class SplashScreen extends Activity {
                         protected void onPostExecute(Void aVoid) {
                             dialog.dismiss();
                             if (!serverURL[0]) {
-                                Toast.makeText(getApplicationContext(), "Invalid Server URL, Change it in settings > Server Settings", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
                                 sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
                                 if (sharedpreferences.contains("isLoggedIn")) {
@@ -180,6 +176,9 @@ public class SplashScreen extends Activity {
     @Override
     protected void onDestroy() {
 //        dialog.dismiss();
+//        if (isInternetAvailable()) {
+//            stopService(serviceIntent);
+//        }
         super.onDestroy();
     }
 

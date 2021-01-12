@@ -9,6 +9,7 @@ public class Shift {
     private String end_time;
     private String user_name;
     private String date;
+    private int sync_status;
 
     public String getId() {
         return id;
@@ -64,5 +65,13 @@ public class Shift {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getSync_status() {
+        return sync_status;
+    }
+
+    public void setSync_status(int sync_status) {
+        this.sync_status = sync_status;
     }
 }

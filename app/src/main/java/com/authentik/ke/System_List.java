@@ -342,22 +342,13 @@ These extras are available:
                             data);
 
                     Log.i("Scan Result ", text2);
-//                    setText(text2);
-//                    goQuestionsActivity(data);
-
-//                    start Tag Activity
-//                    finish();
-//                    Instrument instrument = db.getInstrumentFromBarcode(data);
-//                    System system = db.getSystemFromInstrument(instrument);
-//                    Plant plant = db.getPlantFromSystem(system);
-//                    Log.i("Plant of Instrument",plant.getPlant_name());
-//                    Log.i("System of Instrument",system.getName());
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
                     Intent intent2 = new Intent(System_List.this,Barcode_Instrument_List.class);
                     intent.putExtra("app_path",app_path.getText().toString());
                     intent2.putExtra("Instrument_list", (Serializable) instrumentList);
                     intent2.putExtra("barcode_id",data);
+                    finish();
                     startActivity(intent2);
                 }
             }

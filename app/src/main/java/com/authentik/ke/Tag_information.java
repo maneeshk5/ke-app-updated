@@ -177,6 +177,7 @@ public class Tag_information extends AppCompatActivity {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     intent.putExtra("Instrument_list",(Serializable) instrumentList);
                                     intent.putExtra("barcode_id",instrument.getBarcodeId());
+                                    finish();
                                     startActivity(intent);
 
                                 }

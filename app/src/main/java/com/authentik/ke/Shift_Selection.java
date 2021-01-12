@@ -44,8 +44,7 @@ import java.util.List;
 import java.util.Timer;
 
 public class Shift_Selection extends AppCompatActivity {
-//    String[] shifts = {"Select Shift","Night","Morning", "Evening"};
-//    String[] reading_types = {"Select Reading Types","First","Second","Third"};
+
     ImageView btnLogOut;
     TextView currDate;
     TextView currTime;
@@ -64,14 +63,6 @@ public class Shift_Selection extends AppCompatActivity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
-//        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-//        registerReceiver(connectivityReceiver, intentFilter);
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,16 +77,6 @@ public class Shift_Selection extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-//        if (isInternetAvailable()) {
-//            final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    dialog.dismiss();
-//                }
-//            }, 8000);
-//        }
 
         currDate = findViewById(R.id.curr_date_text);
         currTime = findViewById(R.id.curr_time_text);

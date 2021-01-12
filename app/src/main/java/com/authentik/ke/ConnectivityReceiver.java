@@ -13,27 +13,26 @@ public class ConnectivityReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-            ConnectivityManager cm =
-                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+//            ConnectivityManager cm =
+//                    (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//            isConnected = activeNetwork != null &&
+//                    activeNetwork.isAvailable();
 
-            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            isConnected = activeNetwork != null &&
-                    activeNetwork.isAvailable();
+            ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            isConnected =  (networkInfo != null && networkInfo.isConnected());
 
             if (isConnected) {
                 Intent intent2 = new Intent(context, SyncDbService.class);
                 context.startService(intent2);
             } else {
-                onConnectionInterrupted();
+                Intent intent2 = new Intent(context, SyncDbService.class);
+                context.stopService(intent2);
             }
         }
-    }
+//    }
 
-    private void onConnectionRestored() { //implement me
-
-    }
-
-    private void onConnectionInterrupted() { //implement me
-    }
 }
