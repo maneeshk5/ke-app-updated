@@ -70,7 +70,8 @@ public class Settings_Page extends AppCompatActivity {
         db = new DatabaseHelper(getApplicationContext());
 
         SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
-        final String server_url = sharedpreferences.getString("server_url", "http://jaguar.atksrv.net:80/ke_api/");
+        String serverURL = getResources().getString(R.string.server_name);
+        final String server_url = sharedpreferences.getString("server_url", serverURL);
 
         usersURL = server_url + "readUsers.php";
         plantsURL = server_url + "readPlants.php";
@@ -108,7 +109,7 @@ public class Settings_Page extends AppCompatActivity {
                                 } else {
                                     SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
-                                    editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_api");
+                                    editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_app_api");
                                     editor.apply();
                                     Toast.makeText(Settings_Page.this, "App needs a restart after server change", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());

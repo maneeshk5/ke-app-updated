@@ -30,8 +30,8 @@ public class RequestHandler {
         try {
             url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(20000);
-            conn.setConnectTimeout(20000);
+            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(30000);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setDoInput(true);
@@ -91,8 +91,8 @@ public class RequestHandler {
         try {
             url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(20000);
-            conn.setConnectTimeout(20000);
+            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(30000);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoInput(true);

@@ -52,7 +52,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     DatabaseHelper db;
     int totalReadingsTaken;
     List<Instrument> instrumentList;
-    Intent serviceIntent;
+//    Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
         };
         startHandler();
 
-        serviceIntent = new Intent(this, SyncDbService.class);
+//        serviceIntent = new Intent(this, SyncDbService.class);
 
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
@@ -235,9 +235,9 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     public void saveReadings(View view) {
 
         // send data to server and clear db history
-        if (isInternetAvailable()) {
-            startService(serviceIntent);
-        }
+//        if (isInternetAvailable()) {
+//            startService(serviceIntent);
+//        }
 
 
         if (totalReadingsTaken == instrumentList.size()) {
@@ -301,7 +301,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        stopService(serviceIntent);
+//        stopService(serviceIntent);
         super.onDestroy();
     }
 }
