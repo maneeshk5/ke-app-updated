@@ -132,7 +132,6 @@ public class Settings_Page extends AppCompatActivity {
 
                         db.rebuildDB(db.getWritableDatabase());
                         startService(new Intent(Settings_Page.this, SyncDbService.class));
-
 //                        getApplicationContext().deleteDatabase("pvs_ke");
 //                        db = new DatabaseHelper(getApplicationContext());
 
