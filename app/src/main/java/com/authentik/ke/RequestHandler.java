@@ -61,6 +61,8 @@ public class RequestHandler {
 
         } catch (Exception e) {
             e.printStackTrace();
+            return "Invalid Server URL";
+
         }
         return sb.toString();
     }

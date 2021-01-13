@@ -244,6 +244,7 @@ public class SyncDbService extends Service {
         if (getUsers.equals("Invalid Server URL")) {
             return false;
         }
+
         try {
 
             JSONArray arr = new JSONArray(getUsers);
@@ -272,6 +273,9 @@ public class SyncDbService extends Service {
 
         //plant Sync
         String getPlants = requestHandler.sendReadRequest(plantsURL);
+        if (getPlants.equals("Invalid Server URL")) {
+            return false;
+        }
         try {
 
             JSONArray arr = new JSONArray(getPlants);
@@ -299,6 +303,9 @@ public class SyncDbService extends Service {
 
         //systemSync
         String getSystems = requestHandler.sendReadRequest(systemsURL);
+        if (getSystems.equals("Invalid Server URL")) {
+            return false;
+        }
         try {
 
             JSONArray arr = new JSONArray(getSystems);
@@ -328,7 +335,9 @@ public class SyncDbService extends Service {
 
         //Instrument Sync
         String getInstruments = requestHandler.sendReadRequest(instrumentsURL);
-
+        if (getInstruments.equals("Invalid Server URL")) {
+            return false;
+        }
         try {
 
             JSONArray arr = new JSONArray(getInstruments);
@@ -364,7 +373,7 @@ public class SyncDbService extends Service {
         return true;
     }
 
-    private void sendToServer() {
+    private boolean sendToServer() {
         Log.i("Hello", "Hello Server method method");
 
         String status = " ";
@@ -389,6 +398,10 @@ public class SyncDbService extends Service {
                 RequestHandler requestHandler = new RequestHandler();
                 //returing the response
                 status = requestHandler.sendPostRequest(readingsURL, reading_params);
+
+                if (status.equals("Invalid Server URL")) {
+                    return false;
+                }
                 JSONObject obj;
                 try {
                     obj = new JSONObject(status);
@@ -423,6 +436,9 @@ public class SyncDbService extends Service {
                 RequestHandler requestHandler = new RequestHandler();
                 //returning the response
                 status = requestHandler.sendPostRequest(shiftsURL, shift_params);
+                if (status.equals("Invalid Server URL")) {
+                    return false;
+                }
 
                 JSONObject obj;
                 try {
@@ -455,6 +471,9 @@ public class SyncDbService extends Service {
                 RequestHandler requestHandler = new RequestHandler();
                 //returing the response
                 status = requestHandler.sendPostRequest(shiftSystemStatusURL, shift_system_status_params);
+                if (status.equals("Invalid Server URL")) {
+                    return false;
+                }
                 JSONObject obj;
                 try {
                     obj = new JSONObject(status);
@@ -469,6 +488,7 @@ public class SyncDbService extends Service {
                 }
             }
         }
+        return true;
     }
 
 }

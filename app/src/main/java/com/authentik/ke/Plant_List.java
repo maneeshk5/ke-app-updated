@@ -39,6 +39,15 @@ public class Plant_List extends AppCompatActivity {
     SharedPreferences sharedPreferences;
 
     public void UIOperations() {
+
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_plant__list);
+
         handler = new Handler();
         r = new Runnable() {
             @Override
@@ -198,16 +207,6 @@ public class Plant_List extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_plant__list);
-
-        UIOperations();
-
-    }
-
-
     Handler handler;
     Runnable r;
 
@@ -228,8 +227,14 @@ public class Plant_List extends AppCompatActivity {
 
     public void goBack(View view) {
         finish();
+        startActivity(new Intent(Plant_List.this,Shift_Selection.class));
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(Plant_List.this,Shift_Selection.class));
+    }
 
     public int calculatePlantStatus(final int noOfSystemsInPlant, final DatabaseHelper db, final List<System> systemList, final String shift_id) {
         final int[] plantStatus = {0};

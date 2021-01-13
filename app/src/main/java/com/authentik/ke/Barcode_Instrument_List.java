@@ -140,6 +140,10 @@ public class Barcode_Instrument_List extends AppCompatActivity {
                 int instrumentReadingTaken = db.getInstrumentStatus(instrumentList.get(position).getId(), shift_id);
                 if (instrumentReadingTaken == 0) {
                     view.setBackgroundColor(Color.parseColor("#B22222"));
+//                    TextView tv = new TextView(Barcode_Instrument_List.this);
+                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                    tv.setTextColor(Color.WHITE);
+
                 }
                 else {
                     view.setBackgroundColor(Color.parseColor("#68922e"));

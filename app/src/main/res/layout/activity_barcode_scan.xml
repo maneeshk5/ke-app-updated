@@ -84,19 +84,19 @@
         app:layout_constraintVertical_bias="0.397"
         app:srcCompat="@drawable/barcode" />
 
-    <Button
-        android:id="@+id/barcode_scan_btn"
-        android:background="@color/colorAccent"
-        android:textColor="#FFFFFF"
-        android:layout_width="111dp"
-        android:layout_height="42dp"
-        android:clickable="false"
-        android:text="Scan Barcode"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.711" />
+<!--    <Button-->
+<!--        android:id="@+id/barcode_scan_btn"-->
+<!--        android:background="@color/colorAccent"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:layout_width="111dp"-->
+<!--        android:layout_height="42dp"-->
+<!--        android:clickable="false"-->
+<!--        android:text="Scan Barcode"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.711" />-->
 
     <TextView
         android:id="@+id/app_path_tv"
@@ -111,6 +111,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_layout"
         app:layout_constraintVertical_bias="0.923" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press Scan Button"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@drawable/custom_layout"
+        app:layout_constraintBottom_toTopOf="@+id/app_path_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barcode_image"
+        app:layout_constraintVertical_bias="0.217" />
 
 
 </android.support.constraint.ConstraintLayout>
