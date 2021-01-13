@@ -40,6 +40,8 @@ public class Settings_Page extends AppCompatActivity {
     String plantsURL;
     String systemsURL;
     String instrumentsURL;
+    ProgressDialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +53,14 @@ public class Settings_Page extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 finishAffinity();
 //                startActivity(intent);
             }
@@ -126,54 +128,57 @@ public class Settings_Page extends AppCompatActivity {
 
                     if (isInternetAvailable()) {
                         //Send local db to server before clearing
-                        startService(new Intent(Settings_Page.this, SyncDbService.class));
-                        final ProgressDialog dialog = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
+                        dialog = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
 
                         db.rebuildDB(db.getWritableDatabase());
+                        startService(new Intent(Settings_Page.this, SyncDbService.class));
 
 //                        getApplicationContext().deleteDatabase("pvs_ke");
 //                        db = new DatabaseHelper(getApplicationContext());
 
-                        final boolean[] serverURL = new boolean[1];
-
-                        // sync server db to local db if internet is available
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                class DBSync extends AsyncTask<Void, Void, Void> {
-
-                                    @Override
-                                    protected Void doInBackground(Void... voids) {
-                                        serverURL[0] = DbSync();
-                                        return null;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(Void aVoid) {
-                                        dialog.dismiss();
-                                        if (!serverURL[0]) {
-                                            Toast.makeText(getApplicationContext(), "Server Connection failed", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "Data Synced with Server, Restarting app", Toast.LENGTH_LONG).show();
-                                            finishAffinity();
-                                        }
-                                    }
-                                }
-                                DBSync dbSync = new DBSync();
-                                dbSync.execute();
-                            }
-                        });
-                        thread.start();
-                        try {
-                            thread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
+//                        final boolean[] serverURL = new boolean[1];
+//
+//                        // sync server db to local db if internet is available
+//                        Thread thread = new Thread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                class DBSync extends AsyncTask<Void, Void, Void> {
+//
+//                                    @Override
+//                                    protected Void doInBackground(Void... voids) {
+//                                        serverURL[0] = DbSync();
+//                                        return null;
+//                                    }
+//
+//                                    @Override
+//                                    protected void onPostExecute(Void aVoid) {
+//                                        dialog.dismiss();
+//                                        if (!serverURL[0]) {
+//                                            Toast.makeText(getApplicationContext(), "Server Connection failed", Toast.LENGTH_LONG).show();
+//                                        } else {
+//                                            Toast.makeText(getApplicationContext(), "Data Synced with Server, App needs a restart", Toast.LENGTH_LONG).show();
+//                                            finishAffinity();
+//                                        }
+//                                    }
+//                                }
+//                                DBSync dbSync = new DBSync();
+//                                dbSync.execute();
+//                            }
+//                        });
+//                        thread.start();
+//                        try {
+//                            thread.join();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//
                     } else {
                         Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
                     }
-
+//
+//                }
+//            }
+//        });
                 }
             }
         });
@@ -189,11 +194,13 @@ public class Settings_Page extends AppCompatActivity {
         stopHandler();
         startHandler();
     }
+
     public void stopHandler() {
         handler.removeCallbacks(r);
     }
+
     public void startHandler() {
-        handler.postDelayed(r, 3600*1000);
+        handler.postDelayed(r, 3600 * 1000);
     }
 
     public boolean isInternetAvailable() {
@@ -331,6 +338,14 @@ public class Settings_Page extends AppCompatActivity {
 
         return true;
     }
+
+    @Override
+    public void onDestroy() {
+        dialog.dismiss();
+        super.onDestroy();
+    }
+
+
 
 
 }

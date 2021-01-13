@@ -132,7 +132,7 @@ public class Shift_Selection extends AppCompatActivity {
                 String shift_type = spin.getSelectedItem().toString();
                 String reading_type = spin2.getSelectedItem().toString();
 
-                if (shift_type.equals("Select Shift") || reading_type.equals("Select Reading Types")) {
+                if (shift_type.equals("Select Shift") || reading_type.equals("Select Reading Type")) {
                     Toast.makeText(getApplicationContext(), "Please select a relevant option", Toast.LENGTH_SHORT).show();
                 }
                 else {

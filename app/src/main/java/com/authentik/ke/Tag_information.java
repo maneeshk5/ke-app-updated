@@ -127,7 +127,7 @@ public class Tag_information extends AppCompatActivity {
                 reading_value_et.setText(Double.toString(reading.getReading_value()));
                 reading_value_et.setEnabled(false);
                 submit_tag_btn.setEnabled(false);
-                Toast.makeText(Tag_information.this, "Value already recorded for this instrument and shift", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Tag_information.this, "Reading recorded", Toast.LENGTH_SHORT).show();
             }
         }
         catch (NullPointerException e) {
