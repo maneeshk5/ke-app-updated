@@ -199,48 +199,53 @@ These extras are available:
 //                    goQuestionsActivity(data);
                     final Instrument instrument_scanned = db.getInstrumentFromBarcode(data);
 
-                    System system = db.getSystemFromInstrument(instrument_scanned);
-                    Plant plant = db.getPlantFromSystem(system);
+                    try {
 
-                    Log.i("Plant of Instrument",plant.getPlant_name());
-                    Log.i("System of Instrument",system.getName());
+                        System system = db.getSystemFromInstrument(instrument_scanned);
+                        Plant plant = db.getPlantFromSystem(system);
 
-                    if (instrument_scanned.getBarcodeId().equals(instrument_selected.getBarcodeId())) {
-                        //start Tag Activity
-                        finish();
-                        Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
-                        intent2.putExtra("instrument_object", instrument_selected);
-                        intent2.putExtra("system_object", system);
-                        intent2.putExtra("plant_object", plant);
-                        startActivity(intent2);
-                    }
-                    else {
+//                    Log.i("Plant of Instrument",plant.getPlant_name());
+//                    Log.i("System of Instrument",system.getName());
+
+                        if (instrument_scanned.getBarcodeId().equals(instrument_selected.getBarcodeId())) {
+                            //start Tag Activity
+                            finish();
+                            Intent intent2 = new Intent(barcode_scan.this, Tag_information.class);
+                            intent2.putExtra("instrument_object", instrument_selected);
+                            intent2.putExtra("system_object", system);
+                            intent2.putExtra("plant_object", plant);
+                            startActivity(intent2);
+                        } else {
 //                        Toast.makeText(barcode_scan.this,"Scanned Barcode does not match with selected Instrument",Toast.LENGTH_SHORT).show();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(barcode_scan.this);
-                        builder.setTitle("Warning!");
-                        builder.setMessage("Scanned Barcode does not match with selected instrument barcode. Are you sure you want to continue?");
-                        builder.setPositiveButton("Yes ", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                System system = db.getSystemFromInstrument(instrument_scanned);
-                                Plant plant = db.getPlantFromSystem(system);
-                                finish();
-                                List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument_scanned.getBarcodeId());
-                                Intent intent2 = new Intent(barcode_scan.this,Barcode_Instrument_List.class);
-                                intent2.putExtra("Instrument_list", (Serializable) instrumentList);
-                                intent2.putExtra("barcode_id",instrument_scanned.getBarcodeId());
-                                finish();
-                                startActivity(intent2);
-                            }
-                        });
+                            AlertDialog.Builder builder = new AlertDialog.Builder(barcode_scan.this);
+                            builder.setTitle("Warning!");
+                            builder.setMessage("Scanned Barcode does not match with selected instrument barcode. Are you sure you want to continue?");
+                            builder.setPositiveButton("Yes ", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    System system = db.getSystemFromInstrument(instrument_scanned);
+                                    Plant plant = db.getPlantFromSystem(system);
+                                    finish();
+                                    List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument_scanned.getBarcodeId());
+                                    Intent intent2 = new Intent(barcode_scan.this, Barcode_Instrument_List.class);
+                                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                                    intent2.putExtra("barcode_id", instrument_scanned.getBarcodeId());
+                                    finish();
+                                    startActivity(intent2);
+                                }
+                            });
 
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.create().show();
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.create().show();
+                        }
+                    }
+                    catch (NullPointerException e){
+                        Toast.makeText(barcode_scan.this,"Invalid Barcode",Toast.LENGTH_SHORT).show();
                     }
                 }
             }

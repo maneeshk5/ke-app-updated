@@ -127,6 +127,22 @@ public class SyncDbService extends Service {
         }
         else {
             Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
+            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            if (sharedpreferences.contains("isLoggedIn")) {
+                boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
+                Intent intent2;
+                if (value) {
+                    intent2 = new Intent(new Intent(getApplicationContext(), Shift_Selection.class));
+                } else {
+                    intent2 = new Intent(new Intent(getApplicationContext(), Login.class));
+                }
+                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent2);
+            } else {
+                Intent intent2 = new Intent(new Intent(getApplicationContext(), Login.class));
+                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent2);
+            }
         }
 
         return START_STICKY;

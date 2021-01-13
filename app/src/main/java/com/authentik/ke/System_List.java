@@ -384,12 +384,17 @@ These extras are available:
                     Log.i("Scan Result ", text2);
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
-                    Intent intent2 = new Intent(System_List.this,Barcode_Instrument_List.class);
-                    intent.putExtra("app_path",app_path.getText().toString());
-                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
-                    intent2.putExtra("barcode_id",data);
-                    finish();
-                    startActivity(intent2);
+                    if (instrumentList.size() == 0) {
+                        Toast.makeText(getApplicationContext(),"Invalid Barcode",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Intent intent2 = new Intent(System_List.this, Barcode_Instrument_List.class);
+                        intent2.putExtra("Instrument_list", (Serializable) instrumentList);
+                        intent2.putExtra("barcode_id", data);
+//                    finishAffinity();
+                        finish();
+                        startActivity(intent2);
+                    }
                 }
             }
         }

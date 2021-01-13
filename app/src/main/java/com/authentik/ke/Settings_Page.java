@@ -341,7 +341,12 @@ public class Settings_Page extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        dialog.dismiss();
+        try {
+            dialog.dismiss();
+        }
+        catch (NullPointerException e) {
+            Log.i("settings page","no dialog box");
+        }
         super.onDestroy();
     }
 
