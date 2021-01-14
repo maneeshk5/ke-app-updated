@@ -16,19 +16,45 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
-    <TextView
-        android:id="@+id/date_time_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Date and Time"
-        android:textColor="@color/textColor"
-        android:textSize="12sp"
+<!--    <TextView-->
+<!--        android:id="@+id/date_time_tv"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Date and Time"-->
+<!--        android:textColor="@color/textColor"-->
+<!--        android:textSize="12sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.312"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/title_layout"-->
+<!--        app:layout_constraintVertical_bias="0.146" />-->
+
+     <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.312"
+        app:layout_constraintHorizontal_bias="0.28"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title_layout"
-        app:layout_constraintVertical_bias="0.146" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.152">
+
+        <TextView
+            android:id="@+id/date_time_tv"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:textSize="12sp"
+            android:textColor="@color/textColor"/>
+
+        <TextClock
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:format12Hour="hh:mm:ss a"
+            android:textColor="@color/textColor"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
 
     <ImageView

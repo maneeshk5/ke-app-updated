@@ -95,7 +95,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
         currUser.setText(value);
 
         Date dNow = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
@@ -137,13 +137,13 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position,convertView,parent);
+
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+                tv.setTextColor(Color.WHITE);
+
                 int instrumentReadingTaken = db.getInstrumentStatus(instrumentList.get(position).getId(), shift_id);
                 if (instrumentReadingTaken == 0) {
                     view.setBackgroundColor(Color.parseColor("#B22222"));
-//                    TextView tv = new TextView(Barcode_Instrument_List.this);
-                    TextView tv = (TextView) view.findViewById(android.R.id.text1);
-                    tv.setTextColor(Color.WHITE);
-
                 }
                 else {
                     view.setBackgroundColor(Color.parseColor("#68922e"));
@@ -193,7 +193,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
         builder.setTitle("Confirmation!");
-        builder.setMessage("Exit without saving?");
+        builder.setMessage("Are you sure you want to exit?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -213,7 +213,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     public void goBack(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
         builder.setTitle("Confirmation!");
-        builder.setMessage("Exit without saving?");
+        builder.setMessage("Are you sure you want to exit?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

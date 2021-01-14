@@ -39,8 +39,10 @@
 <!--            </intent-filter>-->
 <!--        </receiver>-->
 
-        <activity android:name=".Barcode_Instrument_List" />
-        <activity android:name=".Settings_Page" />
+        <activity android:name=".Barcode_Instrument_List"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Settings_Page"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".reading_picture"
             android:screenOrientation="portrait" />

@@ -100,7 +100,7 @@ public class reading_picture extends AppCompatActivity {
         currUser.setText(value);
 
         Date dNow = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 

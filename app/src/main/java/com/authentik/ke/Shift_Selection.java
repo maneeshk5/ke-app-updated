@@ -97,7 +97,7 @@ public class Shift_Selection extends AppCompatActivity {
 //        registerBroadcastReceiver();
 
         currDate = findViewById(R.id.curr_date_text);
-        currTime = findViewById(R.id.curr_time_text);
+//        currTime = findViewById(R.id.curr_time_text);
 
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
@@ -108,7 +108,7 @@ public class Shift_Selection extends AppCompatActivity {
         Date time = Calendar.getInstance().getTime();
         SimpleDateFormat time_format = new SimpleDateFormat("HH:mm");
         timeComp = time_format.format(time);
-        currTime.append(timeComp);
+//        currTime.append(timeComp);
 
 
         btnLogOut = findViewById(R.id.btn_logout);

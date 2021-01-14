@@ -38,10 +38,6 @@ public class Plant_List extends AppCompatActivity {
     TextView dateAndTime;
     SharedPreferences sharedPreferences;
 
-    public void UIOperations() {
-
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +74,7 @@ public class Plant_List extends AppCompatActivity {
         currUser.setText(value);
 
         Date dNow = new Date();
-        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat ft = new SimpleDateFormat("dd-MM-yyyy");
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 

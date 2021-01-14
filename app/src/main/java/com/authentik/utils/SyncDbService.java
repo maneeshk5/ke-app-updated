@@ -194,7 +194,7 @@ public class SyncDbService extends Service {
         if (readingList.size() > 0) {
             for (int i = 0; i < readingList.size(); i++) {
                 Date recordedReadingDate = sdformat.parse(readingList.get(i).getDate_time());
-                if (recordedReadingDate.compareTo(todayDate) > 0 && readingList.get(i).getSync_status() == 1) {
+                if (recordedReadingDate.compareTo(todayDate) < 0 && readingList.get(i).getSync_status() == 1) {
                     Log.i("Reading status", readingList.get(i).getId() + " should be deleted");
                     db.deleteReading(readingList.get(i));
                 } else {
@@ -209,7 +209,7 @@ public class SyncDbService extends Service {
         if (shiftList.size() > 0) {
             for (int i = 0; i < shiftList.size(); i++) {
                 Date recordedShiftDate = sdformat.parse(shiftList.get(i).getDate());
-                if (recordedShiftDate.compareTo(todayDate) > 0 && shiftList.get(i).getSync_status() == 1) {
+                if (recordedShiftDate.compareTo(todayDate) < 0 && shiftList.get(i).getSync_status() == 1) {
                     Log.i("shift status", shiftList.get(i).getId() + " should be deleted");
                     db.deleteShift(shiftList.get(i));
                 } else {
@@ -224,7 +224,7 @@ public class SyncDbService extends Service {
         if (values.size() > 0) {
             for (int i = 0; i < values.size(); i++) {
                 Date recordedStatusDate = sdformat2.parse(values.get(i).getAsString("date_time"));
-                if (recordedStatusDate.compareTo(todayDate) > 0 && Integer.parseInt(values.get(i).getAsString("sync_status")) == 1) {
+                if (recordedStatusDate.compareTo(todayDate) < 0 && Integer.parseInt(values.get(i).getAsString("sync_status")) == 1) {
                     Log.i("system status", values.get(i).getAsString("id") + " should be deleted");
                     db.deleteStatus(values.get(i).getAsString("id"));
                 } else {
