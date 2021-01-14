@@ -24,24 +24,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Help_Page"></activity>
+
         <service
             android:name="com.authentik.utils.SyncDbService"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
-
-<!--        <receiver-->
-<!--            android:name=".ConnectivityReceiver"-->
-<!--            >-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
-        <activity android:name=".Barcode_Instrument_List"
+            android:exported="true"></service> <!-- <receiver -->
+        <!-- android:name=".ConnectivityReceiver" -->
+        <!-- > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <activity
+            android:name=".Barcode_Instrument_List"
             android:screenOrientation="portrait" />
-        <activity android:name=".Settings_Page"
+        <activity
+            android:name=".Settings_Page"
             android:screenOrientation="portrait" />
         <activity
             android:name=".reading_picture"

@@ -127,10 +127,10 @@ public class Settings_Page extends AppCompatActivity {
                 } else if (position == 1) {
 
                     if (isInternetAvailable()) {
-                        //Send local db to server before clearing
                         dialog = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
 
                         db.rebuildDB(db.getWritableDatabase());
+
                         startService(new Intent(Settings_Page.this, SyncDbService.class));
 //                        getApplicationContext().deleteDatabase("pvs_ke");
 //                        db = new DatabaseHelper(getApplicationContext());
@@ -178,6 +178,20 @@ public class Settings_Page extends AppCompatActivity {
 //                }
 //            }
 //        });
+                } else if (position == 2) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
+//                    builder.setTitle("Help");
+//                    builder.setMessage("1.\tTo scan an instrument tag, press the barcode scan button and align the Barcode in the front of scanner.\n" +
+//                            "2.\tThe app returns the information of the instrument.\n" +
+//                            "3.\tThe operator can enter the instrument current reading, press the save button.");
+//                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    builder.create().show();
+                    startActivity(new Intent(Settings_Page.this,Help_Page.class));
                 }
             }
         });
@@ -207,135 +221,6 @@ public class Settings_Page extends AppCompatActivity {
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
-    }
-
-    private boolean DbSync() {
-
-        //user Sync
-        RequestHandler requestHandler = new RequestHandler();
-        String getUsers = requestHandler.sendReadRequest(usersURL);
-
-        if (getUsers.equals("Invalid Server URL")) {
-            return false;
-        }
-        try {
-
-            JSONArray arr = new JSONArray(getUsers);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    User user = new User();
-                    JSONObject obj = arr.getJSONObject(i);
-                    user.setId(obj.getInt("user_id"));
-                    user.setName(obj.getString("userName"));
-                    user.setPassword(obj.getString("password"));
-                    user.setIsActive(obj.getInt("isActive"));
-                    user.setIsDeleted(obj.getInt("isDeleted"));
-
-                    if (!db.checkUser(user.getName()) && user.getIsActive() == 1) {
-                        db.addUser(user);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //plant Sync
-        String getPlants = requestHandler.sendReadRequest(plantsURL);
-        try {
-
-            JSONArray arr = new JSONArray(getPlants);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    Plant plant = new Plant();
-                    JSONObject obj = arr.getJSONObject(i);
-                    plant.setPlant_id(obj.getInt("plant_id"));
-                    plant.setPlant_name(obj.getString("plant_name"));
-                    plant.setIsActive(obj.getInt("isActive"));
-                    plant.setReadingTimeId(obj.getInt("readingTimeId"));
-
-                    if (!db.checkPlant(plant.getPlant_id()) && plant.getIsActive() == 1) {
-                        db.addPlant(plant);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //systemSync
-        String getSystems = requestHandler.sendReadRequest(systemsURL);
-        try {
-
-            JSONArray arr = new JSONArray(getSystems);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    System system = new System();
-                    JSONObject obj = arr.getJSONObject(i);
-                    system.setId(obj.getInt("system_id"));
-                    system.setName(obj.getString("system_name"));
-                    system.setIsActive(obj.getInt("isActive"));
-                    system.setLogSheet(obj.getString("logSheet"));
-                    system.setPlantId(obj.getInt("systemPlantId"));
-
-                    if (!db.checkSystem(system.getId()) && system.getIsActive() == 1) {
-//                                Log.v("System","Hello");
-                        db.addSystem(system);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //Instrument Sync
-        String getInstruments = requestHandler.sendReadRequest(instrumentsURL);
-
-        try {
-
-            JSONArray arr = new JSONArray(getInstruments);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    Instrument instrument = new Instrument();
-                    JSONObject obj = arr.getJSONObject(i);
-                    instrument.setId(obj.getInt("instrument_id"));
-                    instrument.setName(obj.getString("instrument_name"));
-                    instrument.setIsActive(obj.getInt("isActive"));
-                    instrument.setKksCode(obj.getString("kksCode"));
-                    instrument.setBarcodeId(obj.getString("barcodeId"));
-                    instrument.setLowerLimit(obj.getDouble("lowerLimit"));
-                    instrument.setUpperLimit(obj.getDouble("upperLimit"));
-                    instrument.setUnit(obj.getString("unit"));
-                    instrument.setIsActive(obj.getInt("isActive"));
-                    instrument.setSystemId(obj.getInt("systemId"));
-
-
-                    if (!db.checkInstrument(instrument.getId()) && instrument.getIsActive() == 1) {
-                        db.addInstrument(instrument);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return true;
     }
 
     @Override

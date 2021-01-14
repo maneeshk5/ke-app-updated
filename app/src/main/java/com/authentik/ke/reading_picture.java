@@ -195,7 +195,7 @@ public class reading_picture extends AppCompatActivity {
                             Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(reading_picture.this, Plant_List.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             finish();
                             startActivity(intent);
                         }
@@ -205,7 +205,7 @@ public class reading_picture extends AppCompatActivity {
                             intent.putExtra("Instrument_list", (Serializable) instrumentList);
                             intent.putExtra("barcode_id", instrument.getBarcodeId());
                             startActivity(intent);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
 
@@ -271,14 +271,14 @@ public class reading_picture extends AppCompatActivity {
                 if (instrumentList.size() == 1) {
                     Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(reading_picture.this, Plant_List.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     finish();
                     startActivity(intent);
                 }
                 else {
                     Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(reading_picture.this, Barcode_Instrument_List.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Instrument_list", (Serializable) instrumentList);
                     intent.putExtra("barcode_id", instrument.getBarcodeId());
                     startActivity(intent);

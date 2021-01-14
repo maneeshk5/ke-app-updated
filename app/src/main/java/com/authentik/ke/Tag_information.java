@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -136,8 +137,10 @@ public class Tag_information extends AppCompatActivity {
 
 
         submit_tag_btn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                closeKeyboard();
                 if (reading_value_et.getText().length() == 0) {
                     Toast.makeText(Tag_information.this, "Please Enter a value", Toast.LENGTH_SHORT).show();
                 } else {
@@ -191,7 +194,7 @@ public class Tag_information extends AppCompatActivity {
                                     if (instrumentList.size() == 1) {
                                         Toast.makeText(Tag_information.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(Tag_information.this, Plant_List.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         finish();
                                         startActivity(intent);
                                     } else {
@@ -201,7 +204,7 @@ public class Tag_information extends AppCompatActivity {
 //                                            Log.i("Instrument Barcode:", instrumentList.get(i).getBarcodeId());
 //                                        }
                                         Intent intent = new Intent(Tag_information.this, Barcode_Instrument_List.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         intent.putExtra("Instrument_list", (Serializable) instrumentList);
                                         intent.putExtra("barcode_id", instrument.getBarcodeId());
                                         finish();
@@ -255,6 +258,14 @@ public class Tag_information extends AppCompatActivity {
     Handler handler;
     Runnable r;
 
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     @Override
     public void onUserInteraction() {
         // TODO Auto-generated method stub
@@ -276,7 +287,7 @@ public class Tag_information extends AppCompatActivity {
 
         if (instrumentList.size() == 1) {
             Intent intent = new Intent(Tag_information.this, Plant_List.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             finish();
             startActivity(intent);
         } else {
@@ -290,7 +301,7 @@ public class Tag_information extends AppCompatActivity {
 
         if (instrumentList.size() == 1) {
             Intent intent = new Intent(Tag_information.this, Plant_List.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             finish();
             startActivity(intent);
         } else {

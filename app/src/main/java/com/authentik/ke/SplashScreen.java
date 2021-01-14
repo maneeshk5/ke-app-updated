@@ -75,109 +75,32 @@ public class SplashScreen extends Activity {
         instrumentsURL = server_url + "readInstruments.php";
 
         // sync server db to local db if internet is available
-//        if (isInternetAvailable()) {
+        if (isInternetAvailable()) {
 //
             dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
 
             //Start sync service
             serviceIntent = new Intent(this, SyncDbService.class);
             startService(serviceIntent);
-//
-//
-//            Thread thread = new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    class DBSync extends AsyncTask<Void, Void, Void> {
-//
-//                        @Override
-//                        protected Void doInBackground(Void... voids) {
-////                            DatabaseSync();
-//                            serverURL[0] = DbSync();
-//                            return null;
-//                        }
-//
-//                        @Override
-//                        protected void onPostExecute(Void aVoid) {
-//                            dialog.dismiss();
-//                            if (!serverURL[0]) {
-//                                Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
-//                                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//
-//                                if (sharedpreferences.contains("isLoggedIn")) {
-//                                    boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-//                                    if (value) {
-//                                        startActivity(new Intent(SplashScreen.this, Shift_Selection.class));
-//                                    } else {
-//                                        startActivity(new Intent(SplashScreen.this, Login.class));
-//                                    }
-//                                } else {
-//                                    startActivity(new Intent(SplashScreen.this, Login.class));
-//                                }
-//
-//                            } else {
-//                                Toast.makeText(getApplicationContext(), "Data Synced with Server", Toast.LENGTH_LONG).show();
-//
-//                                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//
-//                                if (sharedpreferences.contains("isLoggedIn")) {
-//                                    boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-//                                    if (value) {
-//                                        startActivity(new Intent(SplashScreen.this, Shift_Selection.class));
-//                                    } else {
-//                                        startActivity(new Intent(SplashScreen.this, Login.class));
-//                                    }
-//                                } else {
-//                                    startActivity(new Intent(SplashScreen.this, Login.class));
-//                                }
-//
-//                            }
-//                            finish();
-//                        }
-//                    }
-//                    DBSync dbSync = new DBSync();
-//                    dbSync.execute();
-//                }
-//            });
-//            thread.start();
-//            try {
-//                thread.join();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
-//        } else {
-//            Toast.makeText(getApplicationContext(), "Sever Sync not available due to no internet", Toast.LENGTH_SHORT).show();
-//
-//            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//
-//            if (sharedpreferences.contains("isLoggedIn")) {
-//                boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-//                if (value) {
-//                    startActivity(new Intent(SplashScreen.this, Shift_Selection.class));
-//                } else {
-//                    startActivity(new Intent(SplashScreen.this, Login.class));
-//                }
-//            } else {
-//                startActivity(new Intent(SplashScreen.this, Login.class));
-//            }
-//            finish();
-//        }
-//        else {
-//            Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
-//        }
-
-//        sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//        if (sharedpreferences.contains("isLoggedIn")) {
-//            boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-//            if (value) {
-//                startActivity(new Intent(getApplicationContext(), Shift_Selection.class));
-//            } else {
-//                startActivity(new Intent(getApplicationContext(), Login.class));
-//            }
-//        } else {
-//            startActivity(new Intent(getApplicationContext(), Login.class));
-//        }
-//        finish();
+        }
+        else {
+            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+            if (sharedpreferences.contains("isLoggedIn")) {
+                boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
+                Intent intent;
+                if (value) {
+                    intent = new Intent(new Intent(getApplicationContext(), Shift_Selection.class));
+                } else {
+                    intent = new Intent(new Intent(getApplicationContext(), Login.class));
+                }
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(new Intent(getApplicationContext(), Login.class));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        }
 
     }
 
@@ -190,140 +113,15 @@ public class SplashScreen extends Activity {
 
     @Override
     public void onDestroy() {
-        dialog.dismiss();
-//        if (isInternetAvailable()) {
+        try {
+            dialog.dismiss();
             stopService(serviceIntent);
-//        }
+        }
+        catch (NullPointerException e) {
+            Log.i("splash screen","no dialog box");
+
+        }
         super.onDestroy();
-    }
-
-    private boolean DbSync() {
-
-        //user Sync
-        RequestHandler requestHandler = new RequestHandler();
-        String getUsers =  requestHandler.sendReadRequest(usersURL);
-
-        if (getUsers.equals("Invalid Server URL")) {
-            return false;
-        }
-        try {
-
-            JSONArray arr = new JSONArray(getUsers);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    User user = new User();
-                    JSONObject obj = arr.getJSONObject(i);
-                    user.setId(obj.getInt("user_id"));
-                    user.setName(obj.getString("userName"));
-                    user.setPassword(obj.getString("password"));
-                    user.setIsActive(obj.getInt("isActive"));
-                    user.setIsDeleted(obj.getInt("isDeleted"));
-
-                    if (!db.checkUser(user.getName()) && user.getIsActive() == 1)  {
-                        db.addUser(user);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //plant Sync
-        String getPlants =  requestHandler.sendReadRequest(plantsURL);
-        try {
-
-            JSONArray arr = new JSONArray(getPlants);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    Plant plant = new Plant();
-                    JSONObject obj = arr.getJSONObject(i);
-                    plant.setPlant_id(obj.getInt("plant_id"));
-                    plant.setPlant_name(obj.getString("plant_name"));
-                    plant.setIsActive(obj.getInt("isActive"));
-                    plant.setReadingTimeId(obj.getInt("readingTimeId"));
-
-                    if (!db.checkPlant(plant.getPlant_id()) && plant.getIsActive() == 1) {
-                        db.addPlant(plant);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //systemSync
-        String getSystems =  requestHandler.sendReadRequest(systemsURL);
-        try {
-
-            JSONArray arr = new JSONArray(getSystems);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    System system = new System();
-                    JSONObject obj = arr.getJSONObject(i);
-                    system.setId(obj.getInt("system_id"));
-                    system.setName(obj.getString("system_name"));
-                    system.setIsActive(obj.getInt("isActive"));
-                    system.setLogSheet(obj.getString("logSheet"));
-                    system.setPlantId(obj.getInt("systemPlantId"));
-
-                    if (!db.checkSystem(system.getId()) && system.getIsActive() == 1) {
-//                                Log.v("System","Hello");
-                        db.addSystem(system);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //Instrument Sync
-        String getInstruments =  requestHandler.sendReadRequest(instrumentsURL);
-
-        try {
-
-            JSONArray arr = new JSONArray(getInstruments);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    Instrument instrument = new Instrument();
-                    JSONObject obj = arr.getJSONObject(i);
-                    instrument.setId(obj.getInt("instrument_id"));
-                    instrument.setName(obj.getString("instrument_name"));
-                    instrument.setIsActive(obj.getInt("isActive"));
-                    instrument.setKksCode(obj.getString("kksCode"));
-                    instrument.setBarcodeId(obj.getString("barcodeId"));
-                    instrument.setLowerLimit(obj.getDouble("lowerLimit"));
-                    instrument.setUpperLimit(obj.getDouble("upperLimit"));
-                    instrument.setUnit(obj.getString("unit"));
-                    instrument.setIsActive(obj.getInt("isActive"));
-                    instrument.setSystemId(obj.getInt("systemId"));
-
-
-                    if (!db.checkInstrument(instrument.getId()) && instrument.getIsActive() == 1) {
-                        db.addInstrument(instrument);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    return true;
     }
 
 }
