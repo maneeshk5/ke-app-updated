@@ -38,16 +38,16 @@
         app:layout_constraintHorizontal_bias="0.28"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.152">
+        app:layout_constraintVertical_bias="0.148">
 
-        <TextView
-            android:id="@+id/date_time_tv"
-            android:layout_width="70dp"
-            android:layout_height="match_parent"
-            android:textSize="12sp"
-            android:textColor="@color/textColor"/>
+         <TextView
+             android:id="@+id/date_time_tv"
+             android:layout_width="70dp"
+             android:layout_height="match_parent"
+             android:textColor="@color/textColor"
+             android:textSize="12sp" />
 
-        <TextClock
+         <TextClock
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:format12Hour="hh:mm:ss a"
@@ -68,6 +68,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/administrator" />
 
+
     <TextView
         android:id="@+id/username_tv"
         android:layout_width="55dp"
@@ -80,10 +81,9 @@
         android:textColor="@color/textColor"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.867"
+        app:layout_constraintHorizontal_bias="0.894"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <ImageView
         android:id="@+id/back_button"

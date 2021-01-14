@@ -191,7 +191,7 @@ public class System_List extends AppCompatActivity {
 
                             Date dNow = new Date();
                             SimpleDateFormat ft = new SimpleDateFormat("yyMMddhhmmssMs");
-                            SimpleDateFormat ft2 = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+                            SimpleDateFormat ft2 = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                             String status_id = ft.format(dNow);
                             String date_time = ft2.format(dNow);
                             String status_value = "Running";

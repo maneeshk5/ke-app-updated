@@ -1,4 +1,4 @@
-    package com.authentik.ke;
+package com.authentik.ke;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,12 +32,12 @@ import java.util.List;
 
 public class Login extends AppCompatActivity {
 
-//    private APIService mAPIService;
+    //    private APIService mAPIService;
 //    DatabaseHandler dbHandler;
     EditText editUserName;
     EditText editPassword;
     Button btnLogin;
-//    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
+    //    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
 //    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
 //    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
     DatabaseHelper db;
@@ -72,8 +72,6 @@ public class Login extends AppCompatActivity {
     }
 
 
-
-
     private void userLogin() {
 
         String username = editUserName.getText().toString();
@@ -81,28 +79,38 @@ public class Login extends AppCompatActivity {
         SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
 
-        Log.i("User Name",username);
+        Log.i("User Name", username);
 
-        if(db.checkUser(username)) {
-            User user = db.getPassword(username);
-            boolean bcrypt = BCrypt.checkpw(password,user.getPassword());
+        try {
+
+            if (db.checkUser(username)) {
+                User user = db.getPassword(username);
+
+                boolean bcrypt = BCrypt.checkpw(password, user.getPassword());
 //            Log.i("Entered Password",BCrypt.hashpw(password,BCrypt.gensalt(8)));
 //            Log.i("Db Password",user.getPassword());
 
-            if (bcrypt) {
-                editor.putString("Username",username);
-                editor.putBoolean("isLoggedIn",true);
-                editor.apply();
-                finish();
-                startActivity(new Intent(getApplicationContext(),Shift_Selection.class));
+                if (bcrypt) {
+                    editor.putString("Username", username);
+                    editor.putBoolean("isLoggedIn", true);
+                    editor.apply();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), Shift_Selection.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), "Invalid password", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Invalid username", Toast.LENGTH_SHORT).show();
             }
-            else {
-                Toast.makeText(getApplicationContext(), "Invalid password", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else {
-            Toast.makeText(getApplicationContext(), "Invalid username", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "An error occured", Toast.LENGTH_SHORT).show();
+
         }
 
+    {
+
     }
+
+}
 }

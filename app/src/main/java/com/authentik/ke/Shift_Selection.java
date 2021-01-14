@@ -84,7 +84,7 @@ public class Shift_Selection extends AppCompatActivity {
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+//                Intent intent = new Intent(getApplicationContext(),Login.class);
                 finishAffinity();
 //                startActivity(intent);
             }
@@ -162,12 +162,11 @@ public class Shift_Selection extends AppCompatActivity {
                     if (shift_id.equals("new shift")) {
                         db.addShift(shift);
                         editor.putString("shift_id",shift.getId());
-                        editor.apply();
                     }
                     else {
                         editor.putString("shift_id",shift_id);
-                        editor.apply();
                     }
+                    editor.apply();
 
                     Intent intent = new Intent(Shift_Selection.this, Plant_List.class);
                     startActivity(intent);

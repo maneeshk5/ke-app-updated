@@ -60,7 +60,6 @@ public class reading_picture extends AppCompatActivity {
     SharedPreferences sharedPreferences;
 
     DatabaseHelper db;
-//    String reading_id;
     Reading reading;
     Instrument instrument;
 
@@ -189,16 +188,27 @@ public class reading_picture extends AppCompatActivity {
 //                        db.insertReadingImage(reading_id, finalInputData);
                         reading.setImage_path(finalInputData);
                         db.addReading(reading);
-                        Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
 
                         //next instrument with the barcode
-                        Intent intent = new Intent(reading_picture.this,Barcode_Instrument_List.class);
                         List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
-                        intent.putExtra("Instrument_list", (Serializable) instrumentList);
-                        intent.putExtra("barcode_id", instrument.getBarcodeId());
-                        startActivity(intent);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        if (instrumentList.size() == 1) {
+                            Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(reading_picture.this, Plant_List.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            finish();
+                            startActivity(intent);
+                        }
+                        else {
+                            Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(reading_picture.this,Barcode_Instrument_List.class);
+                            intent.putExtra("Instrument_list", (Serializable) instrumentList);
+                            intent.putExtra("barcode_id", instrument.getBarcodeId());
+                            startActivity(intent);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+
                     }
                 });
 
@@ -250,18 +260,29 @@ public class reading_picture extends AppCompatActivity {
     public void cancelPic() {
         AlertDialog.Builder builder = new AlertDialog.Builder(reading_picture.this);
         builder.setTitle("Exit");
-        builder.setMessage("Save Reading without taking a pic?");
+        builder.setMessage("Save Reading without taking a picture?");
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                db.addReading(reading);
                 List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
-                Intent intent = new Intent(reading_picture.this,Barcode_Instrument_List.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("Instrument_list",(Serializable) instrumentList);
-                intent.putExtra("barcode_id",instrument.getBarcodeId());
-                startActivity(intent);
+
+                if (instrumentList.size() == 1) {
+                    Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(reading_picture.this, Plant_List.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    finish();
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(reading_picture.this, Barcode_Instrument_List.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("Instrument_list", (Serializable) instrumentList);
+                    intent.putExtra("barcode_id", instrument.getBarcodeId());
+                    startActivity(intent);
+                }
             }
         });
 

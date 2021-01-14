@@ -62,14 +62,14 @@ public class Tag_information extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 finishAffinity();
 //                startActivity(intent);
             }
@@ -94,7 +94,7 @@ public class Tag_information extends AppCompatActivity {
         submit_tag_btn = findViewById(R.id.submit_tag_btn);
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-        String shift_id =  sharedPreferences.getString("shift_id","-");
+        String shift_id = sharedPreferences.getString("shift_id", "-");
         String value = sharedPreferences.getString("Username", "no name");
         currUser.setText(value);
 
@@ -107,7 +107,7 @@ public class Tag_information extends AppCompatActivity {
         final Plant plant = (Plant) getIntent().getSerializableExtra("plant_object");
         final System system = (System) getIntent().getSerializableExtra("system_object");
 
-        app_path.setText( plant.getPlant_name() + " > " + system.getName() + " > " + instrument.getName() + " > " + "Tag");
+        app_path.setText(plant.getPlant_name() + " > " + system.getName() + " > " + instrument.getName() + " > " + "Tag");
 
 
         //set tag details
@@ -129,10 +129,9 @@ public class Tag_information extends AppCompatActivity {
                 submit_tag_btn.setEnabled(false);
                 Toast.makeText(Tag_information.this, "Reading recorded", Toast.LENGTH_SHORT).show();
             }
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
 //            e.printStackTrace();
-            Log.i("Reading object status:","Null continue");
+            Log.i("Reading object status:", "Null continue");
         }
 
 
@@ -140,9 +139,8 @@ public class Tag_information extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (reading_value_et.getText().length() == 0) {
-                    Toast.makeText(Tag_information.this,"Please Enter a value",Toast.LENGTH_SHORT).show();
-                }
-                else {
+                    Toast.makeText(Tag_information.this, "Please Enter a value", Toast.LENGTH_SHORT).show();
+                } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Tag_information.this);
                     builder.setTitle("Confirmation!");
                     builder.setMessage("Your input reading is: " + reading_value_et.getText().toString());
@@ -181,25 +179,34 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setDate_time(reading_date_time);
                                     reading.setTime(reading_time);
                                     reading.setInstrument_id(instrument.getId());
-                                    reading.setShift_id(sharedPreferences.getString("shift_id","-"));
+                                    reading.setShift_id(sharedPreferences.getString("shift_id", "-"));
                                     reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
 
                                     db.addReading(reading);
-                                    Toast.makeText(Tag_information.this,"Data Saved Successfully",Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(Tag_information.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
                                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
-                                    for(int i=0; i<instrumentList.size(); i++) {
-                                        Log.i("Instrument Names:",instrumentList.get(i).getName());
-                                        Log.i("Instrument Barcode:",instrumentList.get(i).getBarcodeId());
-                                    }
-                                    Intent intent = new Intent(Tag_information.this,Barcode_Instrument_List.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.putExtra("Instrument_list",(Serializable) instrumentList);
-                                    intent.putExtra("barcode_id",instrument.getBarcodeId());
-                                    finish();
-                                    startActivity(intent);
 
+                                    if (instrumentList.size() == 1) {
+                                        Toast.makeText(Tag_information.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(Tag_information.this, Plant_List.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        finish();
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(Tag_information.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
+//                                        for (int i = 0; i < instrumentList.size(); i++) {
+//                                            Log.i("Instrument Names:", instrumentList.get(i).getName());
+//                                            Log.i("Instrument Barcode:", instrumentList.get(i).getBarcodeId());
+//                                        }
+                                        Intent intent = new Intent(Tag_information.this, Barcode_Instrument_List.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("Instrument_list", (Serializable) instrumentList);
+                                        intent.putExtra("barcode_id", instrument.getBarcodeId());
+                                        finish();
+                                        startActivity(intent);
+                                    }
                                 }
                             });
 
@@ -221,16 +228,16 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setDate_time(reading_date_time);
                                     reading.setTime(reading_time);
                                     reading.setInstrument_id(instrument.getId());
-                                    reading.setShift_id(sharedPreferences.getString("shift_id","-"));
+                                    reading.setShift_id(sharedPreferences.getString("shift_id", "-"));
                                     reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
 
 //                                    db.addReading(reading);
                                     finish();
-                                    Intent intent = new Intent(Tag_information.this,reading_picture.class);
-                                    intent.putExtra("tag_instrument",instrument);
-                                    intent.putExtra("reading_object",reading);
+                                    Intent intent = new Intent(Tag_information.this, reading_picture.class);
+                                    intent.putExtra("tag_instrument", instrument);
+                                    intent.putExtra("reading_object", reading);
 //                                    intent.putExtra("reading_id",reading.getId());
                                     startActivity(intent);
 
@@ -255,15 +262,40 @@ public class Tag_information extends AppCompatActivity {
         stopHandler();
         startHandler();
     }
+
     public void stopHandler() {
         handler.removeCallbacks(r);
     }
+
     public void startHandler() {
-        handler.postDelayed(r, 3600*1000);
+        handler.postDelayed(r, 3600 * 1000);
     }
 
     public void goBack(View view) {
-        finish();
+        List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
+
+        if (instrumentList.size() == 1) {
+            Intent intent = new Intent(Tag_information.this, Plant_List.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
+            startActivity(intent);
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
+
+        if (instrumentList.size() == 1) {
+            Intent intent = new Intent(Tag_information.this, Plant_List.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            finish();
+            startActivity(intent);
+        } else {
+            finish();
+        }
     }
 
     private final String TAG = "IntentApiSample";
@@ -328,8 +360,11 @@ These extras are available:
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
                     if (instrumentList.size() == 0) {
-                        Toast.makeText(getApplicationContext(),"Invalid Barcode",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Invalid Barcode", Toast.LENGTH_SHORT).show();
                     }
+//                    else if (instrumentList.size() == 1) {
+//                        startActivity(new Intent(Tag_information.this,Plant_List.class));
+//                    }
                     else {
                         Intent intent2 = new Intent(Tag_information.this, Barcode_Instrument_List.class);
                         intent2.putExtra("Instrument_list", (Serializable) instrumentList);
@@ -387,7 +422,7 @@ These extras are available:
     }
 
     public void settingsPage(View view) {
-        startActivity(new Intent(Tag_information.this,Settings_Page.class));
+        startActivity(new Intent(Tag_information.this, Settings_Page.class));
     }
 
     public void log_Out(View view) {
@@ -402,7 +437,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
+                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

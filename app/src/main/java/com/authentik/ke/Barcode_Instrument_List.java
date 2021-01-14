@@ -101,24 +101,24 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
 
         instrumentList = (List<Instrument>) getIntent().getSerializableExtra("Instrument_list");
-//
-//        if (instrumentList.size() == 1) {
-//            Instrument instrument = instrumentList.get(0);
-//            System system = db.getSystemFromInstrument(instrument);
-//            Plant plant = db.getPlantFromSystem(system);
-//            Intent intent2 = new Intent(Barcode_Instrument_List.this, Tag_information.class);
-//            intent2.putExtra("instrument_object", instrument);
-//            intent2.putExtra("system_object", system);
-//            intent2.putExtra("plant_object", plant);
-//            finish();
-//            startActivity(intent2);
-//        }
 
-//        if (instrumentList.size() == 0) {
-//            Toast.makeText(getApplicationContext(),"No instrument with this barcode",Toast.LENGTH_SHORT).show();
-//            finish();
-//            startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
-//        }
+        if (instrumentList.size() == 1) {
+            Instrument instrument = instrumentList.get(0);
+            System system = db.getSystemFromInstrument(instrument);
+            Plant plant = db.getPlantFromSystem(system);
+            Intent intent2 = new Intent(Barcode_Instrument_List.this, Tag_information.class);
+            intent2.putExtra("instrument_object", instrument);
+            intent2.putExtra("system_object", system);
+            intent2.putExtra("plant_object", plant);
+            finish();
+            startActivity(intent2);
+        }
+
+        if (instrumentList.size() == 0) {
+            Toast.makeText(getApplicationContext(),"No instrument with this barcode",Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
+        }
 
         String barcode_id = getIntent().getStringExtra("barcode_id");
 
