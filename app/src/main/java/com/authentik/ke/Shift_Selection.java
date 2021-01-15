@@ -30,7 +30,6 @@ import android.widget.Toast;
 import com.authentik.model.Plant;
 import com.authentik.model.Reading;
 import com.authentik.model.Shift;
-import com.authentik.model.System;
 import com.authentik.utils.DatabaseHelper;
 
 import java.io.Serializable;
@@ -56,7 +55,7 @@ public class Shift_Selection extends AppCompatActivity {
     String thisDate;
     SharedPreferences sharedpreferences;
     String timeComp;
-//    BroadcastReceiver broadcastReceiver;
+    //    BroadcastReceiver broadcastReceiver;
     Handler handler;
     Runnable r;
 
@@ -77,7 +76,7 @@ public class Shift_Selection extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user has been inactive for 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
@@ -117,7 +116,7 @@ public class Shift_Selection extends AppCompatActivity {
         final TextView userName = findViewById(R.id.username_tv);
         sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
-        String value = sharedpreferences.getString("Username","-");
+        String value = sharedpreferences.getString("Username", "-");
         userName.setText(value);
 
         spin = findViewById(R.id.spinner);
@@ -134,8 +133,7 @@ public class Shift_Selection extends AppCompatActivity {
 
                 if (shift_type.equals("Select Shift") || reading_type.equals("Select Reading Type")) {
                     Toast.makeText(getApplicationContext(), "Please select a relevant option", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     Shift shift = new Shift();
 
                     Date dNow = new Date();
@@ -148,7 +146,7 @@ public class Shift_Selection extends AppCompatActivity {
 
                     sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
 
-                    String value = sharedpreferences.getString("Username","-");
+                    String value = sharedpreferences.getString("Username", "-");
 
                     shift.setUser_Name(value);
                     shift.setStart_time(timeComp);
@@ -157,14 +155,13 @@ public class Shift_Selection extends AppCompatActivity {
 
                     SharedPreferences.Editor editor = sharedpreferences.edit();
 
-                    String shift_id = db.checkShift(shift.getName(),shift.getDate(),shift.getReading_type());
+                    String shift_id = db.checkShift(shift.getName(), shift.getDate(), shift.getReading_type());
 
                     if (shift_id.equals("new shift")) {
                         db.addShift(shift);
-                        editor.putString("shift_id",shift.getId());
-                    }
-                    else {
-                        editor.putString("shift_id",shift_id);
+                        editor.putString("shift_id", shift.getId());
+                    } else {
+                        editor.putString("shift_id", shift_id);
                     }
                     editor.apply();
 
@@ -176,6 +173,19 @@ public class Shift_Selection extends AppCompatActivity {
 
     }
 
+    private long backPressedTime;
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else {
+            Toast.makeText(getApplicationContext(), "Press Back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        backPressedTime = System.currentTimeMillis();
+    }
+
     @Override
     public void onUserInteraction() {
         // TODO Auto-generated method stub
@@ -183,11 +193,31 @@ public class Shift_Selection extends AppCompatActivity {
         stopHandler();
         startHandler();
     }
+
     public void stopHandler() {
         handler.removeCallbacks(r);
     }
+
     public void startHandler() {
-        handler.postDelayed(r, 3600*1000);
+        handler.postDelayed(r, 3600 * 1000);
+    }
+
+    @Override
+    protected void onPause() {
+        stopHandler();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        startHandler();
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopHandler();
+        super.onDestroy();
     }
 
 //    private void registerBroadcastReceiver() {
@@ -201,7 +231,7 @@ public class Shift_Selection extends AppCompatActivity {
 
 
     public void settingsPage(View view) {
-            startActivity(new Intent(Shift_Selection.this,Settings_Page.class));
+        startActivity(new Intent(Shift_Selection.this, Settings_Page.class));
     }
 
     public void log_Out(View view) {
@@ -216,7 +246,7 @@ public class Shift_Selection extends AppCompatActivity {
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
+                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

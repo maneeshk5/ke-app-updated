@@ -59,9 +59,25 @@ public class SyncDbService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        String serverURL = getResources().getString(R.string.server_name);
+        SharedPreferences sharedpreferences2 = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
+        String server_url = sharedpreferences2.getString("server_url", serverURL);
+
+        db = new DatabaseHelper(getApplicationContext());
+//        dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+
+        readingsURL = server_url + "addReading.php";
+        shiftsURL = server_url + "addShift.php";
+        shiftSystemStatusURL = server_url + "addSystemStatus.php";
+        usersURL = server_url + "readUsers.php";
+        plantsURL = server_url + "readPlants.php";
+        systemsURL = server_url + "readSystems.php";
+        instrumentsURL = server_url + "readInstruments.php";
+
         Log.i("Service Status:", "Sync Service Started");
 
-        final boolean[] serverURL = new boolean[1];
+        final boolean[] serverConn = new boolean[1];
 
         if (isInternetAvailable()) {
 //            dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
@@ -74,7 +90,7 @@ public class SyncDbService extends Service {
                         @Override
                         protected Void doInBackground(Void... voids) {
 //                            DatabaseSync();
-                            serverURL[0] = DbSync();
+                            serverConn[0] = DbSync();
                             sendToServer();
 
                             try {
@@ -89,7 +105,7 @@ public class SyncDbService extends Service {
                         @Override
                         protected void onPostExecute(Void aVoid) {
 //                        dialog.dismiss();
-                            if (!serverURL[0]) {
+                            if (!serverConn[0]) {
                                 Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
 
                             } else {
@@ -158,9 +174,11 @@ public class SyncDbService extends Service {
 
     @Override
     public void onCreate() {
+        Log.i("Service Status:", "Sync Service Created");
+
         String serverURL = getResources().getString(R.string.server_name);
-        SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
-        String server_url = sharedpreferences.getString("server_url", serverURL);
+        SharedPreferences sharedpreferences2 = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
+        String server_url = sharedpreferences2.getString("server_url", serverURL);
 
         db = new DatabaseHelper(getApplicationContext());
 //        dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
@@ -172,6 +190,7 @@ public class SyncDbService extends Service {
         plantsURL = server_url + "readPlants.php";
         systemsURL = server_url + "readSystems.php";
         instrumentsURL = server_url + "readInstruments.php";
+
 
     }
 

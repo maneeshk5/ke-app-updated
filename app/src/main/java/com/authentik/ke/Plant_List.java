@@ -49,14 +49,14 @@ public class Plant_List extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user has been inactive for 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),Login.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 finishAffinity();
 //                startActivity(intent);
             }
@@ -144,13 +144,20 @@ public class Plant_List extends AppCompatActivity {
 
             for (int j = 0; j < noOfSystemsInPlant; j++) {
                 int systemStatus = db.getSystemStatus(systemList.get(j).getId(), shift_id);
-                if (systemStatus == db.getSystemInstruments(systemList.get(j).getId()).size()){
+//                int systemStatus = 9;
+                int totalInst = db.getSystemInstruments(systemList.get(j).getId()).size();
+
+//                Log.i("System Status", Integer.toString(systemStatus));
+//                Log.i("Instrument size", Integer.toString(totalInst));
+
+                if (systemStatus == totalInst) {
                     plantStatus += 1;
                 }
-//                        Log.i("System Name",systemList.get(j).getName());
-//                        Log.i("System Status",Integer.toString(systemStatus));
-//                        Log.i("Plant Name",plants.get(i).getPlant_name());
-//                        Log.i("Plant Status",Integer.toString(plantStatus));
+//                Log.i("System Name", systemList.get(j).getName());
+//                Log.i("System Status", Integer.toString(systemStatus));
+//                Log.i("System Status", Integer.toString());
+//                Log.i("Plant Name", plants.get(i).getPlant_name());
+//                Log.i("Plant Status", Integer.toString(plantStatus));
             }
 //                    plantStatus = calculatePlantStatus(noOfSystemsInPlant,db,systemList,shift_id);
 
@@ -165,16 +172,16 @@ public class Plant_List extends AppCompatActivity {
                 serial_num.setTextColor(Color.WHITE);
                 plant_name.setTextColor(Color.WHITE);
                 status.setTextColor(Color.WHITE);
-            }  else if(plantStatus == noOfSystemsInPlant) {
+            } else if (plantStatus == noOfSystemsInPlant) {
                 tr.setBackgroundResource(R.drawable.row_border_green);
-                serial_num.setTextColor(Color.BLACK);
-                plant_name.setTextColor(Color.BLACK);
-                status.setTextColor(Color.BLACK);
-            } else {
-                tr.setBackgroundResource(R.drawable.row_border_yellow);
                 serial_num.setTextColor(Color.WHITE);
                 plant_name.setTextColor(Color.WHITE);
                 status.setTextColor(Color.WHITE);
+            } else {
+                tr.setBackgroundResource(R.drawable.row_border_yellow);
+                serial_num.setTextColor(Color.BLACK);
+                plant_name.setTextColor(Color.BLACK);
+                status.setTextColor(Color.BLACK);
             }
 
             tr.setClickable(true);
@@ -213,23 +220,27 @@ public class Plant_List extends AppCompatActivity {
         stopHandler();
         startHandler();
     }
+
+
+
     public void stopHandler() {
         handler.removeCallbacks(r);
     }
+
     public void startHandler() {
-        handler.postDelayed(r, 3600*1000);
+        handler.postDelayed(r, 3600 * 1000);
     }
 
 
     public void goBack(View view) {
         finish();
-        startActivity(new Intent(Plant_List.this,Shift_Selection.class));
+        startActivity(new Intent(Plant_List.this, Shift_Selection.class));
     }
 
     @Override
     public void onBackPressed() {
         finish();
-        startActivity(new Intent(Plant_List.this,Shift_Selection.class));
+        startActivity(new Intent(Plant_List.this, Shift_Selection.class));
     }
 
     public int calculatePlantStatus(final int noOfSystemsInPlant, final DatabaseHelper db, final List<System> systemList, final String shift_id) {
@@ -305,7 +316,7 @@ These extras are available:
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
 
                     if (instrumentList.size() == 0) {
-                        Toast.makeText(getApplicationContext(),"Invalid Barcode",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Invalid Barcode", Toast.LENGTH_SHORT).show();
                     }
 //                    else if (instrumentList.size() == 1) {
 //                        Instrument instrument = instrumentList.get(0);
@@ -336,6 +347,7 @@ These extras are available:
         super.onResume();
         registerReceiver(barcodeDataReceiver, new IntentFilter(ACTION_BARCODE_DATA));
         claimScanner();
+        startHandler();
     }
 
     @Override
@@ -343,8 +355,14 @@ These extras are available:
         super.onPause();
         unregisterReceiver(barcodeDataReceiver);
         releaseScanner();
+        stopHandler();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopHandler();
+    }
 
     private void claimScanner() {
         Bundle properties = new Bundle();
@@ -375,7 +393,7 @@ These extras are available:
     }
 
     public void settingsPage(View view) {
-        startActivity(new Intent(Plant_List.this,Settings_Page.class));
+        startActivity(new Intent(Plant_List.this, Settings_Page.class));
     }
 
     public void log_Out(View view) {
@@ -390,7 +408,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
+                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                 finishAffinity();
                 startActivity(intent);
             }

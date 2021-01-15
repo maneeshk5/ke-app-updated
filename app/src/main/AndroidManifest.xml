@@ -24,12 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Help_Page"></activity>
+
+        <activity android:name=".Help_Page"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name="com.authentik.utils.SyncDbService"
             android:enabled="true"
-            android:exported="true"></service> <!-- <receiver -->
+            android:exported="true" /> <!-- <receiver -->
         <!-- android:name=".ConnectivityReceiver" -->
         <!-- > -->
         <!-- <intent-filter> -->

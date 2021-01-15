@@ -64,7 +64,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user has been inactive for 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
@@ -190,6 +190,19 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        stopHandler();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        startHandler();
+        super.onResume();
+    }
+
+
+    @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
         builder.setTitle("Confirmation!");
@@ -306,7 +319,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-//        stopService(serviceIntent);
+        stopHandler();
         super.onDestroy();
     }
 }

@@ -53,7 +53,7 @@ public class Settings_Page extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user has been inactive for 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
@@ -111,10 +111,11 @@ public class Settings_Page extends AppCompatActivity {
                                 } else {
                                     SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
-                                    editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_app_api");
+                                    editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_app_api/");
                                     editor.apply();
                                     Toast.makeText(Settings_Page.this, "App needs a restart after server change", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());
+//                                    getApplicationContext().deleteDatabase("pvs_ke");
                                     finishAffinity();
                                 }
                             }
@@ -216,6 +217,18 @@ public class Settings_Page extends AppCompatActivity {
         handler.postDelayed(r, 3600 * 1000);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopHandler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startHandler();
+    }
+
     public boolean isInternetAvailable() {
         ConnectivityManager connMgr = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -225,6 +238,7 @@ public class Settings_Page extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        stopHandler();
         try {
             dialog.dismiss();
         }

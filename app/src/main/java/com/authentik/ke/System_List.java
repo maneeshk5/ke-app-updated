@@ -57,7 +57,7 @@ public class System_List extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user has been inactive for 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
@@ -405,6 +405,7 @@ These extras are available:
         super.onResume();
         registerReceiver(barcodeDataReceiver, new IntentFilter(ACTION_BARCODE_DATA));
         claimScanner();
+        startHandler();
     }
 
     @Override
@@ -412,6 +413,13 @@ These extras are available:
         super.onPause();
         unregisterReceiver(barcodeDataReceiver);
         releaseScanner();
+        stopHandler();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopHandler();
     }
 
 

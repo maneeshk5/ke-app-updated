@@ -73,7 +73,7 @@ public class reading_picture extends AppCompatActivity {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(), "user is inactive from last 1 hour, logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "user has been inactive for 1 hour, logging out", Toast.LENGTH_SHORT).show();
                 SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
@@ -322,7 +322,25 @@ public class reading_picture extends AppCompatActivity {
         cancelPic();
     }
 
-//    private final String TAG = "IntentApiSample";
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startHandler();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopHandler();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopHandler();
+    }
+
+    //    private final String TAG = "IntentApiSample";
 //    private final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.BARCODE_DATA";
 //    private static final String ACTION_CLAIM_SCANNER = "com.honeywell.aidc.action.ACTION_CLAIM_SCANNER";
 //
