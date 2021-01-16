@@ -266,7 +266,11 @@ public class System_List extends AppCompatActivity {
                                                     plant_alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
-                                                            dialog.dismiss();
+//                                                            dialog.dismiss();
+                                                            Intent intent = new Intent(System_List.this, Shift_Selection.class);
+                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                                            finish();
+                                                            startActivity(intent);
                                                         }
                                                     });
                                                     plant_alert.create().show();

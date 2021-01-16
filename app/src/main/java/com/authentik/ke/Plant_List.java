@@ -83,7 +83,6 @@ public class Plant_List extends AppCompatActivity {
 
         final List<Plant> plants = db.getAllPlants();
 
-
         int itemCount = plants.size();
 
         TableLayout tl = findViewById(R.id.plant_table);

@@ -8,8 +8,7 @@
         android:required="true" />
 
     <uses-permission android:name="com.honeywell.decode.permission.DECODE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,9 +23,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-
-        <activity android:name=".Help_Page"
+        <activity android:name=".FirstAppUse"
             android:screenOrientation="portrait"/>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        <activity android:name=".loadPlantPage" />
+        <activity
+            android:name=".Help_Page"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.authentik.utils.SyncDbService"

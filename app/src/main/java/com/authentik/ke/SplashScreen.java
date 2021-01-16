@@ -57,6 +57,14 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
+        Boolean isFirstRun = getSharedPreferences("Preference", Context.MODE_PRIVATE).getBoolean("isFirstRun",true);
+
+        if (!isFirstRun) {
+//            getSharedPreferences("Preference",MODE_PRIVATE).edit().putBoolean("isFirstRun",false).apply();
+            finish();
+            startActivity(new Intent(SplashScreen.this,FirstAppUse.class));
+        }
+
         db = new DatabaseHelper(getApplicationContext());
 
         String serverDefaultURL = getResources().getString(R.string.server_name);

@@ -66,6 +66,7 @@ public class Shift_Selection extends AppCompatActivity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,14 +221,6 @@ public class Shift_Selection extends AppCompatActivity {
         super.onDestroy();
     }
 
-//    private void registerBroadcastReceiver() {
-//        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.N) {
-//            registerReceiver(broadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-//        }
-//        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M) {
-//            registerReceiver(broadcastReceiver,new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-//        }
-//    }
 
 
     public void settingsPage(View view) {

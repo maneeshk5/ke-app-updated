@@ -133,45 +133,7 @@ public class Settings_Page extends AppCompatActivity {
                         db.rebuildDB(db.getWritableDatabase());
 
                         startService(new Intent(Settings_Page.this, SyncDbService.class));
-//                        getApplicationContext().deleteDatabase("pvs_ke");
-//                        db = new DatabaseHelper(getApplicationContext());
 
-//                        final boolean[] serverURL = new boolean[1];
-//
-//                        // sync server db to local db if internet is available
-//                        Thread thread = new Thread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                class DBSync extends AsyncTask<Void, Void, Void> {
-//
-//                                    @Override
-//                                    protected Void doInBackground(Void... voids) {
-//                                        serverURL[0] = DbSync();
-//                                        return null;
-//                                    }
-//
-//                                    @Override
-//                                    protected void onPostExecute(Void aVoid) {
-//                                        dialog.dismiss();
-//                                        if (!serverURL[0]) {
-//                                            Toast.makeText(getApplicationContext(), "Server Connection failed", Toast.LENGTH_LONG).show();
-//                                        } else {
-//                                            Toast.makeText(getApplicationContext(), "Data Synced with Server, App needs a restart", Toast.LENGTH_LONG).show();
-//                                            finishAffinity();
-//                                        }
-//                                    }
-//                                }
-//                                DBSync dbSync = new DBSync();
-//                                dbSync.execute();
-//                            }
-//                        });
-//                        thread.start();
-//                        try {
-//                            thread.join();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//
                     } else {
                         Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
                     }
@@ -180,18 +142,7 @@ public class Settings_Page extends AppCompatActivity {
 //            }
 //        });
                 } else if (position == 2) {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
-//                    builder.setTitle("Help");
-//                    builder.setMessage("1.\tTo scan an instrument tag, press the barcode scan button and align the Barcode in the front of scanner.\n" +
-//                            "2.\tThe app returns the information of the instrument.\n" +
-//                            "3.\tThe operator can enter the instrument current reading, press the save button.");
-//                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    builder.create().show();
+
                     startActivity(new Intent(Settings_Page.this,Help_Page.class));
                 }
             }

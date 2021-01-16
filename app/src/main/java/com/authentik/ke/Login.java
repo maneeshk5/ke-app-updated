@@ -104,7 +104,7 @@ public class Login extends AppCompatActivity {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "An error occured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Error occurred while logging in", Toast.LENGTH_SHORT).show();
 
         }
 

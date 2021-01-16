@@ -63,6 +63,7 @@ public class reading_picture extends AppCompatActivity {
     Reading reading;
     Instrument instrument;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,8 +114,8 @@ public class reading_picture extends AppCompatActivity {
                     REQUEST_PERMISSION);
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA},
                     REQUEST_PERMISSION);
         }
@@ -192,7 +193,7 @@ public class reading_picture extends AppCompatActivity {
                         //next instrument with the barcode
                         List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
                         if (instrumentList.size() == 1) {
-                            Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(reading_picture.this, Plant_List.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -200,7 +201,7 @@ public class reading_picture extends AppCompatActivity {
                             startActivity(intent);
                         }
                         else {
-                            Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(reading_picture.this,Barcode_Instrument_List.class);
                             intent.putExtra("Instrument_list", (Serializable) instrumentList);
                             intent.putExtra("barcode_id", instrument.getBarcodeId());
@@ -269,14 +270,14 @@ public class reading_picture extends AppCompatActivity {
                 List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
 
                 if (instrumentList.size() == 1) {
-                    Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(reading_picture.this, Plant_List.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     finish();
                     startActivity(intent);
                 }
                 else {
-                    Toast.makeText(reading_picture.this,"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(reading_picture.this, Barcode_Instrument_List.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("Instrument_list", (Serializable) instrumentList);
