@@ -201,7 +201,7 @@ public class SyncDbService extends Service {
     }
 
     private void clearDb() throws ParseException {
-        Log.i("clearDb method", "Hello");
+//        Log.i("clearDb method", "Hello");
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat sdformat = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
@@ -393,7 +393,7 @@ public class SyncDbService extends Service {
     }
 
     private boolean sendToServer() {
-        Log.i("Hello", "Hello Server method method");
+        Log.i("Hello", "Server method");
 
         String status = " ";
 

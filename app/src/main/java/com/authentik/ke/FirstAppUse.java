@@ -36,7 +36,7 @@ public class FirstAppUse extends AppCompatActivity {
                     editor.putString("server_url", "http://" + ip_addr + "/ke_app_api/");
                     editor.apply();
 
-                    getSharedPreferences("Preference",MODE_PRIVATE).edit().putBoolean("isFirstRun",true).apply();
+                    getSharedPreferences("Preference",MODE_PRIVATE).edit().putBoolean("isFirstRun",false).apply();
                     finish();
                     startActivity(new Intent(FirstAppUse.this,SplashScreen.class));
                 }

@@ -57,56 +57,58 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        Boolean isFirstRun = getSharedPreferences("Preference", Context.MODE_PRIVATE).getBoolean("isFirstRun",true);
+        sharedpreferences = getSharedPreferences("Preference", Context.MODE_PRIVATE);
 
-        if (!isFirstRun) {
+        boolean isFirstRun = getSharedPreferences("Preference", Context.MODE_PRIVATE).getBoolean("isFirstRun",true);
+
+        if (isFirstRun) {
 //            getSharedPreferences("Preference",MODE_PRIVATE).edit().putBoolean("isFirstRun",false).apply();
             finish();
             startActivity(new Intent(SplashScreen.this,FirstAppUse.class));
         }
+        else {
+            db = new DatabaseHelper(getApplicationContext());
 
-        db = new DatabaseHelper(getApplicationContext());
+            String serverDefaultURL = getResources().getString(R.string.server_name);
+            sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
+            final String server_url = sharedpreferences.getString("server_url", serverDefaultURL);
 
-        String serverDefaultURL = getResources().getString(R.string.server_name);
-        sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
-        final String server_url = sharedpreferences.getString("server_url", serverDefaultURL);
-
-        //intialize api urls
+            //intialize api urls
 //        usersURL =  getString(R.string.server_name) + "readUsers.php";
 //        plantsURL = getString(R.string.server_name) + "readPlants.php";
 //        systemsURL = getString(R.string.server_name) + "readSystems.php";
 //        instrumentsURL = getString(R.string.server_name) + "readInstruments.php";
 
-        usersURL = server_url + "readUsers.php";
-        plantsURL = server_url + "readPlants.php";
-        systemsURL = server_url + "readSystems.php";
-        instrumentsURL = server_url + "readInstruments.php";
+            usersURL = server_url + "readUsers.php";
+            plantsURL = server_url + "readPlants.php";
+            systemsURL = server_url + "readSystems.php";
+            instrumentsURL = server_url + "readInstruments.php";
 
-        // sync server db to local db if internet is available
-        if (isInternetAvailable()) {
+            // sync server db to local db if internet is available
+            if (isInternetAvailable()) {
 //
-            dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
+                dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
 
-            //Start sync service
-            serviceIntent = new Intent(this, SyncDbService.class);
-            startService(serviceIntent);
-        }
-        else {
-            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-            if (sharedpreferences.contains("isLoggedIn")) {
-                boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-                Intent intent;
-                if (value) {
-                    intent = new Intent(new Intent(getApplicationContext(), Shift_Selection.class));
-                } else {
-                    intent = new Intent(new Intent(getApplicationContext(), Login.class));
-                }
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                //Start sync service
+                serviceIntent = new Intent(this, SyncDbService.class);
+                startService(serviceIntent);
             } else {
-                Intent intent = new Intent(new Intent(getApplicationContext(), Login.class));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                if (sharedpreferences.contains("isLoggedIn")) {
+                    boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
+                    Intent intent;
+                    if (value) {
+                        intent = new Intent(new Intent(getApplicationContext(), Shift_Selection.class));
+                    } else {
+                        intent = new Intent(new Intent(getApplicationContext(), Login.class));
+                    }
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(new Intent(getApplicationContext(), Login.class));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
             }
         }
 

@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,8 @@ public class RequestHandler {
         try {
             url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(40000);
-            conn.setConnectTimeout(40000);
+//            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(60000);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setDoInput(true);
@@ -40,7 +41,7 @@ public class RequestHandler {
             OutputStream os = conn.getOutputStream();
 
             BufferedWriter writer = new BufferedWriter(
-                    new OutputStreamWriter(os, "UTF-8"));
+                    new OutputStreamWriter(os, StandardCharsets.UTF_8));
             writer.write(getPostDataString(postDataParams));
 
             writer.flush();
@@ -93,8 +94,8 @@ public class RequestHandler {
         try {
             url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(40000);
-            conn.setConnectTimeout(40000);
+//            conn.setReadTimeout(30000);
+            conn.setConnectTimeout(60000);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setDoInput(true);
