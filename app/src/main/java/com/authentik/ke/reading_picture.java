@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,8 +43,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -62,6 +66,8 @@ public class reading_picture extends AppCompatActivity {
     DatabaseHelper db;
     Reading reading;
     Instrument instrument;
+
+    Bitmap bitmap;
 
 
     @Override
@@ -161,19 +167,24 @@ public class reading_picture extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE) {
             if (resultCode == RESULT_OK) {
-                readingImage.setImageURI(Uri.parse(imageFilePath));
-//                Uri photoUri = Uri.parse(imageFilePath);
+//                readingImage.setImageURI(Uri.parse(imageFilePath));
                 Uri photoUri = Uri.fromFile(new File(imageFilePath));
-                byte[] inputData = null;
+//                byte[] inputData = null;
+//                try {
+//                    InputStream iStream =  getContentResolver().openInputStream(photoUri);
+//                    inputData = getBytes(iStream);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 try {
-                    InputStream iStream =  getContentResolver().openInputStream(photoUri);
-                    inputData = getBytes(iStream);
-//                    Bitmap photo = (Bitmap) data.getExtras().get("data");
-//                    readingImage.setImageBitmap(photo);
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                    photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-//                    byte[] byteArray = stream.toByteArray();
-                } catch (Exception e) {
+//                    Uri uri = data.getData();
+
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoUri);
+
+                    readingImage.setImageBitmap(bitmap);
+
+                } catch (IOException e) {
+
                     e.printStackTrace();
                 }
 
@@ -182,11 +193,23 @@ public class reading_picture extends AppCompatActivity {
                 builder.setTitle("Confirmation!");
                 builder.setMessage("Do you want to save this picture?");
 
-                final byte[] finalInputData = inputData;
+//                Bitmap thumbnail = BitmapFactory.decodeByteArray(inputData,0,inputData.length);
+//                thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+//                final byte[] finalInputData = inputData;
+
+                ByteArrayOutputStream byteArrayOutputStreamObject ;
+
+                byteArrayOutputStreamObject = new ByteArrayOutputStream();
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, byteArrayOutputStreamObject);
+
+                final byte[] finalInputData = byteArrayOutputStreamObject.toByteArray();
+
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 //                        db.insertReadingImage(reading_id, finalInputData);
+//                        imageInBase64Str = Base64.encodeBytes(imageInByte)
                         reading.setImage_path(finalInputData);
                         db.addReading(reading);
 
@@ -340,119 +363,6 @@ public class reading_picture extends AppCompatActivity {
         super.onDestroy();
         stopHandler();
     }
-
-    //    private final String TAG = "IntentApiSample";
-//    private final String ACTION_BARCODE_DATA = "com.honeywell.sample.action.BARCODE_DATA";
-//    private static final String ACTION_CLAIM_SCANNER = "com.honeywell.aidc.action.ACTION_CLAIM_SCANNER";
-//
-//    private static final String ACTION_RELEASE_SCANNER = "com.honeywell.aidc.action.ACTION_RELEASE_SCANNER";
-//
-//    private static final String EXTRA_SCANNER = "com.honeywell.aidc.extra.EXTRA_SCANNER";
-//
-//    private static final String EXTRA_PROFILE = "com.honeywell.aidc.extra.EXTRA_PROFILE";
-//
-//    private static final String EXTRA_PROPERTIES = "com.honeywell.aidc.extra.EXTRA_PROPERTIES";
-//    private TextView textView;
-//    private BroadcastReceiver barcodeDataReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            if (ACTION_BARCODE_DATA.equals(intent.getAction())) {
-///*
-//These extras are available:
-//"version" (int) = Data Intent Api version
-//"aimId" (String) = The AIM Identifier
-//            "charset" (String) = The charset used to convert "dataBytes" to "data" string
-//"codeId" (String) = The Honeywell Symbology Identifier
-//"data" (String) = The barcode data as a string
-//"dataBytes" (byte[]) = The barcode data as a byte array
-//"timestamp" (String) = The barcode timestamp
-//*/
-//                int version = intent.getIntExtra("version", 1);
-//                if (version >= 1) {
-//                    String aimId = intent.getStringExtra("aimId");
-//                    String charset = intent.getStringExtra("charset");
-//                    String codeId = intent.getStringExtra("codeId");
-//                    String data = intent.getStringExtra("data");
-//                    byte[] dataBytes = intent.getByteArrayExtra("dataBytes");
-//                    String dataBytesStr = bytesToHexString(dataBytes);
-//                    String timestamp = intent.getStringExtra("timestamp");
-//                    String text = String.format(
-//                            "Data:%s\n" +
-//                                    "Charset:%s\n" +
-//                                    "Bytes:%s\n" +
-//                                    "AimId:%s\n" +
-//                                    "CodeId:%s\n" +
-//                                    "Timestamp:%s\n",
-//                            data, charset, dataBytesStr, aimId, codeId, timestamp);
-//
-//                    String text2 = String.format(
-//                            "Data:%s\n",
-//                            data);
-//
-//                    Log.i("Scan Result ", text2);
-////                    setText(text2);
-////                    goQuestionsActivity(data);
-//
-////                    start Tag Activity
-//                    finish();
-////                    Instrument instrument = db.getInstrumentFromBarcode(data);
-////                    System system = db.getSystemFromInstrument(instrument);
-////                    Plant plant = db.getPlantFromSystem(system);
-////                    Log.i("Plant of Instrument",plant.getPlant_name());
-////                    Log.i("System of Instrument",system.getName());
-//
-//                    List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
-//                    Intent intent2 = new Intent(reading_picture.this,Barcode_Instrument_List.class);
-//                    intent2.putExtra("Instrument_list", (Serializable) instrumentList);
-//                    intent2.putExtra("barcode_id",data);
-//                    startActivity(intent2);
-//                }
-//            }
-//        }
-//    };
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        registerReceiver(barcodeDataReceiver, new IntentFilter(ACTION_BARCODE_DATA));
-//        claimScanner();
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        unregisterReceiver(barcodeDataReceiver);
-//        releaseScanner();
-//    }
-//
-//
-//    private void claimScanner() {
-//        Bundle properties = new Bundle();
-//        properties.putBoolean("DPR_DATA_INTENT", true);
-//        properties.putString("DPR_DATA_INTENT_ACTION", ACTION_BARCODE_DATA);
-//        sendBroadcast(new Intent(ACTION_CLAIM_SCANNER)
-//                .putExtra(EXTRA_SCANNER, "dcs.scanner.imager")
-//                .putExtra(EXTRA_PROFILE, "MyProfile1")
-//                .putExtra(EXTRA_PROPERTIES, properties)
-//        );
-//    }
-//
-//    private void releaseScanner() {
-//        sendBroadcast(new Intent(ACTION_RELEASE_SCANNER));
-//    }
-//
-//
-//    private String bytesToHexString(byte[] arr) {
-//        String s = "[]";
-//        if (arr != null) {
-//            s = "[";
-//            for (int i = 0; i < arr.length; i++) {
-//                s += "0x" + Integer.toHexString(arr[i]) + ", ";
-//            }
-//            s = s.substring(0, s.length() - 2) + "]";
-//        }
-//        return s;
-//    }
 
     public void settingsPage(View view) {
         startActivity(new Intent(reading_picture.this,Settings_Page.class));

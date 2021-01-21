@@ -124,7 +124,7 @@
             android:textColor="#FFFFFF"
             android:gravity="center"
             android:letterSpacing="0.2"
-            android:onClick="Login"
+            android:onClick="LOGIN"
             android:padding="16dp"
             android:text="Login"
             android:textStyle="bold" />

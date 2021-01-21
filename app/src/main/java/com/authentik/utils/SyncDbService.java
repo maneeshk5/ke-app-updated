@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -411,11 +412,12 @@ public class SyncDbService extends Service {
                     reading_params.put("shift_id", readingList.get(i).getShift_id());
                     reading_params.put("reading_value", Double.toString(readingList.get(i).getReading_value()));
                     reading_params.put("date", readingList.get(i).getDate_time());
-                    reading_params.put("system_id", Integer.toString(readingList.get(i).getInstrument_id()));
-                    reading_params.put("plant_id", Integer.toString(readingList.get(i).getInstrument_id()));
+                    reading_params.put("system_id", Integer.toString(readingList.get(i).getSystem_id()));
+                    reading_params.put("plant_id", Integer.toString(readingList.get(i).getPlant_id()));
                     reading_params.put("time", readingList.get(i).getTime());
                     if (readingList.get(i).getImage_path() != null) {
-                        reading_params.put("image", Arrays.toString(readingList.get(i).getImage_path()));
+                        reading_params.put("image",  Base64.encodeToString(readingList.get(i).getImage_path(), Base64.DEFAULT));
+//                        reading_params.put("image",readingList.get(i).getImage_path().toString());
                     }
                     RequestHandler requestHandler = new RequestHandler();
                     //returing the response

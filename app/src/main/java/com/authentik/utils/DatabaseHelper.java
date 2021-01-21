@@ -493,7 +493,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_READING_SHIFT_ID,
                 COLUMN_READING_IMAGE_PATH,
                 COLUMN_READING_INSTRUMENT_ID,
-                COLUMN_READING_SYNC_STATUS};
+                COLUMN_READING_SYNC_STATUS,
+                COLUMN_READING_SYSTEM_ID,
+                COLUMN_READING_PLANT_ID};
         // sorting orders
         String sortOrder =
                 COLUMN_READING_ID + " ASC";
@@ -526,6 +528,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 reading.setTime(cursor.getString(cursor.getColumnIndex(COLUMN_READING_TIME)));
                 reading.setImage_path(cursor.getBlob(cursor.getColumnIndex(COLUMN_READING_IMAGE_PATH)));
                 reading.setSync_status(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SYNC_STATUS))));
+                reading.setPlant_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_PLANT_ID))));
+                reading.setSystem_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SYSTEM_ID))));
+
                 // Adding user record to list
                 readingList.add(reading);
             } while (cursor.moveToNext());
