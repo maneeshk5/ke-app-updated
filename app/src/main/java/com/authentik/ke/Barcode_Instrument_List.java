@@ -55,7 +55,6 @@ public class Barcode_Instrument_List extends AppCompatActivity {
     DatabaseHelper db;
     int totalReadingsTaken;
     List<Instrument> instrumentList;
-//    Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

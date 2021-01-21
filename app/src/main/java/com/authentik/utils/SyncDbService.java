@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -403,34 +405,36 @@ public class SyncDbService extends Service {
         if (readingList.size() > 0) {
 
             for (int i = 0; i < readingList.size(); i++) {
-                reading_params.put("id", readingList.get(i).getId());
-                reading_params.put("instrument_id", Integer.toString(readingList.get(i).getInstrument_id()));
-                reading_params.put("shift_id", readingList.get(i).getShift_id());
-                reading_params.put("reading_value", Double.toString(readingList.get(i).getReading_value()));
-                reading_params.put("date", readingList.get(i).getDate_time());
-                reading_params.put("system_id", Integer.toString(readingList.get(i).getInstrument_id()));
-                reading_params.put("plant_id", Integer.toString(readingList.get(i).getInstrument_id()));
-                reading_params.put("time", readingList.get(i).getTime());
-                if (readingList.get(i).getImage_path() != null) {
-                    reading_params.put("image", readingList.get(i).getImage_path().toString());
-                }
-                RequestHandler requestHandler = new RequestHandler();
-                //returing the response
-                status = requestHandler.sendPostRequest(readingsURL, reading_params);
-
-                if (status.equals("Invalid Server URL")) {
-                    return false;
-                }
-                JSONObject obj;
-                try {
-                    obj = new JSONObject(status);
-
-                    if (obj.getInt("success") == 1) {
-                        db.changeReadingSyncStatus(readingList.get(i).getId(), 1);
+                if (readingList.get(i).getSync_status() == 0) {
+                    reading_params.put("id", readingList.get(i).getId());
+                    reading_params.put("instrument_id", Integer.toString(readingList.get(i).getInstrument_id()));
+                    reading_params.put("shift_id", readingList.get(i).getShift_id());
+                    reading_params.put("reading_value", Double.toString(readingList.get(i).getReading_value()));
+                    reading_params.put("date", readingList.get(i).getDate_time());
+                    reading_params.put("system_id", Integer.toString(readingList.get(i).getInstrument_id()));
+                    reading_params.put("plant_id", Integer.toString(readingList.get(i).getInstrument_id()));
+                    reading_params.put("time", readingList.get(i).getTime());
+                    if (readingList.get(i).getImage_path() != null) {
+                        reading_params.put("image", Arrays.toString(readingList.get(i).getImage_path()));
                     }
+                    RequestHandler requestHandler = new RequestHandler();
+                    //returing the response
+                    status = requestHandler.sendPostRequest(readingsURL, reading_params);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    if (status.equals("Invalid Server URL")) {
+                        return false;
+                    }
+                    JSONObject obj;
+                    try {
+                        obj = new JSONObject(status);
+
+                        if (obj.getInt("success") == 1) {
+                            db.changeReadingSyncStatus(readingList.get(i).getId(), 1);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -442,34 +446,36 @@ public class SyncDbService extends Service {
         if (shiftList.size() > 0) {
 
             for (int i = 0; i < shiftList.size(); i++) {
-                shift_params.put("id", shiftList.get(i).getId());
-                shift_params.put("name", shiftList.get(i).getName());
-                shift_params.put("readingType", shiftList.get(i).getReading_type());
-                shift_params.put("userName", shiftList.get(i).getUser_Name());
-                shift_params.put("startTime", shiftList.get(i).getStart_time());
-                shift_params.put("date", shiftList.get(i).getDate());
+                if (shiftList.get(i).getSync_status() == 0) {
+                    shift_params.put("id", shiftList.get(i).getId());
+                    shift_params.put("name", shiftList.get(i).getName());
+                    shift_params.put("readingType", shiftList.get(i).getReading_type());
+                    shift_params.put("userName", shiftList.get(i).getUser_Name());
+                    shift_params.put("startTime", shiftList.get(i).getStart_time());
+                    shift_params.put("date", shiftList.get(i).getDate());
 
-                if (shiftList.get(i).getEnd_time() != null) {
-                    shift_params.put("end_time", shiftList.get(i).getEnd_time());
-                }
-                RequestHandler requestHandler = new RequestHandler();
-                //returning the response
-                status = requestHandler.sendPostRequest(shiftsURL, shift_params);
-                if (status.equals("Invalid Server URL")) {
-                    return false;
-                }
-
-                JSONObject obj;
-                try {
-                    obj = new JSONObject(status);
-
-                    if (obj.getInt("success") == 1) {
-//                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
-                        db.changeShiftSyncStatus(shiftList.get(i).getId(), 1);
+                    if (shiftList.get(i).getEnd_time() != null) {
+                        shift_params.put("end_time", shiftList.get(i).getEnd_time());
+                    }
+                    RequestHandler requestHandler = new RequestHandler();
+                    //returning the response
+                    status = requestHandler.sendPostRequest(shiftsURL, shift_params);
+                    if (status.equals("Invalid Server URL")) {
+                        return false;
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    JSONObject obj;
+                    try {
+                        obj = new JSONObject(status);
+
+                        if (obj.getInt("success") == 1) {
+//                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
+                            db.changeShiftSyncStatus(shiftList.get(i).getId(), 1);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -481,29 +487,31 @@ public class SyncDbService extends Service {
         if (values.size() > 0) {
 
             for (int i = 0; i < values.size(); i++) {
-                shift_system_status_params.put("id", values.get(i).get("id").toString());
-                shift_system_status_params.put("shift_id", values.get(i).get("shift_id").toString());
-                shift_system_status_params.put("system_id", values.get(i).get("system_id").toString());
-                shift_system_status_params.put("system_status_value", values.get(i).get("system_status_value").toString());
-                shift_system_status_params.put("date_time", values.get(i).get("date_time").toString());
+                if (values.get(i).getAsInteger("sync_status") == 0) {
+                    shift_system_status_params.put("id", values.get(i).get("id").toString());
+                    shift_system_status_params.put("shift_id", values.get(i).get("shift_id").toString());
+                    shift_system_status_params.put("system_id", values.get(i).get("system_id").toString());
+                    shift_system_status_params.put("system_status_value", values.get(i).get("system_status_value").toString());
+                    shift_system_status_params.put("date_time", values.get(i).get("date_time").toString());
 
-                RequestHandler requestHandler = new RequestHandler();
-                //returing the response
-                status = requestHandler.sendPostRequest(shiftSystemStatusURL, shift_system_status_params);
-                if (status.equals("Invalid Server URL")) {
-                    return false;
-                }
-                JSONObject obj;
-                try {
-                    obj = new JSONObject(status);
-
-                    if (obj.getInt("success") == 1) {
-//                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
-                        db.changeSystemStatusSync(values.get(i).getAsString("id"), 1);
+                    RequestHandler requestHandler = new RequestHandler();
+                    //returing the response
+                    status = requestHandler.sendPostRequest(shiftSystemStatusURL, shift_system_status_params);
+                    if (status.equals("Invalid Server URL")) {
+                        return false;
                     }
+                    JSONObject obj;
+                    try {
+                        obj = new JSONObject(status);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                        if (obj.getInt("success") == 1) {
+//                                db.changeReadingSyncStatus(readingList.get(i).getId(),1);
+                            db.changeSystemStatusSync(values.get(i).getAsString("id"), 1);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

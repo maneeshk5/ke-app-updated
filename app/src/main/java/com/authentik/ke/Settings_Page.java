@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authentik.model.Instrument;
@@ -89,13 +90,20 @@ public class Settings_Page extends AppCompatActivity {
 //                    Toast.makeText(Settings_Page.this,"Enter New Server Url",Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
                         builder.setView(null).setMessage(null);
-                        builder.setTitle("Enter new ip address: ");
-                        final EditText input_server_url = new EditText(Settings_Page.this);
-//                    input_server_url.setText("http://");
-                        input_server_url.setSelection(input_server_url.getText().length());
-//                    input_server_url.setLayoutParams(new LinearLayout.LayoutParams(10, 10,1f));
-//                    input_server_url.setPadding(30,10,30,10);
 
+//                        LinearLayout layout = new LinearLayout(Settings_Page.this);
+//                        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//                        layout.setOrientation(LinearLayout.VERTICAL);
+//                        layout.setLayoutParams(parms);
+////                        layout.setGravity(Gravity.CLIP_VERTICAL);
+//                        layout.setPadding(2, 2, 2, 2);
+
+                        builder.setTitle("Change Server ");
+                        final EditText input_server_url = new EditText(Settings_Page.this);
+                        input_server_url.setHint("Enter new ip address");
+                        final TextView curr_server_url = new TextView(Settings_Page.this);
+                        curr_server_url.setText(getSharedPreferences("ServerData",Context.MODE_PRIVATE).getString("server_url","-"));
+                        input_server_url.setSelection(input_server_url.getText().length());
 
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
@@ -109,10 +117,21 @@ public class Settings_Page extends AppCompatActivity {
                                 if (input_server_url.getText().length() == 0) {
                                     Toast.makeText(Settings_Page.this, "Please Enter a valid url", Toast.LENGTH_SHORT).show();
                                 } else {
+
+                                    SharedPreferences sharedpreferences2 = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor2 = sharedpreferences2.edit();
+                                    editor2.putBoolean("isLoggedIn", false);
+                                    editor2.putString("Username", "-");
+                                    editor2.putString("shift_id", "-");
+                                    editor2.apply();
+
                                     SharedPreferences sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedpreferences.edit();
                                     editor.putString("server_url", "http://" + input_server_url.getText().toString() + "/ke_app_api/");
                                     editor.apply();
+
+                                    db.rebuildDB(db.getWritableDatabase());
+
                                     Toast.makeText(Settings_Page.this, "App needs a restart after server change", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());
 //                                    getApplicationContext().deleteDatabase("pvs_ke");
@@ -120,7 +139,9 @@ public class Settings_Page extends AppCompatActivity {
                                 }
                             }
                         });
+//                        builder.setView(curr_server_url);
                         builder.setView(input_server_url);
+//                        builder.setView(layout);
                         builder.create().show();
                     } else {
                         Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
@@ -128,6 +149,7 @@ public class Settings_Page extends AppCompatActivity {
                 } else if (position == 1) {
 
                     if (isInternetAvailable()) {
+
                         dialog = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
 
                         db.rebuildDB(db.getWritableDatabase());
@@ -137,10 +159,6 @@ public class Settings_Page extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
                     }
-//
-//                }
-//            }
-//        });
                 } else if (position == 2) {
 
                     startActivity(new Intent(Settings_Page.this,Help_Page.class));
@@ -200,6 +218,7 @@ public class Settings_Page extends AppCompatActivity {
     }
 
 
-
-
+    public void goBack(View view) {
+        finish();
+    }
 }

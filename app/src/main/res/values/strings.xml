@@ -8,7 +8,7 @@
     <string name="shift_spinner">Select Shift</string>
 
     <string-array name="options">
-        <item>Server Settings</item>
+        <item>Change Server</item>
         <item>Sync Data</item>
         <item>Help</item>
     </string-array>
