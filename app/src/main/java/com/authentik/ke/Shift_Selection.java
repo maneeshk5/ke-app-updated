@@ -166,7 +166,8 @@ public class Shift_Selection extends AppCompatActivity {
                     }
                     editor.apply();
 
-                    Intent intent = new Intent(Shift_Selection.this, Plant_List.class);
+                    Intent intent = new Intent(Shift_Selection.this, HomePage.class);
+                    finish();
                     startActivity(intent);
                 }
             }

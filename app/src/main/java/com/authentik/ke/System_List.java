@@ -257,9 +257,7 @@ public class System_List extends AppCompatActivity {
                                                     plant_alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
-//                                                            Intent intent = new Intent(System_List.this,Plant_List.class);
-//                                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                                            startActivity(intent);
+//
                                                             finish();
                                                         }
                                                     });

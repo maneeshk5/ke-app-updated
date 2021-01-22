@@ -193,7 +193,7 @@ public class Tag_information extends AppCompatActivity {
 
                                     if (instrumentList.size() == 1) {
                                         Toast.makeText(getApplicationContext(), "Data Saved Successfully", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(Tag_information.this, Plant_List.class);
+                                        Intent intent = new Intent(Tag_information.this, HomePage.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         finish();
                                         startActivity(intent);
@@ -286,7 +286,7 @@ public class Tag_information extends AppCompatActivity {
         List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
 
         if (instrumentList.size() == 1) {
-            Intent intent = new Intent(Tag_information.this, Plant_List.class);
+            Intent intent = new Intent(Tag_information.this, HomePage.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             finish();
             startActivity(intent);
@@ -300,7 +300,7 @@ public class Tag_information extends AppCompatActivity {
         List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
 
         if (instrumentList.size() == 1) {
-            Intent intent = new Intent(Tag_information.this, Plant_List.class);
+            Intent intent = new Intent(Tag_information.this, HomePage.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             finish();
             startActivity(intent);

@@ -119,7 +119,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
         if (instrumentList.size() == 0) {
             Toast.makeText(getApplicationContext(),"No instrument with this barcode",Toast.LENGTH_SHORT).show();
             finish();
-            startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
+            startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
         }
 
         String barcode_id = getIntent().getStringExtra("barcode_id");
@@ -202,7 +202,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finishAffinity();
-                startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
+                startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -222,7 +222,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finishAffinity();
-                startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
+                startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -251,7 +251,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
         if (totalReadingsTaken == instrumentList.size()) {
             Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
+            startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
 
         }
         else {
@@ -263,7 +263,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finishAffinity();
-                    startActivity(new Intent(Barcode_Instrument_List.this,Plant_List.class));
+                    startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
                 }
             });
             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

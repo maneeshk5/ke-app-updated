@@ -483,6 +483,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return userList;
     }
 
+
+
     public List<Reading> getAllReadings() {
         // array of columns to fetch
         String[] columns = {
@@ -839,6 +841,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return PlantInstrumentList;
     }
+
+    public int getReadingCount(String shift_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_READING_ID
+        };
+        SQLiteDatabase db = this.getReadableDatabase();
+        // selection criteria
+        String selection = COLUMN_READING_SHIFT_ID + " = ?";
+        // selection argument
+        String[] selectionArgs = {shift_id};
+        // query user table with condition
+
+        Cursor cursor = db.query(TABLE_READING, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                      //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        cursor.close();
+        db.close();
+//        if (cursorCount > 0) {
+//            return true;
+//        }
+//        return false;
+//    }
+        return cursorCount;
+    }
+
 
     public int getInstrumentStatus(int instrument_id, String shift_id) {
         // array of columns to fetch
@@ -1270,6 +1303,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return shift_id;
+    }
+
+    public Shift getShiftDetails(String shift_id) {
+        // array of columns to fetch
+        String[] columns = {
+                COLUMN_SHIFT_ID,
+                COLUMN_SHIFT_NAME,
+                COLUMN_SHIFT_READING_TYPE,
+                COLUMN_SHIFT_USER_NAME,
+                COLUMN_SHIFT_START_TIME,
+                COLUMN_SHIFT_END_TIME,
+                COLUMN_SHIFT_DATE,
+                COLUMN_SHIFT_SYNC_STATUS
+        };
+        // sorting orders
+        String sortOrder =
+                COLUMN_SHIFT_ID + " ASC";
+
+        String selection = COLUMN_SHIFT_ID + " = ?";
+        // selection argument
+        String[] selectionArgs = {shift_id};
+
+//        List<Shift> shiftList = new ArrayList<Shift>();
+        Shift shift = new Shift();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // query the user table
+
+        Cursor cursor = db.query(TABLE_SHIFT, //Table to query
+                columns,    //columns to return
+                selection,        //columns for the WHERE clause
+                selectionArgs,        //The values for the WHERE clause
+                null,       //group the rows
+                null,       //filter by row groups
+                sortOrder); //The sort order
+
+
+        // Traversing through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                shift.setId(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_ID)));
+                shift.setName(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_NAME)));
+                shift.setReading_type(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_READING_TYPE)));
+                shift.setUser_Name(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_USER_NAME)));
+                shift.setStart_time(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_START_TIME)));
+                shift.setEnd_time(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_END_TIME)));
+                shift.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_DATE)));
+                shift.setSync_status(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_SHIFT_SYNC_STATUS))));
+
+                // Adding user record to list
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+
+        // return user list
+        return shift;
     }
 
 

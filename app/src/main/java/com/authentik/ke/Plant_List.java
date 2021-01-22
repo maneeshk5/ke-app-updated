@@ -233,13 +233,13 @@ public class Plant_List extends AppCompatActivity {
 
     public void goBack(View view) {
         finish();
-        startActivity(new Intent(Plant_List.this, Shift_Selection.class));
+        startActivity(new Intent(Plant_List.this, HomePage.class));
     }
 
     @Override
     public void onBackPressed() {
         finish();
-        startActivity(new Intent(Plant_List.this, Shift_Selection.class));
+        startActivity(new Intent(Plant_List.this, HomePage.class));
     }
 
     public int calculatePlantStatus(final int noOfSystemsInPlant, final DatabaseHelper db, final List<System> systemList, final String shift_id) {
