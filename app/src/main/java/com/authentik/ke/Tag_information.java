@@ -96,7 +96,7 @@ public class Tag_information extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
         String shift_id = sharedPreferences.getString("shift_id", "-");
-        String value = sharedPreferences.getString("Username", "no name");
+        final String value = sharedPreferences.getString("Username", "no name");
         currUser.setText(value);
 
         Date dNow = new Date();
@@ -186,6 +186,7 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
+                                    reading.setUser_name(value);
 
                                     db.addReading(reading);
 //                                    Toast.makeText(Tag_information.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
@@ -235,6 +236,8 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setReading_value(Double.parseDouble(reading_value_et.getText().toString()));
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
+                                    reading.setUser_name(value);
+
 
 //                                    db.addReading(reading);
                                     finish();

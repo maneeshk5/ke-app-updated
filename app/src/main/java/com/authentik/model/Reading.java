@@ -15,6 +15,7 @@ public class Reading implements Serializable {
     private int plant_id;
     private String system_status;
     private int sync_status;
+    private String user_name;
 
     public String getId() {
         return id;
@@ -103,5 +104,13 @@ public class Reading implements Serializable {
 
     public void setSync_status(int sync_status) {
         this.sync_status = sync_status;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 }

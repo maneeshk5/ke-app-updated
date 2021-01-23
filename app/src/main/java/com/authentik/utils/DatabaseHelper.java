@@ -90,6 +90,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_READING_PLANT_ID = "plant_id";
     private static final String COLUMN_READING_SYSTEM_STATUS = "system_status";
     private static final String COLUMN_READING_SYNC_STATUS= "sync_status";
+    private static final String COLUMN_READING_USER_NAME = "user_name";
+
 
     //System Status Column Names
     private static final String COLUMN_STATUS_ID = "id";
@@ -98,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_STATUS_VALUE = "system_status_value";
     private static final String COLUMN_STATUS_DATETIME = "date_time";
     private static final String COLUMN_STATUS_SYNC_STATUS= "sync_status";
+    private static final String COLUMN_STATUS_USER_NAME = "user_name";
 
 
     // create table sql query
@@ -132,11 +135,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_READING_IMAGE_PATH + " BLOB," + COLUMN_READING_TIME + " TEXT,"
             + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " DOUBLE , "
             + COLUMN_READING_DATETIME + " TEXT, " + COLUMN_READING_SYSTEM_ID + " INTEGER, " + COLUMN_READING_PLANT_ID
-            + " INTEGER, " + COLUMN_READING_SYSTEM_STATUS +  " TEXT, " +  COLUMN_READING_SYNC_STATUS + " INTEGER " + ")";
+            + " INTEGER, " + COLUMN_READING_SYSTEM_STATUS +  " TEXT, " +  COLUMN_READING_SYNC_STATUS + " INTEGER, "
+            +  COLUMN_READING_USER_NAME + " TEXT " + ")";
 
     private String CREATE_SHIFT_SYSTEM_STATUS_TABLE = "CREATE TABLE " + TABLE_SYSTEM_STATUS + "("
             + COLUMN_STATUS_ID + " TEXT PRIMARY KEY, " + COLUMN_STATUS_SHIFT_ID + " TEXT, " + COLUMN_STATUS_SYSTEM_ID
-            + " INTEGER, " + COLUMN_STATUS_VALUE + " TEXT, " + COLUMN_STATUS_DATETIME +  " TEXT, " +  COLUMN_READING_SYNC_STATUS + " INTEGER " + ")";
+            + " INTEGER, " + COLUMN_STATUS_VALUE + " TEXT, " + COLUMN_STATUS_DATETIME +  " TEXT, " +  COLUMN_READING_SYNC_STATUS + " INTEGER, "
+            +  COLUMN_READING_USER_NAME + " TEXT " + ")";
 
 
     // drop table sql query
@@ -315,6 +320,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_READING_DATETIME, reading.getDate_time());
         values.put(COLUMN_READING_SYSTEM_ID, reading.getSystem_id());
         values.put(COLUMN_READING_PLANT_ID, reading.getPlant_id());
+        values.put(COLUMN_READING_USER_NAME, reading.getUser_name());
         values.put(COLUMN_READING_SYNC_STATUS,0);
 
         // Inserting Row
@@ -394,7 +400,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_STATUS_SYSTEM_ID,
                 COLUMN_STATUS_SHIFT_ID,
                 COLUMN_STATUS_DATETIME,
-                COLUMN_STATUS_SYNC_STATUS
+                COLUMN_STATUS_SYNC_STATUS,
+                COLUMN_STATUS_USER_NAME
         };
         // sorting orders
         String sortOrder =
@@ -427,7 +434,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put("system_status_value",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_VALUE)));
                 values.put("date_time",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_DATETIME)));
                 values.put("sync_status",Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_SYNC_STATUS))));
-
+                values.put("user_name",cursor.getString(cursor.getColumnIndex(COLUMN_STATUS_USER_NAME)));
                 // Adding user record to list
                 valuesList.add(values);
             } while (cursor.moveToNext());
@@ -497,7 +504,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_READING_INSTRUMENT_ID,
                 COLUMN_READING_SYNC_STATUS,
                 COLUMN_READING_SYSTEM_ID,
-                COLUMN_READING_PLANT_ID};
+                COLUMN_READING_PLANT_ID,
+                COLUMN_READING_USER_NAME};
         // sorting orders
         String sortOrder =
                 COLUMN_READING_ID + " ASC";
@@ -532,6 +540,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 reading.setSync_status(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SYNC_STATUS))));
                 reading.setPlant_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_PLANT_ID))));
                 reading.setSystem_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SYSTEM_ID))));
+                reading.setUser_name(cursor.getString(cursor.getColumnIndex(COLUMN_READING_USER_NAME)));
 
                 // Adding user record to list
                 readingList.add(reading);
@@ -1007,7 +1016,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addSystemStatus(String id, String shift_id, int system_id, String status_value, String date_time) {
+    public void addSystemStatus(String id, String shift_id, int system_id, String status_value, String date_time,String user_name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -1016,6 +1025,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_STATUS_SYSTEM_ID, system_id);
         values.put(COLUMN_STATUS_VALUE, status_value);
         values.put(COLUMN_STATUS_DATETIME, date_time);
+        values.put(COLUMN_STATUS_USER_NAME, user_name);
         values.put(COLUMN_STATUS_SYNC_STATUS,0);
 
 

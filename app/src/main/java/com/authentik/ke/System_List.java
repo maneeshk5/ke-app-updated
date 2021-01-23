@@ -76,7 +76,7 @@ public class System_List extends AppCompatActivity {
         app_path = findViewById(R.id.app_path_tv);
 
         sharedPreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-        String value = sharedPreferences.getString("Username", "no name");
+        final String value = sharedPreferences.getString("Username", "no name");
         final String shift_id = sharedPreferences.getString("shift_id","-");
         currUser.setText(value);
 
@@ -196,7 +196,7 @@ public class System_List extends AppCompatActivity {
                             String date_time = ft2.format(dNow);
                             String status_value = "Running";
 
-                            db.addSystemStatus(status_id,shift_id,systems.get(finalI).getId(),status_value,date_time);
+                            db.addSystemStatus(status_id,shift_id,systems.get(finalI).getId(),status_value,date_time,value);
 
                             Log.i(" System id:", Integer.toString(systems.get(finalI).getId()));
                             Intent intent = new Intent(getApplicationContext(), Instrument_List.class);
@@ -236,7 +236,7 @@ public class System_List extends AppCompatActivity {
                                         String status_id = ft.format(dNow);
                                         String date_time = ft2.format(dNow);
 
-                                        db.addSystemStatus(status_id,shift_id,systems.get(finalI).getId(),status_value,date_time);
+                                        db.addSystemStatus(status_id,shift_id,systems.get(finalI).getId(),status_value,date_time,value);
 
                                         if (status_value.equals("PFW/Shutdown")) {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(System_List.this);

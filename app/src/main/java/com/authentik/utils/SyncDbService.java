@@ -415,6 +415,7 @@ public class SyncDbService extends Service {
                     reading_params.put("system_id", Integer.toString(readingList.get(i).getSystem_id()));
                     reading_params.put("plant_id", Integer.toString(readingList.get(i).getPlant_id()));
                     reading_params.put("time", readingList.get(i).getTime());
+                    reading_params.put("user_name", readingList.get(i).getUser_name());
                     if (readingList.get(i).getImage_path() != null) {
                         reading_params.put("image",  Base64.encodeToString(readingList.get(i).getImage_path(), Base64.DEFAULT));
 //                        reading_params.put("image",readingList.get(i).getImage_path().toString());
@@ -495,6 +496,8 @@ public class SyncDbService extends Service {
                     shift_system_status_params.put("system_id", values.get(i).get("system_id").toString());
                     shift_system_status_params.put("system_status_value", values.get(i).get("system_status_value").toString());
                     shift_system_status_params.put("date_time", values.get(i).get("date_time").toString());
+                    shift_system_status_params.put("user_name", values.get(i).get("user_name").toString());
+
 
                     RequestHandler requestHandler = new RequestHandler();
                     //returing the response

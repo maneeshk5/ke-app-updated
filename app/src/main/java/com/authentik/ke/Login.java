@@ -81,6 +81,7 @@ public class Login extends AppCompatActivity {
 
         Log.i("User Name", username);
 
+
         try {
 
             if (db.checkUser(username)) {
@@ -108,9 +109,8 @@ public class Login extends AppCompatActivity {
 
         }
 
-    {
-
     }
-
-}
+    public void settingsPage(View view) {
+        startActivity(new Intent(Login.this, Settings_Page.class));
+    }
 }
