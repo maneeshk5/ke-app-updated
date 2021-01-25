@@ -41,7 +41,7 @@ public class Settings_Page extends AppCompatActivity {
     String plantsURL;
     String systemsURL;
     String instrumentsURL;
-    ProgressDialog dialog;
+    ProgressDialog progDialogue;
 
 
     @Override
@@ -91,18 +91,12 @@ public class Settings_Page extends AppCompatActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
                         builder.setView(null).setMessage(null);
 
-//                        LinearLayout layout = new LinearLayout(Settings_Page.this);
-//                        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//                        layout.setOrientation(LinearLayout.VERTICAL);
-//                        layout.setLayoutParams(parms);
-////                        layout.setGravity(Gravity.CLIP_VERTICAL);
-//                        layout.setPadding(2, 2, 2, 2);
 
                         builder.setTitle("Change Server ");
                         final EditText input_server_url = new EditText(Settings_Page.this);
                         input_server_url.setHint("Enter new ip address");
                         final TextView curr_server_url = new TextView(Settings_Page.this);
-                        curr_server_url.setText(getSharedPreferences("ServerData",Context.MODE_PRIVATE).getString("server_url","-"));
+                        curr_server_url.setText(getSharedPreferences("ServerData", Context.MODE_PRIVATE).getString("server_url", "-"));
                         input_server_url.setSelection(input_server_url.getText().length());
 
                         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -148,20 +142,35 @@ public class Settings_Page extends AppCompatActivity {
                     }
                 } else if (position == 1) {
 
-                    if (isInternetAvailable()) {
 
-                        dialog = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
 
-                        db.rebuildDB(db.getWritableDatabase());
+                    builder.setTitle("Confirmation");
+                    builder.setMessage("Sync Data with Server?");
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (isInternetAvailable()) {
+                                progDialogue = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
+                                db.rebuildDB(db.getWritableDatabase());
+                                startService(new Intent(Settings_Page.this, SyncDbService.class));
+                            } else {
+                                Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
 
-                        startService(new Intent(Settings_Page.this, SyncDbService.class));
+                    builder.create().show();
 
-                    } else {
-                        Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
-                    }
                 } else if (position == 2) {
 
-                    startActivity(new Intent(Settings_Page.this,Help_Page.class));
+                    startActivity(new Intent(Settings_Page.this, Help_Page.class));
                 }
             }
         });
@@ -209,10 +218,9 @@ public class Settings_Page extends AppCompatActivity {
     public void onDestroy() {
         stopHandler();
         try {
-            dialog.dismiss();
-        }
-        catch (NullPointerException e) {
-            Log.i("settings page","no dialog box");
+            progDialogue.dismiss();
+        } catch (NullPointerException e) {
+            Log.i("settings page", "no dialog box");
         }
         super.onDestroy();
     }

@@ -23,9 +23,7 @@
             android:layout_width="35dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ke_icon"
-            android:paddingTop="8dp"
-            />
+            android:src="@drawable/ke_icon" />
 
 
         <TextView
@@ -37,11 +35,45 @@
             android:maxLines="1"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:paddingTop="8dp"
             android:text="Korange Power Complex"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="#ffff"
             android:textSize="16dp" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/btn_settings"-->
+<!--            android:layout_width="41dp"-->
+<!--            android:layout_height="26dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:onClick="settingsPage"-->
+<!--            android:paddingLeft="20dp"-->
+<!--            app:srcCompat="@drawable/settings_icon" />-->
+
+
+
+        <!--        <Spinner-->
+<!--            android:id="@+id/options_spinner"-->
+<!--            style="@style/Widget.AppCompat.Spinner.DropDown"-->
+<!--            android:layout_width="73dp"-->
+<!--            android:layout_height="15dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:entries="@array/settings"-->
+<!--            android:textSize="10dp" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/logout_link"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center_vertical"-->
+        <!--            android:fontFamily="@font/andada"-->
+        <!--            android:maxLines="1"-->
+        <!--            android:paddingLeft="15dp"-->
+        <!--            android:paddingTop="6dp"-->
+        <!--            android:text="Logout"-->
+        <!--            android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+        <!--            android:textColor="#ffff"-->
+        <!--            android:textSize="12dp" />-->
 
     </LinearLayout>
 

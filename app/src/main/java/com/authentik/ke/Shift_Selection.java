@@ -181,6 +181,7 @@ public class Shift_Selection extends AppCompatActivity {
     public void onBackPressed() {
         if (backPressedTime + 2000 > System.currentTimeMillis()) {
             super.onBackPressed();
+            finishAffinity();
             return;
         } else {
             Toast.makeText(getApplicationContext(), "Press Back again to exit", Toast.LENGTH_SHORT).show();
