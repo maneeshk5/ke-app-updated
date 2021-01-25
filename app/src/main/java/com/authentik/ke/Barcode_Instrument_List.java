@@ -80,7 +80,6 @@ public class Barcode_Instrument_List extends AppCompatActivity {
         };
         startHandler();
 
-//        serviceIntent = new Intent(this, SyncDbService.class);
 
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
@@ -243,11 +242,6 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
     public void saveReadings(View view) {
 
-        // send data to server and clear db history
-//        if (isInternetAvailable()) {
-//            startService(serviceIntent);
-//        }
-
 
         if (totalReadingsTaken == instrumentList.size()) {
             Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
@@ -332,17 +326,7 @@ These extras are available:
                     if (instrumentList.size() == 0) {
                         Toast.makeText(getApplicationContext(), "Invalid Barcode", Toast.LENGTH_SHORT).show();
                     }
-//                    else if (instrumentList.size() == 1) {
-//                        Instrument instrument = instrumentList.get(0);
-//                        System system = db.getSystemFromInstrument(instrument);
-//                        Plant plant = db.getPlantFromSystem(system);
-//                        Intent intent2 = new Intent(Plant_List.this, Tag_information.class);
-//                        intent2.putExtra("instrument_object", instrument);
-//                        intent2.putExtra("system_object", system);
-//                        intent2.putExtra("plant_object", plant);
-//                        finish();
-//                        startActivity(intent2);
-//                    }
+
                     else {
                         Intent intent2 = new Intent(Barcode_Instrument_List.this, Barcode_Instrument_List.class);
                         intent2.putExtra("Instrument_list", (Serializable) instrumentList);

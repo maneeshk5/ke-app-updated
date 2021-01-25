@@ -75,8 +75,6 @@ public class barcode_scan extends AppCompatActivity {
         String datetime = ft.format(dNow);
         dateAndTime.setText(datetime);
 
-//        String instrument_name = getIntent().getStringExtra("instrument_name");
-//        app_path.setText(instrument_name + " > " + "Barcode");
 
         instrument_selected = (Instrument) getIntent().getSerializableExtra("instrument_object");
 
@@ -85,16 +83,6 @@ public class barcode_scan extends AppCompatActivity {
         String instrument_name = getIntent().getStringExtra("instrument_name");
         app_path.setText(plant_name + " > " + system_name + " > " + instrument_name  + " > " + "Barcode: " + instrument_selected.getBarcodeId());
 
-//        Button btn = findViewById(R.id.barcode_scan_btn);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                finish();
-//                Intent intent = new Intent(barcode_scan.this, Tag_information.class);
-//                intent.putExtra("instrument_object", instrument);
-//                startActivity(intent);
-//            }
-//        });
     }
 
     Handler handler;
@@ -204,8 +192,6 @@ These extras are available:
                         System system = db.getSystemFromInstrument(instrument_scanned);
                         Plant plant = db.getPlantFromSystem(system);
 
-//                    Log.i("Plant of Instrument",plant.getPlant_name());
-//                    Log.i("System of Instrument",system.getName());
 
                         if (instrument_scanned.getBarcodeId().equals(instrument_selected.getBarcodeId())) {
                             //start Tag Activity

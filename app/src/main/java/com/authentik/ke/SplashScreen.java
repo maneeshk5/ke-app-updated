@@ -45,10 +45,6 @@ public class SplashScreen extends Activity {
     SharedPreferences sharedpreferences;
     Intent serviceIntent;
 
-//    String instrumentsURL = "http://192.168.100.230:80/ke_app_api/readInstruments.php";
-//    String usersURL = "http://192.168.100.230:80/ke_app_api/readUsers.php";
-//    String plantsURL = "http://192.168.100.230:80/ke_app_api/readPlants.php";
-//    String systemsURL = "http://192.168.100.230:80/ke_app_api/readSystems.php";
 
     DatabaseHelper db;
 
@@ -59,25 +55,17 @@ public class SplashScreen extends Activity {
 
         sharedpreferences = getSharedPreferences("Preference", Context.MODE_PRIVATE);
 
-        boolean isFirstRun = getSharedPreferences("Preference", Context.MODE_PRIVATE).getBoolean("isFirstRun",true);
+        boolean isFirstRun = getSharedPreferences("Preference", Context.MODE_PRIVATE).getBoolean("isFirstRun", true);
 
         if (isFirstRun) {
-//            getSharedPreferences("Preference",MODE_PRIVATE).edit().putBoolean("isFirstRun",false).apply();
             finish();
-            startActivity(new Intent(SplashScreen.this,FirstAppUse.class));
-        }
-        else {
+            startActivity(new Intent(SplashScreen.this, FirstAppUse.class));
+        } else {
             db = new DatabaseHelper(getApplicationContext());
 
             String serverDefaultURL = getResources().getString(R.string.server_name);
             sharedpreferences = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
             final String server_url = sharedpreferences.getString("server_url", serverDefaultURL);
-
-            //intialize api urls
-//        usersURL =  getString(R.string.server_name) + "readUsers.php";
-//        plantsURL = getString(R.string.server_name) + "readPlants.php";
-//        systemsURL = getString(R.string.server_name) + "readSystems.php";
-//        instrumentsURL = getString(R.string.server_name) + "readInstruments.php";
 
             usersURL = server_url + "readUsers.php";
             plantsURL = server_url + "readPlants.php";
@@ -126,9 +114,8 @@ public class SplashScreen extends Activity {
         try {
             dialog.dismiss();
             stopService(serviceIntent);
-        }
-        catch (NullPointerException e) {
-            Log.i("splash screen","no dialog box");
+        } catch (NullPointerException e) {
+            Log.i("splash screen", "no dialog box");
 
         }
         super.onDestroy();

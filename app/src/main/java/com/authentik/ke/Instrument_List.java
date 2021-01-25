@@ -94,7 +94,6 @@ public class Instrument_List extends AppCompatActivity {
         int itemCount = instruments.size();
 
         TableLayout tl = findViewById(R.id.instrument_table);
-//        TableLayout t2 = findViewById(R.id.instrument_header_table);
 
         TextView row_header_1  = new TextView(this);
         TextView row_header_2  = new TextView(this);
@@ -102,7 +101,6 @@ public class Instrument_List extends AppCompatActivity {
 
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
-//        row_header_1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         row_header_1.setPadding(10,5,20,5);
 
         row_header_2.setText("Instrument Name");
@@ -142,14 +140,10 @@ public class Instrument_List extends AppCompatActivity {
             if (instrumentReadingsTaken == 0) {
                 instruments.get(i).setStatus("Not Done");
                 status.setText("Not Done");
-//                serial_num.setTextColor(Color.WHITE);
-//                inst_name.setTextColor(Color.WHITE);
             }
             else {
                 instruments.get(i).setStatus("Done");
                 status.setText("Done");
-//                serial_num.setTextColor(Color.WHITE);
-//                inst_name.setTextColor(Color.WHITE);
             }
             status.setTextColor(Color.WHITE);
             status.setPadding(60, 0, 10, 5);
@@ -271,13 +265,6 @@ These extras are available:
 //                    setText(text2);
 //                    goQuestionsActivity(data);
 
-//                    start Tag Activity
-//                    finish();
-//                    Instrument instrument = db.getInstrumentFromBarcode(data);
-//                    System system = db.getSystemFromInstrument(instrument);
-//                    Plant plant = db.getPlantFromSystem(system);
-//                    Log.i("Plant of Instrument",plant.getPlant_name());
-//                    Log.i("System of Instrument",system.getName());
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
                     if (instrumentList.size() == 0) {

@@ -111,7 +111,6 @@ public class reading_picture extends AppCompatActivity {
         dateAndTime.setText(datetime);
 
         reading = (Reading) getIntent().getSerializableExtra("reading_object");
-//        reading_id = getIntent().getStringExtra("reading_id");
         instrument = (Instrument) getIntent().getSerializableExtra("tag_instrument");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=

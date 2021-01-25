@@ -55,16 +55,8 @@ public class Shift_Selection extends AppCompatActivity {
     String thisDate;
     SharedPreferences sharedpreferences;
     String timeComp;
-    //    BroadcastReceiver broadcastReceiver;
     Handler handler;
     Runnable r;
-
-    public boolean isInternetAvailable() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
 
 
     @Override
@@ -84,20 +76,15 @@ public class Shift_Selection extends AppCompatActivity {
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-//                Intent intent = new Intent(getApplicationContext(),Login.class);
                 finishAffinity();
-//                startActivity(intent);
             }
         };
         startHandler();
 
         db = new DatabaseHelper(getApplicationContext());
 
-//        broadcastReceiver = new ConnectivityReceiver();
-//        registerBroadcastReceiver();
 
         currDate = findViewById(R.id.curr_date_text);
-//        currTime = findViewById(R.id.curr_time_text);
 
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MM-yyyy");
         Date todayDate = new Date();
@@ -108,7 +95,6 @@ public class Shift_Selection extends AppCompatActivity {
         Date time = Calendar.getInstance().getTime();
         SimpleDateFormat time_format = new SimpleDateFormat("HH:mm");
         timeComp = time_format.format(time);
-//        currTime.append(timeComp);
 
 
         btnLogOut = findViewById(R.id.btn_logout);

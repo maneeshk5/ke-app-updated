@@ -165,12 +165,6 @@ These extras are available:
         catch (Exception e) {
             Log.e("Main Activity: 165", e.getMessage());
         }
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                getQuestionsList();
-//            }
-//        }).start();
 
         getQuestionsList();
 
@@ -228,10 +222,6 @@ These extras are available:
         AlertDialog dialog = DialogBox.dismissButtonDialog(this,"Alert", "Please Scan the Barcode");
         dialog.show();
 
-//        Intent i = new Intent(this,AssetsForm.class);
-////        Intent i = new Intent(this, Test.class);
-//        i.putExtra("barcodeStr", "000001");
-//        startActivity(i);
     }
 
     void goQuestionsActivity(String barcodeStr) {

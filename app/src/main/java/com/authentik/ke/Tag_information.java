@@ -189,7 +189,6 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setUser_name(value);
 
                                     db.addReading(reading);
-//                                    Toast.makeText(Tag_information.this, "Data Saved Successfully", Toast.LENGTH_SHORT).show();
                                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
 
                                     if (instrumentList.size() == 1) {
@@ -200,10 +199,6 @@ public class Tag_information extends AppCompatActivity {
                                         startActivity(intent);
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Data Saved Successfully", Toast.LENGTH_SHORT).show();
-//                                        for (int i = 0; i < instrumentList.size(); i++) {
-//                                            Log.i("Instrument Names:", instrumentList.get(i).getName());
-//                                            Log.i("Instrument Barcode:", instrumentList.get(i).getBarcodeId());
-//                                        }
                                         Intent intent = new Intent(Tag_information.this, Barcode_Instrument_List.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         intent.putExtra("Instrument_list", (Serializable) instrumentList);
@@ -238,13 +233,10 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setPlant_id(plant.getPlant_id());
                                     reading.setUser_name(value);
 
-
-//                                    db.addReading(reading);
                                     finish();
                                     Intent intent = new Intent(Tag_information.this, reading_picture.class);
                                     intent.putExtra("tag_instrument", instrument);
                                     intent.putExtra("reading_object", reading);
-//                                    intent.putExtra("reading_id",reading.getId());
                                     startActivity(intent);
 
                                 }
@@ -364,21 +356,11 @@ These extras are available:
 //                    setText(text2);
 //                    goQuestionsActivity(data);
 
-//                    start Tag Activity
-                    finish();
-//                    Instrument instrument = db.getInstrumentFromBarcode(data);
-//                    System system = db.getSystemFromInstrument(instrument);
-//                    Plant plant = db.getPlantFromSystem(system);
-//                    Log.i("Plant of Instrument",plant.getPlant_name());
-//                    Log.i("System of Instrument",system.getName());
 
                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(data);
                     if (instrumentList.size() == 0) {
                         Toast.makeText(getApplicationContext(), "Invalid Barcode", Toast.LENGTH_SHORT).show();
                     }
-//                    else if (instrumentList.size() == 1) {
-//                        startActivity(new Intent(Tag_information.this,Plant_List.class));
-//                    }
                     else {
                         Intent intent2 = new Intent(Tag_information.this, Barcode_Instrument_List.class);
                         intent2.putExtra("Instrument_list", (Serializable) instrumentList);

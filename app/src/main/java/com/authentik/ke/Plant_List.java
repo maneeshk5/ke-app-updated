@@ -113,14 +113,6 @@ public class Plant_List extends AppCompatActivity {
 
         tl.addView(header);
 
-//        final ProgressDialog dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            public void run() {
-//                dialog.dismiss();
-//            }
-//        }, 10000);
-
         for (int i = 0; i < itemCount; i++) {
             TextView serial_num = new TextView(Plant_List.this);
             TextView plant_name = new TextView(Plant_List.this);

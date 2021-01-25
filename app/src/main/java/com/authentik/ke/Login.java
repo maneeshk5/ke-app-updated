@@ -37,17 +37,7 @@ public class Login extends AppCompatActivity {
     EditText editUserName;
     EditText editPassword;
     Button btnLogin;
-    //    String usersURL = "http://jaguar.atksrv.net:8090/ke_api/readUsers.php";
-//    String plantsURL = "http://jaguar.atksrv.net:8090/ke_api/readPlants.php";
-//    String systemsURL = "http://jaguar.atksrv.net:8090/ke_api/readSystems.php";
     DatabaseHelper db;
-
-    public boolean isInternetAvailable() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isConnected());
-    }
 
 
     @Override
@@ -88,8 +78,6 @@ public class Login extends AppCompatActivity {
                 User user = db.getPassword(username);
 
                 boolean bcrypt = BCrypt.checkpw(password, user.getPassword());
-//            Log.i("Entered Password",BCrypt.hashpw(password,BCrypt.gensalt(8)));
-//            Log.i("Db Password",user.getPassword());
 
                 if (bcrypt) {
                     editor.putString("Username", username);

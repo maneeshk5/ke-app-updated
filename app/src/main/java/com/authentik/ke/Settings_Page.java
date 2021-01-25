@@ -86,32 +86,36 @@ public class Settings_Page extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
 
-                    if (isInternetAvailable()) {
-//                    Toast.makeText(Settings_Page.this,"Enter New Server Url",Toast.LENGTH_SHORT).show();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
-                        builder.setView(null).setMessage(null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
+                    final View customLayout = getLayoutInflater().inflate(R.layout.custom, null);
 
+                    builder.setView(null).setMessage(null);
+//                        builder.setView(customLayout);
 
-                        builder.setTitle("Change Server ");
-                        final EditText input_server_url = new EditText(Settings_Page.this);
-                        input_server_url.setHint("Enter new ip address");
-                        final TextView curr_server_url = new TextView(Settings_Page.this);
-                        curr_server_url.setText(getSharedPreferences("ServerData", Context.MODE_PRIVATE).getString("server_url", "-"));
-                        input_server_url.setSelection(input_server_url.getText().length());
+                    builder.setTitle("Change Server ");
+                    String curr_ip = getSharedPreferences("ServerData", Context.MODE_PRIVATE).getString("server_url", "-");
+                    if (curr_ip != null) {
+                        builder.setMessage("Current IP: " + curr_ip.substring(7, 22));
+                    }
+                    final EditText input_server_url = new EditText(Settings_Page.this);
+                    input_server_url.setHint("Enter new ip address");
+                    final TextView curr_server_url = new TextView(Settings_Page.this);
+                    curr_server_url.setText(getSharedPreferences("ServerData", Context.MODE_PRIVATE).getString("server_url", "-"));
+                    input_server_url.setSelection(input_server_url.getText().length());
 
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (isInternetAvailable()) {
                                 if (input_server_url.getText().length() == 0) {
                                     Toast.makeText(Settings_Page.this, "Please Enter a valid url", Toast.LENGTH_SHORT).show();
                                 } else {
-
                                     SharedPreferences sharedpreferences2 = getSharedPreferences("UserData", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor2 = sharedpreferences2.edit();
                                     editor2.putBoolean("isLoggedIn", false);
@@ -128,20 +132,17 @@ public class Settings_Page extends AppCompatActivity {
 
                                     Toast.makeText(Settings_Page.this, "App needs a restart after server change", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());
-//                                    getApplicationContext().deleteDatabase("pvs_ke");
                                     finishAffinity();
                                 }
+                            } else {
+                                Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
                             }
-                        });
-//                        builder.setView(curr_server_url);
-                        builder.setView(input_server_url);
-//                        builder.setView(layout);
-                        builder.create().show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
-                    }
-                } else if (position == 1) {
+                        }
+                    });
+                    builder.setView(input_server_url);
+                    builder.create().show();
 
+                } else if (position == 1) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
 

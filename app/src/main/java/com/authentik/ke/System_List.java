@@ -131,27 +131,18 @@ public class System_List extends AppCompatActivity {
             TextView status = new TextView(this);
 
             serial_num.setText(Integer.toString(i + 1));
-//            serial_num.setTextColor(Color.BLACK);
             serial_num.setPadding(10, 5, 20, 5);
 
             system_name.setText(systems.get(i).getName());
-//            system_name.setTextColor(Color.BLACK);
             system_name.setPadding(10, 0, 0, 5);
             system_name.setWidth(200);
 
             List<Instrument> instrumentList = db.getSystemInstruments(systems.get(i).getId());
             int noOfinstrumentsInSystem = instrumentList.size();
-//            int systemStatus = 0;
-//            for (int j=0; j<noOfinstrumentsInSystem; j++) {
-//                int instStatus = db.getInstrumentStatus(instrumentList.get(j).getId(),shift_id);
-//                systemStatus += instStatus;
-//            }
             int systemStatus = 0;
             int systemReadingsTaken = db.getSystemStatus(systems.get(i).getId(),shift_id);
             systemStatus += systemReadingsTaken;
             status.setText(systemStatus + "/" + noOfinstrumentsInSystem);
-//            Log.i("No. of instruments: ", String.valueOf(noOfinstrumentsInSystem));
-//            status.setTextColor(Color.BLACK);
             status.setPadding(60, 0, 10, 5);
 
             TableRow tr = new TableRow(this);
@@ -264,10 +255,8 @@ public class System_List extends AppCompatActivity {
                                                     plant_alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
-//                                                            dialog.dismiss();
                                                             Intent intent = new Intent(System_List.this, Shift_Selection.class);
                                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                                            finish();
                                                             startActivity(intent);
                                                         }
                                                     });
@@ -277,7 +266,6 @@ public class System_List extends AppCompatActivity {
                                             builder.create().show();
                                         }
                                         else {
-//                                        Log.i("System id:", Integer.toString(systems.get(finalI).getId()));
                                             Intent intent = new Intent(System_List.this, Instrument_List.class);
                                             intent.putExtra("app_path", app_path.getText().toString());
                                             intent.putExtra("system_id", systems.get(finalI).getId());

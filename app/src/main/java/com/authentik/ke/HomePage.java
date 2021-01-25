@@ -107,32 +107,15 @@ public class HomePage extends AppCompatActivity {
         String value = sharedPreferences.getString("Username", "-");
         userName.setText(value);
 
-//        String shift_start_time = shift_details.getStart_time();
-//        SimpleDateFormat sdf = new SimpleDateFormat("H:mm aa");
-//        try {
-//            Date dateObj = sdf.parse(shift_start_time);
-//            start_time.setText(sdf.format(dateObj));
-//        } catch (ParseException e) {
-//            start_time.setText("-");
-//            e.printStackTrace();
-//        }
     }
 
     @Override
     public void onBackPressed() {
-//        SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedpreferences.edit();
-//        editor.putString("shift_id", "-");
-//        editor.apply();
         finish();
         startActivity(new Intent(HomePage.this, Shift_Selection.class));
     }
 
     public void goBack(View view) {
-//        SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedpreferences.edit();
-//        editor.putString("shift_id", "-");
-//        editor.apply();
         finish();
         startActivity(new Intent(HomePage.this, Shift_Selection.class));
     }
