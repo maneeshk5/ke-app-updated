@@ -71,6 +71,7 @@ public class System_List extends AppCompatActivity {
         };
         startHandler();
 
+
         currUser = findViewById(R.id.username_tv);
         dateAndTime = findViewById(R.id.date_time_tv);
         app_path = findViewById(R.id.app_path_tv);
@@ -95,6 +96,11 @@ public class System_List extends AppCompatActivity {
 
 
         int itemCount = systems.size();
+
+        if (itemCount == 0) {
+            Toast.makeText(getApplicationContext(),"No systems to show, sync app with server",Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         TableLayout tl = findViewById(R.id.system_table);
 //        TableLayout t2 = findViewById(R.id.system_header_table);

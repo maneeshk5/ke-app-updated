@@ -105,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // create table sql query
     private String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
-            + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_USER_NAME + " TEXT,"
+            + COLUMN_USER_ID + " INTEGER PRIMARY KEY ," + COLUMN_USER_NAME + " TEXT,"
             + COLUMN_USER_PASSWORD + " TEXT," + COLUMN_USER_IS_ACTIVE + " INTEGER,"
             + COLUMN_USER_IS_DELETED + " INTEGER" + ")";
 

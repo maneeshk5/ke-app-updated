@@ -93,6 +93,12 @@ public class Instrument_List extends AppCompatActivity {
 
         int itemCount = instruments.size();
 
+
+        if (itemCount == 0) {
+            Toast.makeText(getApplicationContext(),"No instruments to show, sync app with server",Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         TableLayout tl = findViewById(R.id.instrument_table);
 
         TextView row_header_1  = new TextView(this);

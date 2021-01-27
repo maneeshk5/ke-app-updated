@@ -85,6 +85,12 @@ public class Plant_List extends AppCompatActivity {
 
         int itemCount = plants.size();
 
+        if (itemCount == 0) {
+            Toast.makeText(getApplicationContext(),"No plants to show, sync app with server",Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(new Intent(getApplicationContext(),HomePage.class));
+        }
+
         TableLayout tl = findViewById(R.id.plant_table);
 //                TableLayout t2 = findViewById(R.id.plant_header_table);
 
