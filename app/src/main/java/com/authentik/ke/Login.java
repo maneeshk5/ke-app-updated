@@ -82,6 +82,7 @@ public class Login extends AppCompatActivity {
                 if (bcrypt) {
                     editor.putString("Username", username);
                     editor.putBoolean("isLoggedIn", true);
+                    editor.putInt("user_id",user.getId());
                     editor.apply();
                     finish();
                     startActivity(new Intent(getApplicationContext(), Shift_Selection.class));

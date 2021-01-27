@@ -283,7 +283,7 @@ public class SyncDbService extends Service {
                     user.setIsActive(obj.getInt("isActive"));
                     user.setIsDeleted(obj.getInt("isDeleted"));
 
-                    if (!db.checkUser(user.getName()) && user.getIsActive() == 1) {
+                    if (!db.checkUser(user.getName()) && user.getIsActive() == 1 && user.getIsDeleted() == 0) {
                         db.addUser(user);
                     }
                 }
@@ -416,9 +416,15 @@ public class SyncDbService extends Service {
                     reading_params.put("plant_id", Integer.toString(readingList.get(i).getPlant_id()));
                     reading_params.put("time", readingList.get(i).getTime());
                     reading_params.put("user_name", readingList.get(i).getUser_name());
+                    reading_params.put("user_id", Integer.toString(readingList.get(i).getUser_id()));
+                    reading_params.put("recorded_at", readingList.get(i).getRecorded_at());
                     if (readingList.get(i).getImage_path() != null) {
                         reading_params.put("image",  Base64.encodeToString(readingList.get(i).getImage_path(), Base64.DEFAULT));
 //                        reading_params.put("image",readingList.get(i).getImage_path().toString());
+                    }
+                    else {
+                        reading_params.put("image","-");
+                        Log.i("Image status","Reading image is empty");
                     }
                     RequestHandler requestHandler = new RequestHandler();
                     //returing the response
