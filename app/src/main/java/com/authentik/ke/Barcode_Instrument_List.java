@@ -407,7 +407,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 finishAffinity();
                 startActivity(intent);
             }

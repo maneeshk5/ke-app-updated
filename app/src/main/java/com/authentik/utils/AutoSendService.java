@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -18,7 +19,6 @@ import com.authentik.ke.Login;
 import com.authentik.ke.R;
 import com.authentik.ke.RequestHandler;
 import com.authentik.ke.Shift_Selection;
-import com.authentik.ke.SplashScreen;
 import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
 import com.authentik.model.Reading;
@@ -30,15 +30,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class SyncDbService extends Service {
+
+public class AutoSendService extends Service {
 
     String readingsURL;
     String shiftsURL;
@@ -50,9 +51,19 @@ public class SyncDbService extends Service {
     ProgressDialog dialog;
     SharedPreferences sharedpreferences;
 
+    // constant
+    public static final long NOTIFY_INTERVAL = 60 * 1000; // 60 seconds
+    private static final String TAG = "Auto Sync Service";
+
+    // run on another Thread to avoid crash
+    private final Handler mHandler = new Handler();
+    // timer handling
+    private Timer mTimer = null;
+
+
     DatabaseHelper db;
 
-    public SyncDbService() {
+    public AutoSendService() {
     }
 
     @Override
@@ -68,7 +79,6 @@ public class SyncDbService extends Service {
         String server_url = sharedpreferences2.getString("server_url", serverURL);
 
         db = new DatabaseHelper(getApplicationContext());
-//        dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
 
         readingsURL = server_url + "addReading.php";
         shiftsURL = server_url + "addShift.php";
@@ -78,91 +88,25 @@ public class SyncDbService extends Service {
         systemsURL = server_url + "readSystems.php";
         instrumentsURL = server_url + "readInstruments.php";
 
-        Log.i("Service Status:", "Sync Service Started");
+        Log.i(TAG, "Service Started");
 
-        final boolean[] serverConn = new boolean[1];
-
-        if (isInternetAvailable()) {
-//            dialog = ProgressDialog.show(this, "Loading", "Please wait....", true);
-
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    class DBSync extends AsyncTask<Void, Void, Void> {
-
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-//                            DatabaseSync();
-                            serverConn[0] = DbSync();
-//                            sendToServer();
-
-//                            try {
-//                                clearDb();
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
-
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-//                        dialog.dismiss();
-                            if (!serverConn[0]) {
-                                Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
-
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Data Synced with Server", Toast.LENGTH_LONG).show();
-                            }
-                            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-                            if (sharedpreferences.contains("isLoggedIn")) {
-                                boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-                                Intent intent;
-                                if (value) {
-                                    intent = new Intent(new Intent(getApplicationContext(), Shift_Selection.class));
-                                } else {
-                                    intent = new Intent(new Intent(getApplicationContext(), Login.class));
-                                }
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            } else {
-                                Intent intent = new Intent(new Intent(getApplicationContext(), Login.class));
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                            }
-
-                        }
-                    }
-                    DBSync dbSync = new DBSync();
-                    dbSync.execute();
-                }
-            });
-            thread.start();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//        if(mTimer != null) {
+//            mTimer.cancel();
+//        } else {
+//            // recreate new
+//            mTimer = new Timer();
+//        }
+        try {
+            mTimer = new Timer();
+            // schedule task
+            mTimer.scheduleAtFixedRate(new ServerTask(), 0, NOTIFY_INTERVAL);
         }
-        else {
-            Toast.makeText(getApplicationContext(),"No Internet Connection",Toast.LENGTH_SHORT).show();
-            sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
-            if (sharedpreferences.contains("isLoggedIn")) {
-                boolean value = sharedpreferences.getBoolean("isLoggedIn", false);
-                Intent intent2;
-                if (value) {
-                    intent2 = new Intent(new Intent(getApplicationContext(), Shift_Selection.class));
-                } else {
-                    intent2 = new Intent(new Intent(getApplicationContext(), Login.class));
-                }
-                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent2);
-            } else {
-                Intent intent2 = new Intent(new Intent(getApplicationContext(), Login.class));
-                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent2);
-            }
+
+        catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG,"Error occurred");
         }
+
 
         return START_STICKY;
     }
@@ -197,11 +141,6 @@ public class SyncDbService extends Service {
 
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        return null;
-    }
 
     private void clearDb() throws ParseException {
 //        Log.i("clearDb method", "Hello");
@@ -216,7 +155,7 @@ public class SyncDbService extends Service {
         if (readingList.size() > 0) {
             for (int i = 0; i < readingList.size(); i++) {
                 Date recordedReadingDate = sdformat.parse(readingList.get(i).getDate_time());
-                    if (recordedReadingDate.compareTo(todayDate1) < 0 && readingList.get(i).getSync_status() == 1) {
+                if (recordedReadingDate.compareTo(todayDate1) < 0 && readingList.get(i).getSync_status() == 1) {
                     Log.i("Reading status", readingList.get(i).getId() + " should be deleted");
                     db.deleteReading(readingList.get(i));
                 } else {
@@ -257,143 +196,6 @@ public class SyncDbService extends Service {
         }
     }
 
-    private boolean DbSync() {
-
-        //user Sync
-        RequestHandler requestHandler = new RequestHandler();
-        String getUsers = requestHandler.sendReadRequest(usersURL);
-
-        if (getUsers.equals("Invalid Server URL")) {
-            return false;
-        }
-
-        try {
-
-            JSONArray arr = new JSONArray(getUsers);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    User user = new User();
-                    JSONObject obj = arr.getJSONObject(i);
-                    user.setId(obj.getInt("user_id"));
-                    user.setName(obj.getString("userName"));
-                    user.setPassword(obj.getString("password"));
-                    user.setIsActive(obj.getInt("isActive"));
-                    user.setIsDeleted(obj.getInt("isDeleted"));
-
-                    if (!db.checkUser(user.getName()) && user.getIsActive() == 1 && user.getIsDeleted() == 0) {
-                        db.addUser(user);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //plant Sync
-        String getPlants = requestHandler.sendReadRequest(plantsURL);
-        if (getPlants.equals("Invalid Server URL")) {
-            return false;
-        }
-        try {
-
-            JSONArray arr = new JSONArray(getPlants);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    Plant plant = new Plant();
-                    JSONObject obj = arr.getJSONObject(i);
-                    plant.setPlant_id(obj.getInt("plant_id"));
-                    plant.setPlant_name(obj.getString("plant_name"));
-                    plant.setIsActive(obj.getInt("isActive"));
-                    plant.setReadingTimeId(obj.getInt("readingTimeId"));
-
-                    if (!db.checkPlant(plant.getPlant_id()) && plant.getIsActive() == 1) {
-                        db.addPlant(plant);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //systemSync
-        String getSystems = requestHandler.sendReadRequest(systemsURL);
-        if (getSystems.equals("Invalid Server URL")) {
-            return false;
-        }
-        try {
-
-            JSONArray arr = new JSONArray(getSystems);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    System system = new System();
-                    JSONObject obj = arr.getJSONObject(i);
-                    system.setId(obj.getInt("system_id"));
-                    system.setName(obj.getString("system_name"));
-                    system.setIsActive(obj.getInt("isActive"));
-                    system.setLogSheet(obj.getString("logSheet"));
-                    system.setPlantId(obj.getInt("systemPlantId"));
-
-                    if (!db.checkSystem(system.getId()) && system.getIsActive() == 1) {
-//                                Log.v("System","Hello");
-                        db.addSystem(system);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        //Instrument Sync
-        String getInstruments = requestHandler.sendReadRequest(instrumentsURL);
-        if (getInstruments.equals("Invalid Server URL")) {
-            return false;
-        }
-        try {
-
-            JSONArray arr = new JSONArray(getInstruments);
-
-            if (arr.length() == 0) {
-                Toast.makeText(getApplicationContext(), "Unable to retrieve data", Toast.LENGTH_SHORT).show();
-            } else {
-                for (int i = 0; i < arr.length(); i++) {
-                    Instrument instrument = new Instrument();
-                    JSONObject obj = arr.getJSONObject(i);
-                    instrument.setId(obj.getInt("instrument_id"));
-                    instrument.setName(obj.getString("instrument_name"));
-                    instrument.setIsActive(obj.getInt("isActive"));
-                    instrument.setKksCode(obj.getString("kksCode"));
-                    instrument.setBarcodeId(obj.getString("barcodeId"));
-                    instrument.setLowerLimit(obj.getDouble("lowerLimit"));
-                    instrument.setUpperLimit(obj.getDouble("upperLimit"));
-                    instrument.setUnit(obj.getString("unit"));
-                    instrument.setIsActive(obj.getInt("isActive"));
-                    instrument.setSystemId(obj.getInt("systemId"));
-
-
-                    if (!db.checkInstrument(instrument.getId()) && instrument.getIsActive() == 1) {
-                        db.addInstrument(instrument);
-                    }
-                }
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return true;
-    }
 
     private boolean sendToServer() {
         Log.i("Hello", "Server method");
@@ -529,4 +331,80 @@ public class SyncDbService extends Service {
         return true;
     }
 
+    class ServerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            // run on another thread
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    serverTimer();
+                    Log.i(TAG,"Running sync service after 60 seconds");
+                }
+
+            });
+        }
+
+        private void serverTimer() {
+//            final boolean[] syncStatus = new boolean[1];
+            final boolean[] syncStatus = new boolean[1];
+            if (isInternetAvailable()) {
+
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        class DBSync extends AsyncTask<Void, Void, Void> {
+
+                            @Override
+                            protected Void doInBackground(Void... voids) {
+
+                               syncStatus[0] = sendToServer();
+
+                                try {
+                                    clearDb();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                if (syncStatus[0]) {
+                                    Log.i(TAG,"Data sent to server");
+                                }
+                                else {
+                                    Log.i(TAG,"Error sending data to server");
+                                }
+                                Log.i(TAG,"server task executed");
+
+                            }
+                        }
+                        DBSync dbSync = new DBSync();
+                        dbSync.execute();
+                    }
+                });
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                Log.i(TAG,"No Internet");
+            }
+        }
+
+    }
+
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }

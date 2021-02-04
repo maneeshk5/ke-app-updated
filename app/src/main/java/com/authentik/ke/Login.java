@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.authentik.model.Plant;
-import com.authentik.model.System;
 import com.authentik.model.User;
 //import com.authentik.utils.DatabaseHandler;
 import com.authentik.utils.BCrypt;
@@ -101,5 +100,19 @@ public class Login extends AppCompatActivity {
     }
     public void settingsPage(View view) {
         startActivity(new Intent(Login.this, Settings_Page.class));
+    }
+
+    private long backPressedTime;
+
+    @Override
+    public void onBackPressed() {
+        if (backPressedTime + 2000 > java.lang.System.currentTimeMillis()) {
+            super.onBackPressed();
+            finishAffinity();
+            return;
+        } else {
+            Toast.makeText(getApplicationContext(), "Press Back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        backPressedTime = System.currentTimeMillis();
     }
 }

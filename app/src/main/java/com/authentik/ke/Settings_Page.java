@@ -87,15 +87,21 @@ public class Settings_Page extends AppCompatActivity {
                 if (position == 0) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
-                    final View customLayout = getLayoutInflater().inflate(R.layout.custom, null);
-
                     builder.setView(null).setMessage(null);
-//                        builder.setView(customLayout);
-
                     builder.setTitle("Change Server ");
+
                     String curr_ip = getSharedPreferences("ServerData", Context.MODE_PRIVATE).getString("server_url", "-");
                     if (curr_ip != null) {
-                        builder.setMessage("Current IP: " + curr_ip.substring(7, 22));
+                        int last_index = 0;
+                        for (int i=7; i<curr_ip.length(); i++) {
+                            if (curr_ip.charAt(i) == '/' ) {
+                                last_index = i;
+                                break;
+                            }
+                        }
+                        builder.setMessage("Current IP: " + curr_ip.substring(7, last_index));
+                    } else {
+                        builder.setMessage("Current IP: N/A");
                     }
                     final EditText input_server_url = new EditText(Settings_Page.this);
                     input_server_url.setHint("Enter new ip address");
@@ -130,9 +136,10 @@ public class Settings_Page extends AppCompatActivity {
 
                                     db.rebuildDB(db.getWritableDatabase());
 
-                                    Toast.makeText(Settings_Page.this, "App needs a restart after server change", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Settings_Page.this, "Restarting App", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());
                                     finishAffinity();
+                                    startActivity(new Intent(getApplicationContext(),SplashScreen.class));
                                 }
                             } else {
                                 Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
@@ -147,7 +154,7 @@ public class Settings_Page extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
 
                     builder.setTitle("Confirmation");
-                    builder.setMessage("Sync Data with Server?");
+                    builder.setMessage("Are you want to continue?");
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
