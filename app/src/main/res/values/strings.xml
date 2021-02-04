@@ -9,7 +9,7 @@
 
     <string-array name="options">
         <item>Change Server</item>
-        <item>Refresh Data</item>
+        <item>Sync Data</item>
         <item>Help</item>
     </string-array>
 

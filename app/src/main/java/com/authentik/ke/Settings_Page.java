@@ -25,6 +25,7 @@ import com.authentik.model.Instrument;
 import com.authentik.model.Plant;
 import com.authentik.model.System;
 import com.authentik.model.User;
+import com.authentik.utils.CompleteDbService;
 import com.authentik.utils.Constant;
 import com.authentik.utils.DatabaseHelper;
 import com.authentik.utils.SyncDbService;
@@ -42,7 +43,7 @@ public class Settings_Page extends AppCompatActivity {
     String systemsURL;
     String instrumentsURL;
     ProgressDialog progDialogue;
-
+    Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +94,8 @@ public class Settings_Page extends AppCompatActivity {
                     String curr_ip = getSharedPreferences("ServerData", Context.MODE_PRIVATE).getString("server_url", "-");
                     if (curr_ip != null) {
                         int last_index = 0;
-                        for (int i=7; i<curr_ip.length(); i++) {
-                            if (curr_ip.charAt(i) == '/' ) {
+                        for (int i = 7; i < curr_ip.length(); i++) {
+                            if (curr_ip.charAt(i) == '/') {
                                 last_index = i;
                                 break;
                             }
@@ -139,7 +140,7 @@ public class Settings_Page extends AppCompatActivity {
                                     Toast.makeText(Settings_Page.this, "Restarting App", Toast.LENGTH_SHORT).show();
                                     Log.i("New Server Url", input_server_url.getText().toString());
                                     finishAffinity();
-                                    startActivity(new Intent(getApplicationContext(),SplashScreen.class));
+                                    startActivity(new Intent(getApplicationContext(), SplashScreen.class));
                                 }
                             } else {
                                 Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
@@ -154,7 +155,7 @@ public class Settings_Page extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Settings_Page.this);
 
                     builder.setTitle("Confirmation");
-                    builder.setMessage("Are you want to continue?");
+                    builder.setMessage("Sync Data with Server?");
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -167,7 +168,9 @@ public class Settings_Page extends AppCompatActivity {
                             if (isInternetAvailable()) {
                                 progDialogue = ProgressDialog.show(Settings_Page.this, "Loading", "Please wait....", true);
                                 db.rebuildDB(db.getWritableDatabase());
-                                startService(new Intent(Settings_Page.this, SyncDbService.class));
+                                //Start sync service
+                                serviceIntent = new Intent(getApplicationContext(), CompleteDbService.class);
+                                startService(serviceIntent);
                             } else {
                                 Toast.makeText(getApplicationContext(), "No Internet", Toast.LENGTH_SHORT).show();
                             }
@@ -227,6 +230,7 @@ public class Settings_Page extends AppCompatActivity {
         stopHandler();
         try {
             progDialogue.dismiss();
+            stopService(serviceIntent);
         } catch (NullPointerException e) {
             Log.i("settings page", "no dialog box");
         }

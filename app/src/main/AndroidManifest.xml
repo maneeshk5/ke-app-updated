@@ -24,11 +24,13 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
         <service
+            android:name="com.authentik.utils.CompleteDbService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
             android:name="com.authentik.utils.TestService"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
+            android:exported="true"></service>
         <service
             android:name="com.authentik.utils.AutoSendService"
             android:enabled="true"
