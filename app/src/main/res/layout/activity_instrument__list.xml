@@ -130,7 +130,7 @@
     <ScrollView
         android:id="@+id/scrollView2"
         style="@android:style/Widget.DeviceDefault.ScrollView"
-        android:layout_width="282dp"
+        android:layout_width="300dp"
         android:layout_height="290dp"
         android:fadeScrollbars="false"
         android:scrollbarStyle="insideInset"

@@ -138,6 +138,10 @@ public class Instrument_List extends AppCompatActivity {
             TextView inst_name = new TextView(this);
             TextView status = new TextView(this);
 
+            inst_name.setTextSize(16);
+            serial_num.setTextSize(16);
+            status.setTextSize(16);
+
             serial_num.setText(Integer.toString(i + 1));
             serial_num.setTextColor(Color.WHITE);
             serial_num.setPadding(10, 5, 20, 5);
