@@ -101,21 +101,25 @@ public class Plant_List extends AppCompatActivity {
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
         row_header_1.setPadding(10, 5, 20, 5);
+        row_header_1.setTextSize(16);
 
         row_header_2.setText("Plant Name");
         row_header_2.setTextColor(Color.BLACK);
         row_header_2.setPadding(10, 0, 0, 5);
         row_header_2.setWidth(200);
+        row_header_2.setTextSize(16);
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
         row_header_3.setPadding(60, 0, 10, 5);
+        row_header_3.setTextSize(16);
 
         TableRow header = new TableRow(Plant_List.this);
         header.setBackgroundColor(Color.GRAY);
         header.addView(row_header_1);
         header.addView(row_header_2);
         header.addView(row_header_3);
+//        header.setMinimumHeight(60);
 
         tl.addView(header);
 
@@ -123,6 +127,11 @@ public class Plant_List extends AppCompatActivity {
             TextView serial_num = new TextView(Plant_List.this);
             TextView plant_name = new TextView(Plant_List.this);
             TextView status = new TextView(Plant_List.this);
+
+            plant_name.setTextSize(16);
+            serial_num.setTextSize(16);
+            status.setTextSize(16);
+
 
             serial_num.setText(Integer.toString(i + 1));
             serial_num.setPadding(10, 5, 20, 5);
@@ -200,6 +209,8 @@ public class Plant_List extends AppCompatActivity {
             tr.addView(serial_num);
             tr.addView(plant_name);
             tr.addView(status);
+
+            tr.setMinimumHeight(60);
 
             tr.setId(plants.get(i).getPlant_id());
             tl.addView(tr);

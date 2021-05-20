@@ -108,15 +108,21 @@ public class Instrument_List extends AppCompatActivity {
         row_header_1.setText("S.#");
         row_header_1.setTextColor(Color.BLACK);
         row_header_1.setPadding(10,5,20,5);
+        row_header_1.setTextSize(16);
+
 
         row_header_2.setText("Instrument Name");
         row_header_2.setTextColor(Color.BLACK);
         row_header_2.setPadding(10, 0, 0, 5);
         row_header_2.setWidth(200);
+        row_header_2.setTextSize(16);
+
 
         row_header_3.setText("Status");
         row_header_3.setTextColor(Color.BLACK);
         row_header_3.setPadding(60, 0, 10, 5);
+        row_header_3.setTextSize(16);
+
 
         TableRow header = new TableRow(this);
         header.setBackgroundColor(Color.GRAY);
@@ -192,6 +198,8 @@ public class Instrument_List extends AppCompatActivity {
             tr.addView(serial_num);
             tr.addView(inst_name);
             tr.addView(status);
+
+            tr.setMinimumHeight(60);
 
             tr.setId(instruments.get(i).getId());
             tl.addView(tr);

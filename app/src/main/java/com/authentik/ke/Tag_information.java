@@ -52,6 +52,8 @@ public class Tag_information extends AppCompatActivity {
     Button submit_tag_btn;
     DatabaseHelper db;
     Instrument instrument;
+    Plant plant;
+    System system;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +107,8 @@ public class Tag_information extends AppCompatActivity {
         dateAndTime.setText(datetime);
 
         instrument = (Instrument) getIntent().getSerializableExtra("instrument_object");
-        final Plant plant = (Plant) getIntent().getSerializableExtra("plant_object");
-        final System system = (System) getIntent().getSerializableExtra("system_object");
+        plant = (Plant) getIntent().getSerializableExtra("plant_object");
+        system = (System) getIntent().getSerializableExtra("system_object");
 
         app_path.setText(plant.getPlant_name() + " > " + system.getName() + " > " + instrument.getName() + " > " + "Tag");
 
@@ -193,8 +195,11 @@ public class Tag_information extends AppCompatActivity {
 
                                     if (instrumentList.size() == 1) {
                                         Toast.makeText(getApplicationContext(), "Data Saved Successfully", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(Tag_information.this, HomePage.class);
+                                        Intent intent = new Intent(Tag_information.this, Tag_information.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent.putExtra("instrument_object", instrument);
+                                        intent.putExtra("system_object", system);
+                                        intent.putExtra("plant_object", plant);
                                         finish();
                                         startActivity(intent);
                                     } else {
@@ -237,6 +242,9 @@ public class Tag_information extends AppCompatActivity {
                                     Intent intent = new Intent(Tag_information.this, reading_picture.class);
                                     intent.putExtra("tag_instrument", instrument);
                                     intent.putExtra("reading_object", reading);
+//                                    intent2.putExtra("instrument_object", instrument);
+                                    intent.putExtra("system_object", system);
+                                    intent.putExtra("plant_object", plant);
                                     startActivity(intent);
 
                                 }

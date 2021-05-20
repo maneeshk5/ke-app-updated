@@ -66,6 +66,8 @@ public class reading_picture extends AppCompatActivity {
     DatabaseHelper db;
     Reading reading;
     Instrument instrument;
+    Plant plant;
+    System system;
 
     Bitmap bitmap;
 
@@ -112,6 +114,8 @@ public class reading_picture extends AppCompatActivity {
 
         reading = (Reading) getIntent().getSerializableExtra("reading_object");
         instrument = (Instrument) getIntent().getSerializableExtra("tag_instrument");
+        plant = (Plant) getIntent().getSerializableExtra("plant_object");
+        system = (System) getIntent().getSerializableExtra("system_object");
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED) {
@@ -217,8 +221,11 @@ public class reading_picture extends AppCompatActivity {
                         if (instrumentList.size() == 1) {
                             Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
 
-                            Intent intent = new Intent(reading_picture.this, HomePage.class);
+                            Intent intent = new Intent(reading_picture.this, Tag_information.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.putExtra("instrument_object", instrument);
+                            intent.putExtra("system_object", system);
+                            intent.putExtra("plant_object", plant);
                             finish();
                             startActivity(intent);
                         }
@@ -293,8 +300,11 @@ public class reading_picture extends AppCompatActivity {
 
                 if (instrumentList.size() == 1) {
                     Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(reading_picture.this, HomePage.class);
+                    Intent intent = new Intent(reading_picture.this, Tag_information.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra("instrument_object", instrument);
+                    intent.putExtra("system_object", system);
+                    intent.putExtra("plant_object", plant);
                     finish();
                     startActivity(intent);
                 }
