@@ -370,7 +370,7 @@
         android:layout_height="40dp"
         android:ems="10"
         android:hint="Enter Value"
-        android:inputType="numberDecimal|number"
+        android:inputType="numberDecimal|numberSigned"
         android:textAlignment="center"
         android:textColor="@color/textColor"
         app:layout_constraintBottom_toBottomOf="parent"
