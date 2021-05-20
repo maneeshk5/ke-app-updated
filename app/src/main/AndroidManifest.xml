@@ -23,13 +23,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HomePage"></activity>
+        <service
+            android:name="com.authentik.utils.CompleteDbService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name="com.authentik.utils.TestService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name="com.authentik.utils.AutoSendService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".HomePage"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FirstAppUse"
-            android:screenOrientation="portrait" /> <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Help_Page"
             android:screenOrientation="portrait" />
@@ -37,13 +49,8 @@
         <service
             android:name="com.authentik.utils.SyncDbService"
             android:enabled="true"
-            android:exported="true" /> <!-- <receiver -->
-        <!-- android:name=".ConnectivityReceiver" -->
-        <!-- > -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+            android:exported="true" />
+
         <activity
             android:name=".Barcode_Instrument_List"
             android:screenOrientation="portrait" />
@@ -58,13 +65,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".barcode_scan"
-            android:screenOrientation="portrait">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Instrument_List"
             android:screenOrientation="portrait" />
@@ -73,13 +74,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Plant_List"
-            android:screenOrientation="portrait">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Shift_Selection"
             android:screenOrientation="portrait" />
@@ -96,15 +91,15 @@
         <activity
             android:name=".AssetsForm"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".SplashScreen">
+        <activity
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name="com.authentik.service.Service" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -18,7 +18,10 @@ import android.widget.Toast;
 
 import com.authentik.model.Instrument;
 import com.authentik.model.Shift;
+import com.authentik.utils.AutoSendService;
 import com.authentik.utils.DatabaseHelper;
+import com.authentik.utils.SyncDbService;
+import com.authentik.utils.TestService;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -39,6 +42,8 @@ public class HomePage extends AppCompatActivity {
     DatabaseHelper db;
     Handler handler;
     Runnable r;
+    Intent serviceIntent;
+
 
     public void stopHandler() {
         handler.removeCallbacks(r);
@@ -52,6 +57,9 @@ public class HomePage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        serviceIntent = new Intent(this, AutoSendService.class);
+        startService(serviceIntent);
 
         handler = new Handler();
         r = new Runnable() {

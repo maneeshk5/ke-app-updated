@@ -362,13 +362,14 @@ These extras are available:
         logout_dialogue_builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences sharedpreferences = getSharedPreferences("UserData", Context.MODE_PRIVATE);
+                SharedPreferences sharedpreferences = getSharedPreferences(
+                        "UserData", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putBoolean("isLoggedIn", false);
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(),SplashScreen.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 finishAffinity();
                 startActivity(intent);
             }

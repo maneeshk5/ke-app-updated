@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class SyncDbService extends Service {
+public class CompleteDbService extends Service {
 
     String readingsURL;
     String shiftsURL;
@@ -52,7 +52,7 @@ public class SyncDbService extends Service {
 
     DatabaseHelper db;
 
-    public SyncDbService() {
+    public CompleteDbService() {
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SyncDbService extends Service {
         systemsURL = server_url + "readSystems.php";
         instrumentsURL = server_url + "readInstruments.php";
 
-        Log.i("Service Status:", "Sync Service Started");
+        Log.i("Service Status:", "Complete Sync Service Started");
 
         final boolean[] serverConn = new boolean[1];
 
@@ -92,15 +92,14 @@ public class SyncDbService extends Service {
 
                         @Override
                         protected Void doInBackground(Void... voids) {
-//                            DatabaseSync();
                             serverConn[0] = DbSync();
-//                            sendToServer();
-
-//                            try {
-//                                clearDb();
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
+                            sendToServer();
+//
+                            try {
+                                clearDb();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
 
                             return null;
                         }
@@ -177,7 +176,7 @@ public class SyncDbService extends Service {
 
     @Override
     public void onCreate() {
-        Log.i("Service Status:", "Sync Service Created");
+        Log.i("Service Status:", "Complete Sync Service Created");
 
         String serverURL = getResources().getString(R.string.server_name);
         SharedPreferences sharedpreferences2 = getSharedPreferences("ServerData", Context.MODE_PRIVATE);
@@ -216,7 +215,7 @@ public class SyncDbService extends Service {
         if (readingList.size() > 0) {
             for (int i = 0; i < readingList.size(); i++) {
                 Date recordedReadingDate = sdformat.parse(readingList.get(i).getDate_time());
-                    if (recordedReadingDate.compareTo(todayDate1) < 0 && readingList.get(i).getSync_status() == 1) {
+                if (recordedReadingDate.compareTo(todayDate1) < 0 && readingList.get(i).getSync_status() == 1) {
                     Log.i("Reading status", readingList.get(i).getId() + " should be deleted");
                     db.deleteReading(readingList.get(i));
                 } else {

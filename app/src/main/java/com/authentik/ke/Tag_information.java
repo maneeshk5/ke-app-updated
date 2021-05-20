@@ -179,6 +179,8 @@ public class Tag_information extends AppCompatActivity {
                                     SimpleDateFormat ft3 = new SimpleDateFormat("HH:mm:ss");
                                     String reading_time = ft3.format(dNow);
 
+                                    SimpleDateFormat ft4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                                     Reading reading = new Reading();
                                     reading.setId(reading_id);
                                     reading.setDate_time(reading_date_time);
@@ -189,6 +191,9 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
                                     reading.setUser_name(value);
+                                    reading.setRecorded_at(ft4.format(dNow));
+                                    reading.setUser_id(sharedPreferences.getInt("user_id",0));
+
 
                                     db.addReading(reading);
                                     List<Instrument> instrumentList = db.getListOfInstrumentsFromBarcode(instrument.getBarcodeId());
@@ -226,6 +231,9 @@ public class Tag_information extends AppCompatActivity {
                                     String reading_date_time = ft2.format(dNow);
 
                                     SimpleDateFormat ft3 = new SimpleDateFormat("HH:mm:ss");
+
+                                    SimpleDateFormat ft4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
                                     String reading_time = ft3.format(dNow);
                                     Reading reading = new Reading();
                                     reading.setId(reading_id);
@@ -237,6 +245,8 @@ public class Tag_information extends AppCompatActivity {
                                     reading.setSystem_id(system.getId());
                                     reading.setPlant_id(plant.getPlant_id());
                                     reading.setUser_name(value);
+                                    reading.setRecorded_at(ft4.format(dNow));
+                                    reading.setUser_id(sharedPreferences.getInt("user_id",0));
 
                                     finish();
                                     Intent intent = new Intent(Tag_information.this, reading_picture.class);

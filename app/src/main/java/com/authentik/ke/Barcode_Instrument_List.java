@@ -115,7 +115,7 @@ public class Barcode_Instrument_List extends AppCompatActivity {
             startActivity(intent2);
         }
 
-        if (instrumentList.size() == 0) {
+        else if (instrumentList.size() == 0) {
             Toast.makeText(getApplicationContext(),"No instrument with this barcode",Toast.LENGTH_SHORT).show();
             finish();
             startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
@@ -242,32 +242,33 @@ public class Barcode_Instrument_List extends AppCompatActivity {
 
     public void saveReadings(View view) {
 
-
-        if (totalReadingsTaken == instrumentList.size()) {
-            Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
             startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
 
-        }
-        else {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
-            builder.setTitle("Confirmation!");
-            builder.setMessage("All instrument readings not taken, Do you want to continue?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finishAffinity();
-                    startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.create().show();
-        }
+//        if (totalReadingsTaken == instrumentList.size()) {
+//            Toast.makeText(getApplicationContext(),"Data Saved Successfully",Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
+//
+//        }
+//        else {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(Barcode_Instrument_List.this);
+//            builder.setTitle("Confirmation!");
+//            builder.setMessage("All instrument readings not taken, Do you want to continue?");
+//            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    finishAffinity();
+//                    startActivity(new Intent(Barcode_Instrument_List.this,HomePage.class));
+//                }
+//            });
+//            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    dialog.dismiss();
+//                }
+//            });
+//            builder.create().show();
+//        }
     }
 
 
@@ -406,7 +407,7 @@ These extras are available:
                 editor.putString("Username", "-");
                 editor.putString("shift_id", "-");
                 editor.apply();
-                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                Intent intent = new Intent(getApplicationContext(), Login.class);
                 finishAffinity();
                 startActivity(intent);
             }

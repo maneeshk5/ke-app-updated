@@ -91,6 +91,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_READING_SYSTEM_STATUS = "system_status";
     private static final String COLUMN_READING_SYNC_STATUS= "sync_status";
     private static final String COLUMN_READING_USER_NAME = "user_name";
+    private static final String COLUMN_READING_USER_ID = "user_id";
+    private static final String COLUMN_READING_RECORDED_AT = "recorded_at";
+
 
 
     //System Status Column Names
@@ -136,7 +139,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_READING_SHIFT_ID + " TEXT, " + COLUMN_READING_VALUE + " DOUBLE , "
             + COLUMN_READING_DATETIME + " TEXT, " + COLUMN_READING_SYSTEM_ID + " INTEGER, " + COLUMN_READING_PLANT_ID
             + " INTEGER, " + COLUMN_READING_SYSTEM_STATUS +  " TEXT, " +  COLUMN_READING_SYNC_STATUS + " INTEGER, "
-            +  COLUMN_READING_USER_NAME + " TEXT " + ")";
+            +  COLUMN_READING_USER_NAME + " TEXT, " + COLUMN_READING_USER_ID + " INTEGER," + COLUMN_READING_RECORDED_AT +
+            " DATETIME DEFAULT CURRENT_TIMESTAMP " + ")";
 
     private String CREATE_SHIFT_SYSTEM_STATUS_TABLE = "CREATE TABLE " + TABLE_SYSTEM_STATUS + "("
             + COLUMN_STATUS_ID + " TEXT PRIMARY KEY, " + COLUMN_STATUS_SHIFT_ID + " TEXT, " + COLUMN_STATUS_SYSTEM_ID
@@ -321,6 +325,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_READING_SYSTEM_ID, reading.getSystem_id());
         values.put(COLUMN_READING_PLANT_ID, reading.getPlant_id());
         values.put(COLUMN_READING_USER_NAME, reading.getUser_name());
+        values.put(COLUMN_READING_RECORDED_AT, reading.getRecorded_at());
+        values.put(COLUMN_READING_USER_ID, reading.getUser_id());
         values.put(COLUMN_READING_SYNC_STATUS,0);
 
         // Inserting Row
@@ -505,7 +511,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_READING_SYNC_STATUS,
                 COLUMN_READING_SYSTEM_ID,
                 COLUMN_READING_PLANT_ID,
-                COLUMN_READING_USER_NAME};
+                COLUMN_READING_USER_NAME,
+                COLUMN_READING_USER_ID,
+                COLUMN_READING_RECORDED_AT};
         // sorting orders
         String sortOrder =
                 COLUMN_READING_ID + " ASC";
@@ -541,6 +549,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 reading.setPlant_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_PLANT_ID))));
                 reading.setSystem_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_SYSTEM_ID))));
                 reading.setUser_name(cursor.getString(cursor.getColumnIndex(COLUMN_READING_USER_NAME)));
+                reading.setUser_id(Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_READING_USER_ID))));
+                reading.setRecorded_at(cursor.getString(cursor.getColumnIndex(COLUMN_READING_RECORDED_AT)));
 
                 // Adding user record to list
                 readingList.add(reading);
